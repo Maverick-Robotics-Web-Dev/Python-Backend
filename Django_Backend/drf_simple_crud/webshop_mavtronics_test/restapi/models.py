@@ -368,3 +368,20 @@ class WayToPay(models.Model):
     class Meta:
         managed = False
         db_table = 'way_to_pay'
+
+
+class UserAdmin(models.Model):
+    user_admin_id=models.AutoField(primary_key=True)
+    user_admin_name=models.CharField(max_length=256)
+    user_admin_lastname=models.CharField(max_length=256)
+    user_admin_user_name=models.CharField(max_length=256)
+    user_client_password = models.CharField(max_length=16)
+    user_client_login = models.IntegerField()
+    user_client_status = models.IntegerField()
+    user_client_status_description = models.CharField(max_length=256, blank=True, null=True)
+    user_client_create_at = models.DateTimeField()
+    user_client_update_at = models.DateTimeField(blank=True, null=True)
+    
+    class Meta:
+        managed=False
+        db_table='user_admin'
