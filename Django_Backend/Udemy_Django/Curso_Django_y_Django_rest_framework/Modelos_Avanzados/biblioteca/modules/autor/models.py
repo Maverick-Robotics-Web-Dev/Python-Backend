@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 
-class Autor(models.Model):
+class Author(models.Model):
     name = models.CharField(max_length=50)
     surname = models.CharField(max_length=50)
     nationality = models.CharField(max_length=30)
