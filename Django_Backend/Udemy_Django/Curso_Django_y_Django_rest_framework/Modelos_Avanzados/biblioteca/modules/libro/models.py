@@ -1,5 +1,5 @@
 from django.db import models
-from modules.autor.models import Author
+from modules.autor.models import *
 
 # Create your models here.
 
