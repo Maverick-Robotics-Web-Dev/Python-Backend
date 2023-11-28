@@ -37,8 +37,8 @@ BASE_APPS = [
 
 LOCAL_APPS = [
     'modules.autor',
-    'modules.libro'
-    'modules.lector'
+    'modules.libro',
+    'modules.lector',
 ]
 
 THIRD_APPS = [
