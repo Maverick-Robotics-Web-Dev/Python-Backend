@@ -1,9 +1,9 @@
-"id","name","surname","nationality","age"
-"1","Julio","Berne","Ingles",35
-"2","Miguel","Cervantes","Argentino",40
-"3","Juan","Montalvo","Ecuatoriano",53
-"4","Juan Leon","Mera","Ecuatoriano",56
-"5","Eloy","Alfaro","Ecuatoriano",70
-"6","Juan Benigno","Vela","Ecuatoriano",60
-"7","Simon","Bolivar","Venezolano",40
-"8","Luis A.","Martinez","Ecuatoriano",37
+﻿id;name;surname;nationality;age
+1;Julio;Berne;Ingles;35
+2;Miguel;Cervantes;Argentino;40
+3;Juan;Montalvo;Ecuatoriano;53
+4;Juan Leon;Mera;Ecuatoriano;56
+5;Eloy;Alfaro;Ecuatoriano;70
+6;Juan Benigno;Vela;Ecuatoriano;60
+7;Simon;Bolivar;Venezolano;40
+8;Luis A.;Martinez;Ecuatoriano;37
