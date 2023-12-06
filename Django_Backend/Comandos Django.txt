@@ -1,0 +1,30 @@
+To Run Virtual Enviroment search the folder when created the virtual enviroment and use the following command
+
+. name_folder_of_the_virtual_enviroment/Scripts/activate
+
+To Run Server use the following command
+
+python manage.py runserver 
+
+To create models from an existing database use the following command
+
+ python manage.py inspectdb > restapi/models.py Here choose the folder
+
+To create models from django to engine database
+
+python manage.py makemigrations
+
+To perform the migrations use the following command
+
+python manage.py migrate
+
+To create the superuser use the following command
+
+python manage.py createsuperuser
+
+Username: andrewchav
+Password: AndrewChaV7690
+
+To create the app use the following comand
+
+django-admin startapp name_app
