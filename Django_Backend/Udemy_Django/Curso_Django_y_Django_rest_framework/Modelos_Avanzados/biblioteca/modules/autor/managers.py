@@ -1,5 +1,6 @@
 from django.db import models
 
 class AuthorManager(models.Manager):
-    def list_authors(self):
-        return self.all()
+    def search_author(self, author_name):
+        search_result = self.filter(name__icontains=author_name)
+        return search_result

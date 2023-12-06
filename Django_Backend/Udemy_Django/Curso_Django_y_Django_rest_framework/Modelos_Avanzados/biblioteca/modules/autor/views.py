@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import ListView
 
-from .models import *
+from .models import Author
 
 # Create your views here.
 
@@ -11,4 +11,7 @@ class ListAuthors(ListView):
     template_name = 'author/list.html'
 
     def get_queryset(self):
-        return Author.objects.list_authors()
+        
+        author_name = self.request.GET.get('author_name','')
+
+        return Author.objects.search_author(author_name)
