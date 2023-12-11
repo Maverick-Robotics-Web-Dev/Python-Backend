@@ -7,23 +7,6 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
-class Category(models.Model):
-    category_id = models.AutoField(primary_key=True)
-    category_code = models.CharField(max_length=50)
-    category_name = models.CharField(max_length=50)
-    category_description = models.CharField(max_length=256, blank=True, null=True)
-    category_img = models.CharField(max_length=256)
-    category_status = models.IntegerField()
-    category_status_description = models.CharField(max_length=256, blank=True, null=True)
-    user_employee = models.ForeignKey('UserEmployee', models.DO_NOTHING)
-    category_create_at = models.DateTimeField()
-    category_update_at = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'category'
-
-
 class Client(models.Model):
     client_id = models.AutoField(primary_key=True)
     client_code = models.CharField(max_length=50)
@@ -198,30 +181,6 @@ class OwnCheck(models.Model):
     class Meta:
         managed = False
         db_table = 'own_check'
-
-
-class Product(models.Model):
-    product_id = models.AutoField(primary_key=True)
-    product_code = models.CharField(max_length=50)
-    product_name = models.CharField(max_length=100)
-    product_barcode = models.CharField(max_length=50, blank=True, null=True)
-    product_stock = models.IntegerField()
-    product_presentation = models.CharField(max_length=256)
-    product_price_in = models.DecimalField(max_digits=11, decimal_places=2)
-    product_price_out = models.DecimalField(max_digits=11, decimal_places=2)
-    product_img = models.CharField(max_length=256)
-    product_description = models.CharField(max_length=256, blank=True, null=True)
-    category = models.ForeignKey(Category, models.DO_NOTHING)
-    user_employee = models.ForeignKey('UserEmployee', models.DO_NOTHING)
-    product_status = models.IntegerField()
-    product_status_description = models.CharField(max_length=256, blank=True, null=True)
-    product_create_at = models.DateTimeField()
-    product_update_at = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'product'
-
 
 class Sale(models.Model):
     sale_id = models.AutoField(primary_key=True)
