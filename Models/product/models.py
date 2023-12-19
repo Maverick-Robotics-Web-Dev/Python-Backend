@@ -51,6 +51,7 @@ class Product(models.Model):
     product_presentation = models.CharField(max_length=256)
     product_price_in = models.DecimalField(max_digits=11, decimal_places=2)
     product_price_out = models.DecimalField(max_digits=11, decimal_places=2)
+    product_number_sale = models.PositiveBigIntegerField(default=0)
     product_img = models.CharField(max_length=256)
     product_due_date = models.DateField(blank=True, null=True)
     provider = models.ForeignKey('Provider', on_delete=models.CASCADE)
