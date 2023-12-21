@@ -7,62 +7,7 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
-class Client(models.Model):
-    client_id = models.AutoField(primary_key=True)
-    client_code = models.CharField(max_length=50)
-    client_document_type = models.CharField(max_length=20)
-    client_document_number = models.CharField(max_length=20)
-    client_lastname = models.CharField(max_length=500)
-    client_name = models.CharField(max_length=500)
-    client_tradename = models.CharField(max_length=500, blank=True, null=True)
-    client_country = models.CharField(max_length=200)
-    client_state_province = models.CharField(max_length=200)
-    client_city = models.CharField(max_length=200)
-    client_home_address = models.CharField(max_length=200)
-    client_work_address = models.CharField(max_length=200, blank=True, null=True)
-    client_phone_number = models.CharField(max_length=50, blank=True, null=True)
-    client_cellphone_number = models.CharField(max_length=50)
-    client_workphone_number = models.CharField(max_length=50, blank=True, null=True)
-    client_email = models.CharField(max_length=100, blank=True, null=True)
-    client_img = models.CharField(max_length=256)
-    client_status = models.IntegerField()
-    client_status_description = models.CharField(max_length=256, blank=True, null=True)
-    user_employee = models.ForeignKey('UserEmployee', models.DO_NOTHING)
-    client_create_at = models.DateTimeField()
-    client_upgrade_at = models.DateTimeField(blank=True, null=True)
 
-    class Meta:
-        managed = False
-        db_table = 'client'
-
-
-class ClientCheck(models.Model):
-    client_check_id = models.AutoField(primary_key=True)
-    client_check_date_admission = models.DateField()
-    client = models.ForeignKey(Client, models.DO_NOTHING)
-    client_check_concept = models.CharField(max_length=500)
-    client_check_voucher_type = models.CharField(max_length=256)
-    client_check_voucher_number = models.CharField(max_length=100)
-    client_check_deposit_date = models.DateField()
-    client_check_bank = models.CharField(max_length=256)
-    client_check_account_number = models.CharField(max_length=256)
-    client_check_number = models.CharField(max_length=100)
-    client_check_owner = models.CharField(max_length=256)
-    client_check_amount = models.DecimalField(max_digits=11, decimal_places=2)
-    client_check_status = models.CharField(max_length=256)
-    client_check_deposited_in = models.CharField(max_length=256, blank=True, null=True)
-    client_check_endorsement_date = models.DateField(blank=True, null=True)
-    client_check_discharge_date = models.DateField(blank=True, null=True)
-    client_check_beneficiary = models.CharField(max_length=500, blank=True, null=True)
-    client_check_remark = models.CharField(max_length=500, blank=True, null=True)
-    user_employee = models.ForeignKey('UserEmployee', models.DO_NOTHING)
-    client_check_create_at = models.DateTimeField()
-    client_check_upgrade_at = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'client_check'
-        db_table_comment = '\t\t'
 
 
 class CreditNote(models.Model):
@@ -96,19 +41,7 @@ class CreditNoteDetail(models.Model):
 class Employee(models.Model):
     employee_id = models.AutoField(primary_key=True)
     employee_code = models.CharField(max_length=50)
-    employee_document_type = models.CharField(max_length=20)
-    employee_document_number = models.CharField(max_length=20)
-    employee_lastname = models.CharField(max_length=500)
-    employee_name = models.CharField(max_length=500)
     employee_date_of_birth = models.DateField()
-    employee_country = models.CharField(max_length=200)
-    employee_state_province = models.CharField(max_length=200)
-    employee_city = models.CharField(max_length=200)
-    employee_address = models.CharField(max_length=200)
-    employee_phone_number = models.CharField(max_length=50, blank=True, null=True)
-    employee_cellphone_number = models.CharField(max_length=50)
-    employee_email = models.CharField(max_length=100, blank=True, null=True)
-    employee_img = models.CharField(max_length=256)
     employee_contract_type = models.CharField(max_length=256, blank=True, null=True)
     employee_contract_code = models.CharField(max_length=256, blank=True, null=True)
     employee_admission_date = models.DateField()
@@ -218,19 +151,15 @@ class SaleDetail(models.Model):
 class Supplier(models.Model):
     supplier_id = models.AutoField(primary_key=True)
     supplier_code = models.CharField(max_length=50)
-    supplier_document_type = models.CharField(max_length=20)
-    supplier_document_number = models.CharField(max_length=20)
-    supplier_lastname = models.CharField(max_length=500)
-    supplier_name = models.CharField(max_length=500)
     supplier_tradename = models.CharField(max_length=500, blank=True, null=True)
-    supplier_country = models.CharField(max_length=200)
-    supplier_state_province = models.CharField(max_length=200)
-    supplier_city = models.CharField(max_length=200)
-    supplier_address = models.CharField(max_length=200, blank=True, null=True)
-    supplier_phone_number = models.CharField(max_length=50, blank=True, null=True)
-    supplier_cellphone_number = models.CharField(max_length=50)
-    supplier_email = models.CharField(max_length=100, blank=True, null=True)
-    supplier_img = models.CharField(max_length=256)
+    supplier_branch_office_address_one = models.CharField(max_length=200, default='Sin Sucursal')
+    supplier_branch_office_address_two = models.CharField(max_length=200, default='Sin Sucursal')
+    supplier_branch_office_address_three = models.CharField(max_length=200, default='Sin Sucursal')
+    supplier_branch_office_address_four = models.CharField(max_length=200, default='Sin Sucursal')
+    supplier_phone_number_one = models.CharField(max_length=50, default='No posee numero telefonico')
+    supplier_phone_number_two = models.CharField(max_length=50, default='No posee numero telefonico')
+    supplier_phone_number_three = models.CharField(max_length=50, default='No posee numero telefonico')
+    supplier_phone_number_four = models.CharField(max_length=50, default='No posee numero telefonico')
     user_employee = models.ForeignKey('UserEmployee', models.DO_NOTHING)
     supplier_status = models.IntegerField()
     supplier_status_description = models.CharField(max_length=256, blank=True, null=True)
