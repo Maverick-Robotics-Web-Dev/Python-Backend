@@ -52,3 +52,4 @@ class CashRegisterClosing(models.Model):
     class Meta:
         db_table = 'CASH_REGISTER_CLOSING'
         verbose_name = 'CIERRE DE CAJA REGISTRADORA'
+        verbose_name_plural = 'CIERRES DE CAJA REGISTRADORA'
