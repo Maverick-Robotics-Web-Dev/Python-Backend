@@ -15,7 +15,7 @@ class Employee(Person):
     employee_extension_number = models.CharField(max_length=50, blank=True, null=True)
     employee_status = models.IntegerField()
     employee_status_description = models.CharField(max_length=256, blank=True, null=True)
-    user_employee = models.ForeignKey('UserEmployee', models.DO_NOTHING)
+    user_employee = models.ForeignKey('UserEmployee', on_delete=models.CASCADE)
     employee_create_at = models.DateTimeField()
     employee_upgrade_at = models.DateTimeField(blank=True, null=True)
 
