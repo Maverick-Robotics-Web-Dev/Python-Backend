@@ -22,7 +22,16 @@ BASE_APPS = [
 ]
 
 LOCAL_APPS = [
-    'modules.business'
+    'modules.abstracts',
+    'modules.business',
+    'modules.cashregister',
+    'modules.client',
+    'modules.employee',
+    'modules.home',
+    'modules.owner',
+    'modules.product',
+    'modules.supplier',
+    'modules.users'
 ]
 
 THIRD_APPS = []
