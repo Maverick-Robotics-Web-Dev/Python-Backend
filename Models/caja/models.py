@@ -1,9 +1,12 @@
 from django.db import models
 
-class CashRegister(models.Model):
+from apis.usersn.models import *
+from apis.business.models import *
+
+class CashRegisterModel(models.Model):
     cash_register_id = models.AutoField(primary_key=True)
     cash_register_number = models.CharField('Caja',max_length=256)
-    user_employee = models.ForeignKey('UserEmployee', on_delete=models.CASCADE)
+    fk_user_employee = models.ForeignKey(UserEmployeeModel, on_delete=models.CASCADE)
     cash_register_status = models.CharField('Estado', max_length=50)
 
     class Meta:
@@ -11,9 +14,9 @@ class CashRegister(models.Model):
         verbose_name = 'CAJA REGISTRADORA'
         verbose_name_plural = 'CAJAS REGISTRADORAS'
 
-class CashRegisterOpening(models.Model):
+class CashRegisterOpeningModel(models.Model):
     cash_register_opening_id = models.AutoField(primary_key=True)
-    cash_register = models.ForeignKey('CashRegister', on_delete=models.CASCADE)
+    fk_cash_register = models.ForeignKey(CashRegisterModel, on_delete=models.CASCADE)
     cash_register_opening_date = models.DateTimeField('Fecha')
     cash_register_opening_amount = models.DecimalField('Monto de Apertura',max_digits=11, decimal_places=2)
 
@@ -22,12 +25,12 @@ class CashRegisterOpening(models.Model):
         verbose_name = 'APERTURA DE CAJA REGISTRADORA'
         verbose_name_plural='APERTURAS DE CAJA REGISTRADORA'
 
-class CashRegisterMovements(models.Model):
+class CashRegisterMovementsModel(models.Model):
     cash_register_movements_id = models.AutoField(primary_key=True)
-    cash_register = models.ForeignKey('CashRegister', on_delete=models.CASCADE)
+    fk_cash_register = models.ForeignKey(CashRegisterModel, on_delete=models.CASCADE)
     cash_register_movements_date = models.DateTimeField('Fecha')
     cash_register_movements_detail = models.CharField('Detalle',max_length=500)
-    way_to_pay = models.ForeignKey('WayToPay', on_delete=models.CASCADE)
+    fk_way_to_pay = models.ForeignKey(WayToPayModel, on_delete=models.CASCADE)
     cash_register_movements_type = models.CharField('Tipo',max_length=100)
     cash_register_movements_amount = models.DecimalField('Monto',max_digits=11, decimal_places=2)
     cash_register_movements_created_at = models.DateTimeField('Fecha de Creación')
@@ -38,9 +41,9 @@ class CashRegisterMovements(models.Model):
         verbose_name = 'MOVIMIENTO DE CAJA REGISTRADORA'
         verbose_name_plural = 'MOVIMIENTOS DE CAJA REGISTRADORA'
 
-class CashRegisterClosing(models.Model):
+class CashRegisterClosingModel(models.Model):
     cash_register_closing_id = models.AutoField(primary_key=True)
-    cash_register = models.ForeignKey('CashRegister', on_delete=models.CASCADE)
+    fk_cash_register = models.ForeignKey(CashRegisterModel, on_delete=models.CASCADE)
     cash_register_closing_date = models.DateTimeField('Fecha')
     cash_register_closing_total_voucher_transactions = models.DecimalField('Total de Ventas',max_digits=11, decimal_places=2)
     cash_register_closing_total_cash_equivalent = models.DecimalField('Total Transferencias',max_digits=11, decimal_places=2)

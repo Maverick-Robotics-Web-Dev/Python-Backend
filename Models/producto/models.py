@@ -1,7 +1,9 @@
 from django.db import models
 
+from apis.usersn.models import *
+from apis.supplier.models import *
 
-class Category(models.Model):
+class CategoryModel(models.Model):
     category_id = models.AutoField(primary_key=True)
     category_code = models.CharField('Codigo de Categoria',max_length=50)
     category_name = models.CharField('Nombre',max_length=50)
@@ -9,7 +11,7 @@ class Category(models.Model):
     category_img = models.CharField('Imagen',max_length=256)
     category_status = models.CharField('Estado', max_length=50)
     category_status_description = models.CharField('Descripción',max_length=256, default='Ninguna')
-    user_employee = models.ForeignKey('UserEmployee', on_delete=models.CASCADE)
+    fk_user_employee = models.ForeignKey(UserEmployeeModel, on_delete=models.CASCADE)
     category_create_at = models.DateTimeField('Fecha de Creación')
     category_update_at = models.DateTimeField('Fecha de Actualización',blank=True, null=True)
 
@@ -19,7 +21,7 @@ class Category(models.Model):
         verbose_name_plural = 'CATEGORIAS'
 
 
-class Brand(models.Model):
+class BrandModel(models.Model):
     brand_id = models.AutoField(primary_key=True)
     brand_code = models.CharField('Codigo de Marca',max_length=50)
     brand_name = models.CharField('Nombre',max_length=50)
@@ -27,7 +29,7 @@ class Brand(models.Model):
     brand_img = models.CharField('Imagen',max_length=256)
     brand_status = models.CharField('Estado', max_length=50)
     brand_status_description = models.CharField('Descripción', max_length=256, default='Ninguna')
-    user_employee = models.ForeignKey('UserEmployee', on_delete=models.CASCADE)
+    fk_user_employee = models.ForeignKey(UserEmployeeModel, on_delete=models.CASCADE)
     brand_create_at = models.DateTimeField('Fecha de Creación')
     brand_update_at = models.DateTimeField('Fecha de Actualización',blank=True, null=True)
 
@@ -37,7 +39,7 @@ class Brand(models.Model):
         verbose_name_plural = 'MARCAS'
 
 
-class Product(models.Model):
+class ProductModel(models.Model):
     product_id = models.AutoField(primary_key=True)
     product_barcode = models.CharField('Codigo de Barras',max_length=13, default='No posee codigo')
     product_code = models.CharField('Codigo de Producto',max_length=50)
@@ -49,11 +51,11 @@ class Product(models.Model):
     product_number_sale = models.PositiveBigIntegerField('Numero de Ventas',default=0)
     product_img = models.CharField('Imagen',max_length=256)
     product_due_date = models.DateField('Fecha de Vencimiento',blank=True, null=True)
-    provider = models.ForeignKey('Provider', on_delete=models.CASCADE)
-    category = models.ForeignKey('Category', on_delete=models.CASCADE)
-    brand = models.ForeignKey('Brand', on_delete=models.CASCADE)
+    fk_supplier = models.ForeignKey(SupplierModel, on_delete=models.CASCADE)
+    fk_category = models.ForeignKey(CategoryModel, on_delete=models.CASCADE)
+    fk_brand = models.ForeignKey(BrandModel, on_delete=models.CASCADE)
     product_description = models.CharField('Descripción',max_length=256, default='Ninguna')
-    user_employee = models.ForeignKey('UserEmployee', on_delete=models.CASCADE)
+    fk_user_employee = models.ForeignKey(UserEmployeeModel, on_delete=models.CASCADE)
     product_status = models.CharField('Estado', max_length=50)
     product_status_description = models.CharField('Descripción',max_length=256, blank=True, null=True)
     product_create_at = models.DateTimeField('Fecha de Creación')

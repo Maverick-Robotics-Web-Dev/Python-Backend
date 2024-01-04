@@ -1,8 +1,9 @@
 from django.db import models
 
-from abstract.models import *
+from apis.abstracts.models import *
+from apis.usersn.models import *
 
-class Employee(Person):
+class EmployeeModel(PersonModel):
     employee_id = models.AutoField(primary_key=True)
     employee_code = models.CharField('Codigo de Empleado',max_length=50)
     employee_date_of_birth = models.DateField('Fecha de Nacimiento')
@@ -15,7 +16,7 @@ class Employee(Person):
     employee_extension_number = models.CharField('Numero de Extensión',max_length=50, default='No Posee Extensión')
     employee_status = models.CharField('Estado', max_length=50)
     employee_status_description = models.CharField('Descripción',max_length=256, default='Ninguna')
-    user_employee = models.ForeignKey('UserEmployee', on_delete=models.CASCADE)
+    fk_user_employee = models.ForeignKey(UserEmployeeModel, on_delete=models.CASCADE)
     employee_create_at = models.DateTimeField('Fecha de Creación')
     employee_upgrade_at = models.DateTimeField('Fecha Actualización',blank=True, null=True)
 

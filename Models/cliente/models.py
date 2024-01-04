@@ -1,8 +1,9 @@
 from django.db import models
 
-from abstract.models import *
+from apis.abstracts.models import *
+from apis.usersn.models import *
 
-class Client(Person):
+class ClientModel(PersonModel):
     client_id = models.AutoField(primary_key=True)
     client_code = models.CharField('Codigo de Cliente',max_length=50)
     client_trade_name = models.CharField('Nombre Comercial',max_length=500, blank=True, null=True)
@@ -16,7 +17,7 @@ class Client(Person):
     client_phone_number_four = models.CharField('Telefono',max_length=50, default='No posee numero telefonico')
     client_status = models.CharField('Estado', max_length=50)
     client_status_description = models.CharField('Descripción',max_length=256, blank=True, null=True)
-    user_employee = models.ForeignKey('UserEmployee', models.DO_NOTHING)
+    fk_user_employee = models.ForeignKey(UserEmployeeModel, on_delete=models.CASCADE)
     client_create_at = models.DateTimeField('Fecha de Creación')
     client_upgrade_at = models.DateTimeField('Fecha de Actulización',blank=True, null=True)
 
@@ -25,10 +26,10 @@ class Client(Person):
         verbose_name = 'CLIENTE'
         verbose_name_plural = 'CLIENTES'
 
-class ClientCheck(models.Model):
+class ClientCheckModel(models.Model):
     client_check_id = models.AutoField(primary_key=True)
     client_check_date_admission = models.DateField('Fecha de Admisión')
-    client = models.ForeignKey('Client', on_delete=models.CASCADE)
+    fk_client = models.ForeignKey(ClientModel, on_delete=models.CASCADE)
     client_check_detail = models.CharField('Detalle',max_length=500)
     client_check_voucher_type = models.CharField('Tipo de Comprobante',max_length=256)
     client_check_voucher_number = models.CharField('Numero del Comprobante',max_length=100)
@@ -44,8 +45,8 @@ class ClientCheck(models.Model):
     client_check_endorsement_date = models.DateField('Fecha de Endoso',blank=True, null=True)
     client_check_discharge_date = models.DateField('Fecha de Descargo',blank=True, null=True)
     client_check_beneficiary = models.CharField('Beneficiario',max_length=500, blank=True, null=True)
-    client_check_remark = models.CharField('Observaciones',default='Ninguna')
-    user_employee = models.ForeignKey('UserEmployee', on_delete=models.CASCADE)
+    client_check_remark = models.CharField('Observaciones',max_length=500, default='Ninguna')
+    fk_user_employee = models.ForeignKey(UserEmployeeModel, on_delete=models.CASCADE)
     client_check_create_at = models.DateTimeField('Fecha de Creación')
     client_check_upgrade_at = models.DateTimeField('Fecha de Actualizacion',blank=True, null=True)
 

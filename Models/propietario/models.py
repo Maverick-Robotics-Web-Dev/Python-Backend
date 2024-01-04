@@ -1,6 +1,8 @@
 from django.db import models
 
-class OwnCheck(models.Model):
+from apis.usersn.models import *
+
+class OwnCheckModel(models.Model):
     own_check_id = models.AutoField(primary_key=True)
     own_check_payment_date = models.DateField('Fecha de Pago')
     own_check_beneficiary = models.CharField('Beneficiario',max_length=500)
@@ -15,7 +17,7 @@ class OwnCheck(models.Model):
     own_check_amount = models.DecimalField('Monto',max_digits=11, decimal_places=2)
     own_check_status = models.CharField('Estado', max_length=50)
     own_check_remark = models.CharField('Observaciones',max_length=500, blank=True, null=True)
-    user_employee = models.ForeignKey('UserEmployee', on_delete=models.CASCADE)
+    fk_user_employee = models.ForeignKey(UserEmployeeModel, on_delete=models.CASCADE)
     own_check_create_at = models.DateTimeField('Fecha de Creación')
     own_check_upgrade_at = models.DateTimeField('Fecha de Actualización',blank=True, null=True)
 
