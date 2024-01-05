@@ -1,8 +1,8 @@
 # from pathlib import Path
-from unipath import Path as uniPath
+from unipath import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = uniPath(__file__).ancestor(3)
+BASE_DIR = Path(__file__).ancestor(3)
 
 
 # Quick-start development settings - unsuitable for production
