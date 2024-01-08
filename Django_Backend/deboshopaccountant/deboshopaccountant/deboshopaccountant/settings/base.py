@@ -1,4 +1,6 @@
 # from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
+import json
 from unipath import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -9,7 +11,19 @@ BASE_DIR = Path(__file__).ancestor(3)
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ct_mi&=$n(f8180-)u2c=9uu143h=34#@wab*niz6xfln0^!m0'
+# with open("secret.json") as f:
+#     secret_file = json.loads(f.read())
+
+def get_secret_file(secret_name):
+    try:
+        with open("secret.json") as f:
+            secret_file = json.loads(f.read())
+        return secret_file[secret_name]
+    except:
+        msg = "La Variable %s no existe" % secret_name
+        raise ImproperlyConfigured(msg)
+    
+SECRET_KEY = get_secret_file('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -33,6 +47,7 @@ LOCAL_APPS = [
     'apis.cashregisters',
     'apis.clients',
     'apis.employees',
+    'apis.home',
     'apis.owners',
     'apis.products',
     'apis.suppliers',
@@ -90,6 +105,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+AUTH_USER_MODEL = 'users.UserEmployeeModel'
 
 
 # Internationalization

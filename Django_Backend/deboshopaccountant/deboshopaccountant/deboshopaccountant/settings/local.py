@@ -6,11 +6,11 @@ from .base import *
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST' : 'localhost',
-        'PORT' : '3306',
-        'USER' : 'root',
-        'PASSWORD' : 'ChrisChaV7690',
-        'NAME': 'deboshopaccountant',
+        'HOST' : get_secret_file('DB_HOST'),
+        'PORT' : get_secret_file('DB_PORT'),
+        'USER' : get_secret_file('DB_USER'),
+        'PASSWORD' : get_secret_file('DB_PW'),
+        'NAME': get_secret_file('DB_NAME'),
     }
 }
 
