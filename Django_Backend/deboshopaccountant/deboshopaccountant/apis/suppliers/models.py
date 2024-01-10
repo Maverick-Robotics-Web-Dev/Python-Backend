@@ -21,7 +21,7 @@ class SupplierModel(PersonModel):
     supplier_upgrade_at = models.DateTimeField('Fecha de Actualizacion',blank=True, null=True)
 
     class Meta:
-        db_table = 'SUPPLIER'
+        db_table = 'APIS_SUPPLIER'
         verbose_name = 'PROVEEDOR'
         verbose_name_plural = 'PROVEEDORES'
 
@@ -40,7 +40,7 @@ class IncomeModel(models.Model):
     income_create_at = models.DateTimeField('Fecha de Creación')
 
     class Meta:
-        db_table = 'INCOME'
+        db_table = 'APIS_INCOME'
         verbose_name = 'INGRESO'
         verbose_name_plural = 'INGRESOS'
 
@@ -53,6 +53,6 @@ class IncomeDetailModel(models.Model):
     income_detail_sale_price = models.DecimalField('Precio de Venta',max_digits=11, decimal_places=2)
 
     class Meta:
-        db_table = 'INCOME_DETAIL'
+        db_table = 'APIS_INCOME_DETAIL'
         verbose_name = 'DETALLE DE INGRESO'
         verbose_name_plural = 'DETALLES DE INGRESO'

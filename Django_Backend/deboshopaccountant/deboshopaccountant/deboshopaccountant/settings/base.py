@@ -47,14 +47,15 @@ LOCAL_APPS = [
     'apis.cashregisters',
     'apis.clients',
     'apis.employees',
-    'apis.home',
     'apis.owners',
     'apis.products',
     'apis.suppliers',
     'apis.users'
 ]
 
-THIRD_APPS = []
+THIRD_APPS = [
+    'rest_framework'
+]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
 

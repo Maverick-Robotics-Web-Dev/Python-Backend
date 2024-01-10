@@ -21,7 +21,7 @@ class ClientModel(PersonModel):
     client_upgrade_at = models.DateTimeField('Fecha de Actulización',blank=True, null=True)
 
     class Meta:
-        db_table = 'CLIENT'
+        db_table = 'APIS_CLIENT'
         verbose_name = 'CLIENTE'
         verbose_name_plural = 'CLIENTES'
 
@@ -50,6 +50,6 @@ class ClientCheckModel(models.Model):
     client_check_upgrade_at = models.DateTimeField('Fecha de Actualizacion',blank=True, null=True)
 
     class Meta:
-        db_table = 'CLIENT_CHECK'
+        db_table = 'APIS_CLIENT_CHECK'
         verbose_name = 'CHEQUE DEL CLIENTE'
         verbose_name_plural = 'CHEQUES DEL CLIENTE'

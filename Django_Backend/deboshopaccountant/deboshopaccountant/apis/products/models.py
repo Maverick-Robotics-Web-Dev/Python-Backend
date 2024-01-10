@@ -13,7 +13,7 @@ class CategoryModel(models.Model):
     category_update_at = models.DateTimeField('Fecha de Actualización',blank=True, null=True)
 
     class Meta:
-        db_table = 'CATEGORY'
+        db_table = 'APIS_CATEGORY'
         verbose_name = 'CATEGORIA'
         verbose_name_plural = 'CATEGORIAS'
 
@@ -31,7 +31,7 @@ class BrandModel(models.Model):
     brand_update_at = models.DateTimeField('Fecha de Actualización',blank=True, null=True)
 
     class Meta:
-        db_table = 'BRAND'
+        db_table = 'APIS_BRAND'
         verbose_name = 'MARCA'
         verbose_name_plural = 'MARCAS'
 
@@ -59,6 +59,6 @@ class ProductModel(models.Model):
     product_update_at = models.DateTimeField('Fecha de Actualización',blank=True, null=True)
 
     class Meta:
-        db_table = 'PRODUCT'
+        db_table = 'APIS_PRODUCT'
         verbose_name = 'PRODUCTO'
         verbose_name_plural = 'PRODUCTOS'

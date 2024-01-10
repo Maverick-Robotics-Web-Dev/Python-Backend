@@ -12,13 +12,13 @@ class UserLevelModel(models.Model):
     user_level_update_at = models.DateTimeField('Fecha de Actualización',blank=True, null=True)
 
     class Meta:
-        db_table = 'USER_LEVEL'
+        db_table = 'APIS_USER_LEVEL'
         verbose_name = 'NIVEL DE USUARIO'
         verbose_name_plural = 'NIVELES DE USUARIO'
 
 class UserEmployeeModel(AbstractBaseUser, PermissionsMixin):
     user_employee_id = models.AutoField(primary_key=True)
-    user_employee_user_name = models.CharField('Nombre de Usuario',max_length=256, unique=True)
+    user_employee_user_name = models.CharField('Nombre de Usuario',max_length=20, unique=True)
     user_employee_password = models.CharField('Contraseña',max_length=16)
     fk_employee = models.ForeignKey('employees.EmployeeModel', on_delete=models.CASCADE, blank=True)
     fk_user_level = models.ForeignKey(UserLevelModel, on_delete=models.CASCADE,blank=True)
@@ -36,7 +36,7 @@ class UserEmployeeModel(AbstractBaseUser, PermissionsMixin):
 
 
     class Meta:
-        db_table = 'USER_EMPLOYEE'
+        db_table = 'APIS_USER_EMPLOYEE'
         verbose_name = 'USURIO DE EMPLEADO'
         verbose_name_plural = 'USUARIOS DE EMPLEADO'
 
@@ -53,6 +53,6 @@ class UserClientModel(models.Model):
     user_client_update_at = models.DateTimeField('Fecha de Actualización',blank=True, null=True)
 
     class Meta:
-        db_table = 'USER_CLIENT'
+        db_table = 'APIS_USER_CLIENT'
         verbose_name = 'USUARIO DEL CLIENTE'
         verbose_name_plural = 'USUARIOS DEL CLIENTE'

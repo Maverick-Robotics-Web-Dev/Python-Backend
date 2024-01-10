@@ -8,7 +8,7 @@ class WayToPayModel(models.Model):
     way_to_pay_update_at = models.DateTimeField('Fecha de Actualización',blank=True, null=True)
 
     class Meta:
-        db_table = 'WAY_TO_PAY'
+        db_table = 'APIS_WAY_TO_PAY'
         verbose_name = 'FORMA DE PAGO'
         verbose_name_plural = 'FORMAS DE PAGO'
 
@@ -20,7 +20,7 @@ class VoucherTypeModel(models.Model):
     voucher_type_update_at = models.DateTimeField('Fecha de Actualización', blank=True, null=True)
 
     class Meta:
-        db_table = 'VOUCHER_TYPE'
+        db_table = 'APIS_VOUCHER_TYPE'
         verbose_name = 'TIPO DE COMPROBANTE'
         verbose_name_plural = 'TIPOS DE COMPROBANTE'
 
@@ -36,7 +36,7 @@ class CreditNoteModel(models.Model):
     credit_note_create_at = models.DateTimeField('Fecha de Creación')
 
     class Meta:
-        db_table = 'CREDIT_NOTE'
+        db_table = 'APIS_CREDIT_NOTE'
         verbose_name = 'NOTA DE CREDITO'
         verbose_name_plural = 'NOTAS DE CREDITO'
 
@@ -49,7 +49,7 @@ class CreditNoteDetailModel(models.Model):
     credit_note_detail_price = models.DecimalField('Precio',max_digits=11, decimal_places=2)
 
     class Meta:
-        db_table = 'CREDIT_NOTE_DETAIL'
+        db_table = 'APIS_CREDIT_NOTE_DETAIL'
         verbose_name = 'DETALLE DE NOTA DE CREDITO'
         verbose_name_plural = 'DETALLE DE NOTAS DE CREDITO'
 
@@ -71,7 +71,7 @@ class SaleModel(models.Model):
     sale_create_at = models.DateTimeField('Fecha de Creación')
 
     class Meta:
-        db_table = 'SALE'
+        db_table = 'APIS_SALE'
         verbose_name = 'FACTURA'
         verbose_name_plural = 'FACTURAS'
 
@@ -84,6 +84,6 @@ class SaleDetailModel(models.Model):
     sale_detail_price = models.DecimalField('Precio',max_digits=11, decimal_places=2)
 
     class Meta:
-        db_table = 'SALE_DETAIL'
+        db_table = 'APIS_SALE_DETAIL'
         verbose_name = 'DETALLE DE FACTURA'
         verbose_name_plural = 'DETALLE DE FACTURAS'

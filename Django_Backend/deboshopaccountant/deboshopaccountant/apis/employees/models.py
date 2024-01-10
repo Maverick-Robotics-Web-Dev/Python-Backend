@@ -20,6 +20,6 @@ class EmployeeModel(PersonModel):
     employee_upgrade_at = models.DateTimeField('Fecha Actualización',blank=True, null=True)
 
     class Meta:
-        db_table = 'EMPLOYEE'
+        db_table = 'APIS_EMPLOYEE'
         verbose_name = 'EMPLEADO'
         verbose_name_plural = 'EMPLEADOS'

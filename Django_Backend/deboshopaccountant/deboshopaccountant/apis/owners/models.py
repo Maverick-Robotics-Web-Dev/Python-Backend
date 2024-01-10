@@ -20,6 +20,6 @@ class OwnCheckModel(models.Model):
     own_check_upgrade_at = models.DateTimeField('Fecha de Actualización',blank=True, null=True)
 
     class Meta:
-        db_table = 'OWN_CHECK'
+        db_table = 'APIS_OWN_CHECK'
         verbose_name = 'CHEQUE PROPIO'
         verbose_name_plural = 'CHEQUES PROPIOS'
