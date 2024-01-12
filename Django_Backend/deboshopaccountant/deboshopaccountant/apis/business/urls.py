@@ -1,7 +1,8 @@
 from rest_framework import routers
 
-from .views import WayToPayModelViewSet
+from .views import *
 
 router = routers.DefaultRouter()
-router.register('api/waytopay', WayToPayModelViewSet, 'waytopay')
+router.register('waytopay', WayToPayViewSet, 'waytopay')
+router.register('vouchertype', VoucherTypeViewSet, 'waytopay')
 urlpatterns = router.urls
