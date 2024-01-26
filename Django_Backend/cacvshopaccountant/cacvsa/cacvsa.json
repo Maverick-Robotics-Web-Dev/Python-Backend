@@ -1,0 +1,9 @@
+{
+  "FILENAME": "cacvsa.json",
+  "SECRET_KEY": "django-insecure-3nl%3%1iki@!be#&5bd8n#lae*jlo@igz5a!cpt(d5cnxs^dv@",
+  "DB_HOST": "localhost",
+  "DB_PORT": "3306",
+  "DB_USER": "root",
+  "DB_PW": "chrischav7690",
+  "DB_NAME": "cacvsa"
+}

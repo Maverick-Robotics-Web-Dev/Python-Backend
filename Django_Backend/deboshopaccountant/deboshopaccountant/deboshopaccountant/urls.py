@@ -16,8 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.documentation import include_docs_urls
+from rest_framework.permissions import AllowAny
+from dj_rest_auth.views import LoginView
+from rest_framework.permissions import IsAuthenticated
 
 urlpatterns = [
+    path('api/v1/', LoginView.as_view(), name='login'),
+    path('', include_docs_urls(
+        title='DeboShop API', permission_classes=[AllowAny]), name='home'),
     path('admin/', admin.site.urls),
-    path('api/', include('apis.business.urls'))
+    path('api/v1/routes/', include('apis.routes.urls'), name='routes')
 ]

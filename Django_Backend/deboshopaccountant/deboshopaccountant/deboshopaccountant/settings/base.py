@@ -22,7 +22,8 @@ def get_secret_file(secret_name):
     except:
         msg = "La Variable %s no existe" % secret_name
         raise ImproperlyConfigured(msg)
-    
+
+
 SECRET_KEY = get_secret_file('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -54,7 +55,10 @@ LOCAL_APPS = [
 ]
 
 THIRD_APPS = [
-    'rest_framework'
+    'rest_framework',
+    'coreapi',
+    'rest_framework.authtoken',
+    'dj_rest_auth'
 ]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
@@ -125,3 +129,31 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+
+    # To activate JWT
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication'
+    ],
+
+    # The default permission policy may be set globally
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated']
+
+}
+
+# REST_AUTH = {
+#     'USE_JWT': True,
+#     'JWT_AUTH_COOKIE': 'jwt-dsa-auth-token',
+#     'JWT_AUTH_REFRESH_COOKIE': 'jwt-dsa-refresh-token',
+# }
+
+REST_USE_JWT = True
+JWT_AUTH_COOKIE = 'jwt-dsa-auth-token'
+JWT_AUTH_REFRESH_COOKIE = 'jwt-dsa-refresh-token'
+
+# To define custom serializers
+# REST_AUTH_SERIALIZERS = {
+#     'USER_DETAILS_SERIALIZER': 'apis.users.serializers.UserEmployeeSerializer',
+# }

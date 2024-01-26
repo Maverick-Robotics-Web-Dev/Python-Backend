@@ -2,7 +2,7 @@ from django.db import models
 
 
 class WayToPayModel(models.Model):
-    way_to_pay_id = models.AutoField(primary_key=True)
+    way_to_pay_id = models.AutoField('ID', primary_key=True)
     way_to_pay_name = models.CharField('Forma de Pago', max_length=100)
     way_to_pay_description = models.CharField(
         'Descripcion', max_length=256, blank=True, null=True)
@@ -20,7 +20,7 @@ class WayToPayModel(models.Model):
 
 
 class VoucherTypeModel(models.Model):
-    voucher_type_id = models.AutoField(primary_key=True)
+    voucher_type_id = models.AutoField('ID', primary_key=True)
     voucher_type_name = models.CharField('Tipo de Comprobante', max_length=100)
     voucher_type_description = models.CharField(
         'Descripción', max_length=256, default='No existe descripción')
@@ -38,16 +38,16 @@ class VoucherTypeModel(models.Model):
 
 
 class CreditNoteModel(models.Model):
-    credit_note_id = models.AutoField(primary_key=True)
+    credit_note_id = models.AutoField('ID', primary_key=True)
     fk_client = models.ForeignKey(
-        'clients.ClientModel', on_delete=models.CASCADE)
+        'clients.ClientModel', on_delete=models.CASCADE, verbose_name='Cliente')
     credit_note_voucher_number = models.CharField(
         'Numero de Comprobante', max_length=100)
     credit_note_date = models.DateField('Fecha')
     credit_note_total = models.DecimalField(
         'Total', max_digits=11, decimal_places=0)
     fk_user_employee = models.ForeignKey(
-        'users.UserEmployeeModel', on_delete=models.CASCADE)
+        'users.UserEmployeeModel', on_delete=models.CASCADE, verbose_name='Usuario')
     credit_note_status = models.CharField('Estado', max_length=50)
     credit_note_description = models.CharField(
         'Descripción', max_length=256, blank=True, null=True)
@@ -63,11 +63,11 @@ class CreditNoteModel(models.Model):
 
 
 class CreditNoteDetailModel(models.Model):
-    credit_note_detail_id = models.AutoField(primary_key=True)
+    credit_note_detail_id = models.AutoField('ID', primary_key=True)
     fk_credit_note = models.ForeignKey(
-        CreditNoteModel, on_delete=models.CASCADE)
+        'business.CreditNoteModel', on_delete=models.CASCADE, verbose_name='Nota de Credito')
     fk_product = models.ForeignKey(
-        'products.ProductModel', on_delete=models.CASCADE)
+        'products.ProductModel', on_delete=models.CASCADE, verbose_name='Producto')
     credit_note_detail_quantity = models.DecimalField(
         'Cantidad', max_digits=11, decimal_places=2)
     credit_note_detail_price = models.DecimalField(
@@ -83,11 +83,11 @@ class CreditNoteDetailModel(models.Model):
 
 
 class SaleModel(models.Model):
-    sale_id = models.AutoField(primary_key=True)
+    sale_id = models.AutoField('ID', primary_key=True)
     fk_client = models.ForeignKey(
-        'clients.ClientModel', on_delete=models.CASCADE)
+        'clients.ClientModel', on_delete=models.CASCADE, verbose_name='Cliente')
     fk_sale_voucher_type = models.ForeignKey(
-        VoucherTypeModel, on_delete=models.CASCADE)
+        'business.VoucherTypeModel', on_delete=models.CASCADE, verbose_name='Tipo de Comprobante')
     sale_establishment = models.CharField(
         'Numero de establecimiento', max_length=50)
     sale_billing_number = models.CharField('Numero de Libretin', max_length=50)
@@ -96,9 +96,10 @@ class SaleModel(models.Model):
     sale_date = models.DateField('Fecha')
     sale_tax = models.DecimalField('IVA', max_digits=11, decimal_places=2)
     sale_total = models.DecimalField('Total', max_digits=11, decimal_places=2)
-    fk_way_to_pay = models.ForeignKey(WayToPayModel, on_delete=models.CASCADE)
+    fk_way_to_pay = models.ForeignKey(
+        'business.WayToPayModel', on_delete=models.CASCADE, verbose_name='Forma de Pago')
     fk_user_employee = models.ForeignKey(
-        'users.UserEmployeeModel', on_delete=models.CASCADE)
+        'users.UserEmployeeModel', on_delete=models.CASCADE, verbose_name='Usuario')
     sale_status = models.CharField('Estado', max_length=50)
     sale_status_description = models.CharField(
         'Descripción', max_length=256, blank=True, null=True)
@@ -114,10 +115,11 @@ class SaleModel(models.Model):
 
 
 class SaleDetailModel(models.Model):
-    sale_detail_id = models.AutoField(primary_key=True)
-    fk_sale = models.ForeignKey(SaleModel, on_delete=models.CASCADE)
+    sale_detail_id = models.AutoField('ID', primary_key=True)
+    fk_sale = models.ForeignKey(
+        'business.SaleModel', on_delete=models.CASCADE, verbose_name='Factura')
     fk_product = models.ForeignKey(
-        'products.ProductModel', on_delete=models.CASCADE)
+        'products.ProductModel', on_delete=models.CASCADE, verbose_name='Producto')
     sale_detail_quantity = models.DecimalField(
         'Cantidad', max_digits=11, decimal_places=2)
     sale_detail_price = models.DecimalField(
