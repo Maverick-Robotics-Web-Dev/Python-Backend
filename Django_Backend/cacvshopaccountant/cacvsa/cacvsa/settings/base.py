@@ -52,6 +52,14 @@ BASE_APPS = [
 ]
 
 LOCAL_APPS = [
+    'restapi.business',
+    'restapi.cashregisters',
+    'restapi.clients',
+    'restapi.employees',
+    'restapi.owners',
+    'restapi.products',
+    'restapi.suppliers',
+    'restapi.users'
 ]
 
 THIRD_APPS = [
@@ -128,18 +136,17 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Custom Settings
+###### Custom Settings #########
 
-# AUTH_USER_MODEL = 'users.UserEmployeeModel'
+AUTH_USER_MODEL = 'users.UserEmployeeModel'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 
     # To activate JWT
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-    ],
+    # 'DEFAULT_AUTHENTICATION_CLASSES': [],
 
     # The default permission policy may be set globally
-    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated']
+    # 'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated']
 
 }
