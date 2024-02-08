@@ -6,6 +6,9 @@ class WayToPayModel(models.Model):
     way_to_pay_name = models.CharField('Forma de Pago', max_length=100)
     way_to_pay_description = models.CharField(
         'Descripcion', max_length=256, blank=True, null=True)
+    way_to_pay_status = models.BooleanField('Estado', default=False)
+    way_to_pay_status_description = models.CharField(
+        'Descripción del Estado', max_length=256, blank=True, null=True)
     way_to_pay_create_at = models.DateTimeField('Fecha de Creación')
     way_to_pay_update_at = models.DateTimeField(
         'Fecha de Actualización', blank=True, null=True)
@@ -24,6 +27,9 @@ class VoucherTypeModel(models.Model):
     voucher_type_name = models.CharField('Tipo de Comprobante', max_length=100)
     voucher_type_description = models.CharField(
         'Descripción', max_length=256, default='No existe descripción')
+    voucher_type_status = models.CharField('Estado', max_length=50)
+    voucher_type_status_description = models.CharField(
+        'Descripción', max_length=256, blank=True, null=True)
     voucher_type_create_at = models.DateTimeField('Fecha de Creación')
     voucher_type_update_at = models.DateTimeField(
         'Fecha de Actualización', blank=True, null=True)
