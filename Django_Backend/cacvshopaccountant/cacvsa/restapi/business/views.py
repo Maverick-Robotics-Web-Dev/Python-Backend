@@ -1,17 +1,24 @@
-from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
+from rest_framework.status import *
 
 from .models import *
 from .serializers import *
 
 
-class WayToPayAPIView(APIView):
+class WayToPayViewSet(GenericViewSet):
+    model = WayToPayModel
+    serializer_class = WayToPaySerializer
 
-    def get(self,request):
-        waytopays=WayToPayModel.objects.all()
-        waytopays_serializer=WayToPaySerializer(waytopays,many=True)
-        return Response(waytopays_serializer.data)
+    def get_queryset(self):
+        if self.queryset is None:
+            return self.model.objects.all()
+        return self.queryset
 
+    def list(self, request):
+        waytopays = self.get_queryset()
+        serializer = self.serializer_class(waytopays, many=True)
+        return Response(serializer.data, status=HTTP_200_OK)
 
 # class VoucherTypeViewSet(viewsets.ModelViewSet):
 #     queryset = VoucherTypeModel.objects.all()

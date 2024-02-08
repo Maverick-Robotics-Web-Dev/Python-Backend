@@ -1,5 +1,4 @@
-from django.urls import path
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework.routers import DefaultRouter
 
 from restapi.business.views import *
 from restapi.cashregisters.views import *
@@ -10,14 +9,8 @@ from restapi.products.views import *
 from restapi.suppliers.views import *
 from restapi.users.views import *
 
-
-urlpatterns=[
-    path('waytopay/',WayToPayAPIView.as_view(),name='waytopay-api')
-]
-
-
-# router = routers.DefaultRouter()
-# router.register('waytopay', WayToPayViewSet, 'waytopay')
+router = DefaultRouter()
+router.register('waytopay', WayToPayViewSet, basename='waytopay')
 # router.register('vouchertype', VoucherTypeViewSet, 'vouchertype')
 # router.register('creditnote', CreditNoteViewSet, 'creditnote')
 # router.register('creditotedetail', CreditNoteDetailViewSet, 'creditotedetail')
@@ -43,4 +36,4 @@ urlpatterns=[
 # router.register('userlevel', UserLevelViewSet, 'userlevel')
 # router.register('useremployee', UserEmployeeViewSet, 'useremployee')
 # router.register('userclient', UserClientViewSet, 'userclient')
-# urlpatterns = router.urls
+urlpatterns = router.urls
