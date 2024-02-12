@@ -21,6 +21,6 @@ from rest_framework.permissions import AllowAny
 
 urlpatterns = [
     path('', include_docs_urls(title='DeboShop API'), name='home'),
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls, name='admin'),
     path('api/v1/routes/', include('restapi.routes.urls'), name='routes')
 ]

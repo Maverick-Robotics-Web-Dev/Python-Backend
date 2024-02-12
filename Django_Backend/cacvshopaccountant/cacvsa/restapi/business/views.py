@@ -3,13 +3,16 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.response import Response
 from rest_framework.status import *
 
+
 from .models import *
 from .serializers import *
+from restapi.mixins.usermixins import *
 
 
-class WayToPayViewSet(GenericViewSet):
+class WayToPayViewSet(LoginPermissionsMixin, GenericViewSet):
     model = WayToPayModel
     serializer_class = WayToPaySerializer
+    _PERMISSIONS = ['GERENTE']
 
     def get_object(self, pk):
         return get_object_or_404(self.model, pk=pk)
@@ -43,10 +46,10 @@ class WayToPayViewSet(GenericViewSet):
         return Response(data, status=HTTP_400_BAD_REQUEST)
 
 
-# class VoucherTypeViewSet(viewsets.ModelViewSet):
-#     queryset = VoucherTypeModel.objects.all()
-#     # permission_classes = [AllowAny]
-#     serializer_class = VoucherTypeSerializer
+class VoucherTypeViewSet(ModelViewSet):
+    queryset = VoucherTypeModel.objects.all()
+    # permission_classes = [AllowAny]
+    serializer_class = VoucherTypeSerializer
 
 
 # class CreditNoteViewSet(viewsets.ModelViewSet):
