@@ -10,14 +10,15 @@ from restapi.suppliers.views import *
 from restapi.users.views import *
 
 router = DefaultRouter()
-router.register('business/waytopay', WayToPayViewSet, basename='waytopay')
-router.register('business/vouchertype', VoucherTypeViewSet,
-                basename='vouchertype')
-# router.register('business/creditnote', CreditNoteViewSet, 'creditnote')
-# router.register('business/creditotedetail', CreditNoteDetailViewSet, 'creditotedetail')
-# router.register('business/sale', SaleViewSet, 'sale')
-# router.register('business/saledetail', SaleDetailViewSet, 'saledetail')
-# router.register('cashregister', CashRegisterViewSet, 'cashregister')
+router.register('business/waytopay', WayToPayViewSet, 'waytopay')
+router.register('business/vouchertype', VoucherTypeViewSet, 'vouchertype')
+router.register('business/creditnote', CreditNoteViewSet, 'creditnote')
+router.register('business/creditotedetail',
+                CreditNoteDetailViewSet, 'creditotedetail')
+router.register('business/sale', SaleViewSet, 'sale')
+router.register('business/saledetail', SaleDetailViewSet, 'saledetail')
+router.register('cashregister/cashregister',
+                CashRegisterViewSet, 'cashregister')
 # router.register('cashregisteropening',
 #                 CashRegisterOpeningViewSet, 'cashregisteropening')
 # router.register('cashregistermovements',

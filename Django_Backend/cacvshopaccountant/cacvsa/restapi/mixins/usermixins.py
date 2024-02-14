@@ -9,6 +9,8 @@ class LoginPermissionsMixin():
         if not self.request.user.is_authenticated:
             print(self.request.user)
             return redirect(settings.LOGIN_URL)
+        print(self.request.user)
+        return redirect(settings.HOME_URL)
 
     # def test_func(self):
     #     # obtenemos todos los grupos del usuario logueado

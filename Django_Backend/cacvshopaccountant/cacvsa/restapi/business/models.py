@@ -27,7 +27,7 @@ class VoucherTypeModel(models.Model):
     voucher_type_name = models.CharField('Tipo de Comprobante', max_length=100)
     voucher_type_description = models.CharField(
         'Descripción', max_length=256, default='No existe descripción')
-    voucher_type_status = models.CharField('Estado', max_length=50)
+    voucher_type_status = models.BooleanField('Estado', default=False)
     voucher_type_status_description = models.CharField(
         'Descripción', max_length=256, blank=True, null=True)
     voucher_type_create_at = models.DateTimeField('Fecha de Creación')
@@ -54,7 +54,7 @@ class CreditNoteModel(models.Model):
         'Total', max_digits=11, decimal_places=0)
     fk_user_employee = models.ForeignKey(
         'users.UserEmployeeModel', on_delete=models.CASCADE, verbose_name='Usuario')
-    credit_note_status = models.CharField('Estado', max_length=50)
+    credit_note_status = models.BooleanField('Estado', default=False)
     credit_note_description = models.CharField(
         'Descripción', max_length=256, blank=True, null=True)
     credit_note_create_at = models.DateTimeField('Fecha de Creación')
@@ -106,7 +106,7 @@ class SaleModel(models.Model):
         'business.WayToPayModel', on_delete=models.CASCADE, verbose_name='Forma de Pago')
     fk_user_employee = models.ForeignKey(
         'users.UserEmployeeModel', on_delete=models.CASCADE, verbose_name='Usuario')
-    sale_status = models.CharField('Estado', max_length=50)
+    sale_status = models.BooleanField('Estado', default=False)
     sale_status_description = models.CharField(
         'Descripción', max_length=256, blank=True, null=True)
     sale_create_at = models.DateTimeField('Fecha de Creación')
