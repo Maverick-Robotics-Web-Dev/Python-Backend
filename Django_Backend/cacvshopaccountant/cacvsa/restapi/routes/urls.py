@@ -17,16 +17,16 @@ router.register('business/creditotedetail',
                 CreditNoteDetailViewSet, 'creditotedetail')
 router.register('business/sale', SaleViewSet, 'sale')
 router.register('business/saledetail', SaleDetailViewSet, 'saledetail')
-router.register('cashregister/cashregister',
+router.register('cashregisters/cashregister',
                 CashRegisterViewSet, 'cashregister')
-# router.register('cashregisteropening',
-#                 CashRegisterOpeningViewSet, 'cashregisteropening')
-# router.register('cashregistermovements',
-#                 CashRegisterMovementsViewSet, 'cashregistermovements')
-# router.register('cashregisterclosing',
-#                 CashRegisterClosingViewSet, 'cashregisterclosing')
-# router.register('client', ClientViewSet, 'client')
-# router.register('clientcheck', ClientCheckViewSet, 'clientcheck')
+router.register('cashregisters/cashregisteropening',
+                CashRegisterOpeningViewSet, 'cashregisteropening')
+router.register('cashregisters/cashregistermovements',
+                CashRegisterMovementsViewSet, 'cashregistermovements')
+router.register('cashregisters/cashregisterclosing',
+                CashRegisterClosingViewSet, 'cashregisterclosing')
+router.register('clients/client', ClientViewSet, 'client')
+router.register('clients/clientcheck', ClientCheckViewSet, 'clientcheck')
 # router.register('employee', EmployeeViewSet, 'employee')
 # router.register('owncheck', OwnCheckViewSet, 'owncheck')
 # router.register('category', CategoryViewSet, 'category')

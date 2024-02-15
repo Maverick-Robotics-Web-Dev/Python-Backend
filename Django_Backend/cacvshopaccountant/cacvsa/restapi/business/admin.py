@@ -4,4 +4,5 @@ from .models import *
 
 # Register your models here.
 
-admin.site.register([WayToPayModel])
+admin.site.register([WayToPayModel, VoucherTypeModel, CreditNoteModel,
+                    CreditNoteDetailModel, SaleModel, SaleDetailModel])

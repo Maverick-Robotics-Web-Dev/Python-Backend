@@ -24,7 +24,7 @@ class ClientModel(PersonModel):
         'Telefono', max_length=50, default='No posee numero telefonico')
     client_phone_number_four = models.CharField(
         'Telefono', max_length=50, default='No posee numero telefonico')
-    client_status = models.CharField('Estado', max_length=50)
+    client_status = models.BooleanField('Estado', default=False)
     client_status_description = models.CharField(
         'Descripción', max_length=256, blank=True, null=True)
     fk_user_employee = models.ForeignKey(
