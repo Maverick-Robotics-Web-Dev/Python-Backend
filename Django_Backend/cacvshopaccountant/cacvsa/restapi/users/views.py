@@ -1,8 +1,9 @@
+from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from rest_framework.status import *
-
+from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import *
 from .serializers import *
 
@@ -179,3 +180,16 @@ class UserClientViewSet(GenericViewSet):
             return Response(data, HTTP_200_OK)
         data = {'msg': 'ERROR'}
         return Response(data, HTTP_404_NOT_FOUND)
+
+
+class LoginViewSet(TokenObtainPairView):
+
+    serializer_class = CustomJwtToken
+
+    def post(self, request, *args, **kwargs):
+
+        user_employee_user_name = request.data.get(
+            'user_employee_user_name', '')
+        password = request.data.get('password', '')
+        user = authenticate(
+            user_employee_user_name=user_employee_user_name, password=password)

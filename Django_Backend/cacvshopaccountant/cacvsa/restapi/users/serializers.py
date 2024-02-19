@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .models import *
 
@@ -22,3 +23,6 @@ class UserClientSerializer(serializers.ModelSerializer):
         model = UserClientModel
         fields = '__all__'
         read_only_fields = ['user_client_id']
+
+class CustomJwtToken(TokenObtainPairSerializer):
+    pass

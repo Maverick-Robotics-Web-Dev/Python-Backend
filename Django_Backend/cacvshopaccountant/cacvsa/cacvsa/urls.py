@@ -16,11 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework.documentation import include_docs_urls
-from rest_framework.permissions import AllowAny
+
 
 urlpatterns = [
-    path('', include_docs_urls(title='DeboShop API'), name='home'),
+    # path('', include_docs_urls(title='CACVSA API'), name='home'),
+    path('', include('restapi.docs.urls'), name='docs'),
     path('admin/', admin.site.urls, name='admin'),
     path('api/v1/routes/', include('restapi.routes.urls'), name='routes')
 ]
