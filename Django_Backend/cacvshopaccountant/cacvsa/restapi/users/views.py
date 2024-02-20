@@ -10,6 +10,46 @@ from .models import *
 from .serializers import *
 
 
+class LoginViewSet(TokenObtainPairView):
+
+    serializer_class = CustomJwtTokenSerializer
+
+    def post(self, request):
+
+        username = request.data.get(
+            'user_employee_user_name', None)
+        password = request.data.get('password', None)
+        user = authenticate(username=username, password=password)
+
+        if user:
+            login_serializer = self.serializer_class(data=request.data)
+            if login_serializer.is_valid():
+                user_serializer = UserLoginSerializer(user).data
+                access = login_serializer.validated_data['access']
+                refresh = login_serializer.validated_data['refresh']
+                data = {'msg': 'OK', 'access': access,
+                        'refresh': refresh, 'user': user_serializer}
+                return Response(data, HTTP_200_OK)
+            data = {'error': 'ERROR'}
+            return Response(data, HTTP_400_BAD_REQUEST)
+        data = {'error': 'ERROR'}
+        return Response(data, HTTP_400_BAD_REQUEST)
+
+
+class LogoutViewSet(APIView):
+
+    def post(self, request, *args, **kwargs):
+        print(request.data.get('user', ''))
+        queryres = UserEmployeeModel.objects.filter(
+            id=request.data.get('user', ''))
+        if queryres.exists():
+            RefreshToken.for_user(queryres.first())
+            data = {'msg': 'OK'}
+            return Response(data, HTTP_200_OK)
+        data = {'error': 'ERROR'}
+        return Response(data, HTTP_400_BAD_REQUEST)
+
+
 class UserLevelViewSet(GenericViewSet):
 
     model = UserLevelModel
@@ -182,44 +222,3 @@ class UserClientViewSet(GenericViewSet):
             return Response(data, HTTP_200_OK)
         data = {'msg': 'ERROR'}
         return Response(data, HTTP_404_NOT_FOUND)
-
-
-class LoginViewSet(TokenObtainPairView):
-
-    serializer_class = CustomJwtToken
-
-    def post(self, request):
-
-        user_employee_user_name = request.data.get(
-            'user_employee_user_name', '')
-        password = request.data.get('password', '')
-        user = authenticate(
-            user_employee_user_name=user_employee_user_name, password=password)
-
-        if user:
-            login_serializer = self.serializer_class(data=request.data)
-            if login_serializer.is_valid():
-                access = login_serializer.validated_data.get('access')
-                refresh = login_serializer.validated_data.get('refresh')
-                # user_s = UserEmployeeSerializer(user).data
-                data = {'msg': 'OK', 'access': access,
-                        'refresh': refresh}
-                return Response(data, HTTP_200_OK)
-            data = {'error': 'ERROR'}
-            return Response(data, HTTP_400_BAD_REQUEST)
-        data = {'error': 'ERROR'}
-        return Response(data, HTTP_400_BAD_REQUEST)
-
-
-class LogoutViewSet(APIView):
-
-    def post(self, request, *args, **kwargs):
-        print(request.data.get('user', ''))
-        queryres = UserEmployeeModel.objects.filter(
-            id=request.data.get('user', ''))
-        if queryres.exists():
-            RefreshToken.for_user(queryres.first())
-            data = {'msg': 'OK'}
-            return Response(data, HTTP_200_OK)
-        data = {'error': 'ERROR'}
-        return Response(data, HTTP_400_BAD_REQUEST)

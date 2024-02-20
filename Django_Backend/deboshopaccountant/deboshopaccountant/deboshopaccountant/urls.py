@@ -23,6 +23,7 @@ from rest_framework.permissions import IsAuthenticated
 
 urlpatterns = [
     path('api/v1/', LoginView.as_view(), name='login'),
+    path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('', include_docs_urls(
         title='DeboShop API', permission_classes=[AllowAny]), name='home'),
     path('admin/', admin.site.urls),

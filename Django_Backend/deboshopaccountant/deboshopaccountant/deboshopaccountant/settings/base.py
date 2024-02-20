@@ -143,15 +143,15 @@ REST_FRAMEWORK = {
 
 }
 
-# REST_AUTH = {
-#     'USE_JWT': True,
-#     'JWT_AUTH_COOKIE': 'jwt-dsa-auth-token',
-#     'JWT_AUTH_REFRESH_COOKIE': 'jwt-dsa-refresh-token',
-# }
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'jwt-dsa-auth-token',
+    'JWT_AUTH_REFRESH_COOKIE': 'jwt-dsa-refresh-token',
+}
 
-REST_USE_JWT = True
-JWT_AUTH_COOKIE = 'jwt-dsa-auth-token'
-JWT_AUTH_REFRESH_COOKIE = 'jwt-dsa-refresh-token'
+# REST_USE_JWT = True
+# JWT_AUTH_COOKIE = 'jwt-dsa-auth-token'
+# JWT_AUTH_REFRESH_COOKIE = 'jwt-dsa-refresh-token'
 
 # To define custom serializers
 # REST_AUTH_SERIALIZERS = {
