@@ -24,5 +24,6 @@ class UserClientSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['user_client_id']
 
+
 class CustomJwtToken(TokenObtainPairSerializer):
     pass

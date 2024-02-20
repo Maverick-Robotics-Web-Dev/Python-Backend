@@ -153,3 +153,7 @@ REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated']
 
 }
+
+# SIMPLE_JWT = {
+#     'TOKEN_OBTAIN_SERIALIZER': 'restapi.users.serializers.CustomJwtToken'
+# }
