@@ -23,15 +23,3 @@ class UserClientSerializer(ModelSerializer):
         model = UserClientModel
         fields = '__all__'
         read_only_fields = ['user_client_id']
-
-
-class CustomJwtTokenSerializer(TokenObtainPairSerializer):
-    pass
-
-
-class UserLoginSerializer(ModelSerializer):
-
-    class Meta:
-        model = UserEmployeeModel
-        fields = ['id', 'user_employee_user_name']
-        read_only_fields = ['id', 'user_employee_user_name']

@@ -18,15 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 
 from restapi.users.views import *
-# from rest_framework_simplejwt.views import TokenObtainPairView
-
 
 urlpatterns = [
-    # path('', include_docs_urls(title='CACVSA API'), name='home'),
     path('', include('restapi.docs.urls'), name='docs'),
     path('admin/', admin.site.urls, name='admin'),
     path('api/v1/routes/', include('restapi.routes.urls'), name='routes'),
-    # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair')
-    path('login/', LoginViewSet.as_view()),
-    path('logout/', LogoutViewSet.as_view())
 ]
