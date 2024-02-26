@@ -1,8 +1,8 @@
 from rest_framework.serializers import *
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from users.models import *
-from support.methods import get_token_model
+from restapi.users.models import *
+from restapi.support.methods import get_token_model
 
 
 class CustomJwtTokenSerializer(TokenObtainPairSerializer):

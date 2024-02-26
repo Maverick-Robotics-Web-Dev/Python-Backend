@@ -64,6 +64,7 @@ LOCAL_APPS = [
 
 THIRD_APPS = [
     'rest_framework',
+    'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'coreapi',
     'drf_yasg'
@@ -149,6 +150,13 @@ CACV_KEY = {
     'JWT_SERIALIZER': 'restapi.auth.serializers.JWTSerializer',
     'JWT_SERIALIZER_WITH_EXPIRATION': 'restapi.auth.serializers.JWTSerializerWithExpiration',
     'JWT_TOKEN_OBTAIN_SERIALIZER': 'rest_framework_simplejwt.serializers.TokenObtainPairSerializer',
+    'JWT_AUTH_COOKIE': 'jwt-cacvsa-auth-token',
+    'JWT_AUTH_REFRESH_COOKIE': 'jwt-cacvsa-refresh-token',
+    'JWT_AUTH_REFRESH_COOKIE_PATH': '/',
+    'JWT_AUTH_SAMESITE': 'Lax',
+    'JWT_AUTH_COOKIE_DOMAIN': None,
+    'JWT_AUTH_SECURE': False,
+    'JWT_AUTH_HTTPONLY': True,
     'JWT_AUTH_RETURN_EXPIRATION': False,
 
     'TOKEN_SERIALIZER': 'restapi.auth.serializers.TokenSerializer',

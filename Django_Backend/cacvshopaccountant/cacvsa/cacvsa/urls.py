@@ -18,9 +18,11 @@ from django.contrib import admin
 from django.urls import path, include
 
 from restapi.users.views import *
+from restapi.auth.views import *
 
 urlpatterns = [
     path('', include('restapi.docs.urls'), name='docs'),
     path('admin/', admin.site.urls, name='admin'),
     path('api/v1/routes/', include('restapi.routes.urls'), name='routes'),
+    path('auth/login/', LoginView.as_view(), name='login')
 ]

@@ -1,5 +1,7 @@
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 
+from restapi.auth.views import *
 from restapi.business.views import *
 from restapi.cashregisters.views import *
 from restapi.clients.views import *
@@ -10,6 +12,8 @@ from restapi.suppliers.views import *
 from restapi.users.views import *
 
 router = DefaultRouter()
+
+# router.register('auth/login', LoginViewSet, 'login')
 router.register('business/waytopay', WayToPayViewSet, 'waytopay')
 router.register('business/vouchertype', VoucherTypeViewSet, 'vouchertype')
 router.register('business/creditnote', CreditNoteViewSet, 'creditnote')
@@ -39,3 +43,4 @@ router.register('users/userlevel', UserLevelViewSet, 'userlevel')
 router.register('users/useremployee', UserEmployeeViewSet, 'useremployee')
 router.register('users/userclient', UserClientViewSet, 'userclient')
 urlpatterns = router.urls
+# urlpatterns += [path('auth/login/', LoginView.as_view(), 'login')]
