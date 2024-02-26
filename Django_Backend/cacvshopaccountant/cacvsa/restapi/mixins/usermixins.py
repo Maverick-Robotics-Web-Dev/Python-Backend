@@ -1,4 +1,4 @@
-from django.conf import settings
+from cacvsa.settings.base import *
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect
 
@@ -8,9 +8,9 @@ class LoginPermissionsMixin():
     def get_login_url(self):
         if not self.request.user.is_authenticated:
             print(self.request.user)
-            return redirect(settings.LOGIN_URL)
+            return redirect(LOGIN_URL)
         print(self.request.user)
-        return redirect(settings.HOME_URL)
+        return redirect(HOME_URL)
 
     # def test_func(self):
     #     # obtenemos todos los grupos del usuario logueado

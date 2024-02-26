@@ -143,6 +143,20 @@ AUTH_USER_MODEL = 'users.UserEmployeeModel'
 LOGIN_URL = '/api/v1/routes/business/vouchertype'
 HOME_URL = '/'
 
+CACV_KEY = {
+    'USE_JWT': True,
+    'LOGIN_SERIALIZER': 'restapi.auth.serializers.LoginSerializer',
+    'JWT_SERIALIZER': 'restapi.auth.serializers.JWTSerializer',
+    'JWT_SERIALIZER_WITH_EXPIRATION': 'restapi.auth.serializers.JWTSerializerWithExpiration',
+    'JWT_TOKEN_OBTAIN_SERIALIZER': 'rest_framework_simplejwt.serializers.TokenObtainPairSerializer',
+    'JWT_AUTH_RETURN_EXPIRATION': False,
+
+    'TOKEN_SERIALIZER': 'restapi.auth.serializers.TokenSerializer',
+    'TOKEN_MODEL': 'rest_framework.authtoken.models.Token',
+    'TOKEN_CREATOR': 'restapi.support.default_create_token',
+    'SESSION_LOGIN': True,
+}
+
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 
