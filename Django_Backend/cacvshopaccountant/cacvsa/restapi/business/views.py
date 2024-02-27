@@ -3,7 +3,7 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from rest_framework.status import *
 
-
+from cacvsa.settings.base import *
 from .models import *
 from .serializers import *
 from restapi.mixins.usermixins import *
@@ -23,7 +23,6 @@ class WayToPayViewSet(GenericViewSet):
         return self.queryset
 
     def list(self, request):
-        # print(request)
         queryres = self.get_queryset()
         serializer = self.serializer_class(queryres, many=True)
         data = {'msg': 'OK', 'data': serializer.data}

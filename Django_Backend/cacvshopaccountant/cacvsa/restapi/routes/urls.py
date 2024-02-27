@@ -13,7 +13,7 @@ from restapi.users.views import *
 
 router = DefaultRouter()
 
-# router.register('auth/login', LoginViewSet, 'login')
+router.register('auth/login', LoginViewSet, 'login')
 router.register('business/waytopay', WayToPayViewSet, 'waytopay')
 router.register('business/vouchertype', VoucherTypeViewSet, 'vouchertype')
 router.register('business/creditnote', CreditNoteViewSet, 'creditnote')
@@ -43,4 +43,3 @@ router.register('users/userlevel', UserLevelViewSet, 'userlevel')
 router.register('users/useremployee', UserEmployeeViewSet, 'useremployee')
 router.register('users/userclient', UserClientViewSet, 'userclient')
 urlpatterns = router.urls
-# urlpatterns += [path('auth/login/', LoginView.as_view(), 'login')]

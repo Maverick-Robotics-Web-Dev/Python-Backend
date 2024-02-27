@@ -13,8 +13,8 @@ class LoginSerializer(ModelSerializer):
 
     class Meta:
         model = UserEmployeeModel
-        fields = ['id', 'user_employee_user_name']
-        read_only_fields = ['id', 'user_employee_user_name']
+        fields = ['id', 'user_employee_user_name', 'password']
+        read_only_fields = ['id']
 
 
 class JWTSerializer(Serializer):
@@ -30,10 +30,7 @@ class JWTSerializer(Serializer):
         Required to allow using custom USER_DETAILS_SERIALIZER in
         JWTSerializer. Defining it here to avoid circular imports
         """
-        if api_settings.LOGIN_SERIALIZER:
-            JWTUserDetailsSerializer = api_settings.LOGIN_SERIALIZER
-        else:
-            JWTUserDetailsSerializer = LoginSerializer()
+        JWTUserDetailsSerializer = LoginSerializer
 
         user_data = JWTUserDetailsSerializer(
             obj['user'], context=self.context).data

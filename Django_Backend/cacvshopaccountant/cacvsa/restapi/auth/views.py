@@ -6,104 +6,18 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.status import *
+from rest_framework.decorators import action
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-# from django.conf import settings
 from cacvsa.settings.base import *
 from restapi.support.methods import *
 from .serializers import *
 
 
-# class LoginViewSet(GenericViewSet):
-#     permission_classes = [AllowAny]
-#     serializer_class = CACV_KEY['LOGIN_SERIALIZER']
-
-#     user = None
-#     access_token = None
-#     refresh_token = None
-#     token = None
-
-#     @sensitive_post_parameters_m
-#     def dispatch(self, *args, **kwargs):
-#         return super().dispatch(*args, **kwargs)
-
-#     def process_login(self):
-#         django_login(self.request, self.user)
-
-#     def get_response_serializer(self):
-
-#         if CACV_KEY['USE_JWT']:
-#             if CACV_KEY['JWT_AUTH_RETURN_EXPIRATION']:
-#                 response_serializer = CACV_KEY['JWT_SERIALIZER_WITH_EXPIRATION']
-#             else:
-#                 response_serializer = CACV_KEY['JWT_SERIALIZER']
-#         else:
-#             response_serializer = CACV_KEY['TOKEN_SERIALIZER']
-#         return response_serializer
-
-#     def login(self):
-#         self.user = self.serializer.validated_data['user']
-#         token_model = get_token_model()
-
-#         if CACV_KEY['USE_JWT']:
-#             self.access_token, self.refresh_token = jwt_encode(self.user)
-#         elif token_model:
-#             self.token = CACV_KEY['TOKEN_CREATOR'](
-#                 token_model, self.user, self.serializer)
-
-#         if CACV_KEY['SESSION_LOGIN']:
-#             self.process_login()
-
-#     def get_response(self):
-#         serializer_class = self.get_response_serializer()
-
-#         if CACV_KEY['USE_JWT']:
-#             access_token_expiration = (
-#                 timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME)
-#             refresh_token_expiration = (
-#                 timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME)
-#             return_expiration_times = CACV_KEY['JWT_AUTH_RETURN_EXPIRATION']
-#             auth_httponly = CACV_KEY['JWT_AUTH_HTTPONLY']
-
-#             data = {
-#                 'user': self.user,
-#                 'access': self.access_token,
-#                 'refresh': self.refresh_token
-#             }
-
-#             if return_expiration_times:
-#                 data['access_expiration'] = access_token_expiration
-#                 data['refresh_expiration'] = refresh_token_expiration
-
-#             serializer = serializer_class(
-#                 instance=data,
-#                 context=self.get_serializer_context(),
-#             )
-#         elif self.token:
-#             serializer = serializer_class(
-#                 instance=self.token,
-#                 context=self.get_serializer_context(),
-#             )
-#         else:
-#             return Response(status=HTTP_204_NO_CONTENT)
-
-#         response = Response(serializer.data, status=HTTP_200_OK)
-#         if CACV_KEY.USE_JWT:
-#             set_jwt_cookies(response, self.access_token, self.refresh_token)
-#         return response
-
-#     def post(self, request, *args, **kwargs):
-#         self.request = request
-#         self.serializer = self.get_serializer(data=self.request.data)
-#         self.serializer.is_valid(raise_exception=True)
-
-#         self.login()
-#         return self.get_response()
-
-class LoginView(GenericAPIView):
+class LoginViewSet(GenericViewSet):
     permission_classes = [AllowAny]
-    serializer_class = CACV_KEY['LOGIN_SERIALIZER']
+    serializer_class = LoginSerializer
 
     user = None
     access_token = None
@@ -121,21 +35,22 @@ class LoginView(GenericAPIView):
 
         if CACV_KEY['USE_JWT']:
             if CACV_KEY['JWT_AUTH_RETURN_EXPIRATION']:
-                response_serializer = CACV_KEY['JWT_SERIALIZER_WITH_EXPIRATION']
+                response_serializer = JWTSerializerWithExpiration
             else:
-                response_serializer = CACV_KEY['JWT_SERIALIZER']
+                response_serializer = JWTSerializer
         else:
-            response_serializer = CACV_KEY['TOKEN_SERIALIZER']
+            response_serializer = TokenSerializer
         return response_serializer
 
-    def login(self):
-        self.user = self.serializer.validated_data['user']
+    def login(self, user):
+        print(self.serializer.validated_data)
+        self.user = user
         token_model = get_token_model()
 
         if CACV_KEY['USE_JWT']:
             self.access_token, self.refresh_token = jwt_encode(self.user)
         elif token_model:
-            self.token = CACV_KEY['TOKEN_CREATOR'](
+            self.token = default_create_token(
                 token_model, self.user, self.serializer)
 
         if CACV_KEY['SESSION_LOGIN']:
@@ -155,7 +70,9 @@ class LoginView(GenericAPIView):
             data = {
                 'user': self.user,
                 'access': self.access_token,
-                'refresh': self.refresh_token
+                'refresh': self.refresh_token,
+                'OK': 'OK',
+                'msg': 'Usuario o Contraseña Incorrectos'
             }
 
             if return_expiration_times:
@@ -175,24 +92,42 @@ class LoginView(GenericAPIView):
             return Response(status=HTTP_204_NO_CONTENT)
 
         response = Response(serializer.data, status=HTTP_200_OK)
-        if CACV_KEY.USE_JWT:
+        if CACV_KEY['USE_JWT']:
             set_jwt_cookies(response, self.access_token, self.refresh_token)
         return response
 
-    def post(self, request, *args, **kwargs):
-        self.request = request
-        self.serializer = self.get_serializer(data=self.request.data)
-        self.serializer.is_valid(raise_exception=True)
+    # @action(detail=False, methods=['post'], url_path='login')
+    def create(self, request):
 
-        self.login()
+        username = request.data.get(
+            'user_employee_user_name', None)
+        password = request.data.get('password', None)
+
+        user = authenticate(username=username, password=password)
+
+        if user:
+            self.serializer = self.get_serializer(data=self.request.data)
+            self.serializer.is_valid(raise_exception=True)
+            self.login(user)
+
+        else:
+
+            data = {
+                'error': 'ERROR',
+                'msg': 'Usuario o Contraseña Incorrectos'
+            }
+
+            return Response(data, HTTP_400_BAD_REQUEST)
+
         return self.get_response()
 
+# class LoginViewSet(GenericViewSet):
 
-# class LoginViewSet(TokenObtainPairView):
-
+#     permission_classes = [AllowAny]
 #     serializer_class = CustomJwtTokenSerializer
 
-#     def post(self, request):
+#     @sensitive_post_parameters_m
+#     def create(self, request):
 
 #         username = request.data.get(
 #             'user_employee_user_name', None)

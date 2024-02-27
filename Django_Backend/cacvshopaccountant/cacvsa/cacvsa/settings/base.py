@@ -143,6 +143,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.UserEmployeeModel'
 LOGIN_URL = '/api/v1/routes/business/vouchertype'
 HOME_URL = '/'
+# JWT_TOKEN_OBTAIN_SERIALIZER = 'rest_framework_simplejwt.serializers.TokenObtainPairSerializer',
 
 CACV_KEY = {
     'USE_JWT': True,
