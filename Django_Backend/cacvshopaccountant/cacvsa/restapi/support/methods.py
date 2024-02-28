@@ -20,39 +20,39 @@ sensitive_post_parameters_m = method_decorator(
 )
 
 
-def get_token_model():
-    token_model = Token
-    session_login = CACV_KEY['SESSION_LOGIN']
-    use_jwt = CACV_KEY['USE_JWT']
+# def get_token_model():
+#     token_model = Token
+#     session_login = CACV_KEY['SESSION_LOGIN']
+#     use_jwt = CACV_KEY['USE_JWT']
 
-    if not any((session_login, token_model, use_jwt)):
-        raise ImproperlyConfigured(
-            'No authentication is configured for rest auth. You must enable one or '
-            'more of `TOKEN_MODEL`, `USE_JWT` or `SESSION_LOGIN`'
-        )
-    if (
-        token_model == DefaultTokenModel
-        and 'rest_framework.authtoken' not in INSTALLED_APPS
-    ):
-        raise ImproperlyConfigured(
-            'You must include `rest_framework.authtoken` in INSTALLED_APPS '
-            'or set TOKEN_MODEL to None'
-        )
-    return token_model
-
-
-def jwt_encode(user):
-
-    JWTTokenClaimsSerializer = TokenObtainPairSerializer
-
-    refresh = JWTTokenClaimsSerializer.get_token(user)
-    print(refresh)
-    return refresh.access_token, refresh
+#     if not any((session_login, token_model, use_jwt)):
+#         raise ImproperlyConfigured(
+#             'No authentication is configured for rest auth. You must enable one or '
+#             'more of `TOKEN_MODEL`, `USE_JWT` or `SESSION_LOGIN`'
+#         )
+#     if (
+#         token_model == DefaultTokenModel
+#         and 'rest_framework.authtoken' not in INSTALLED_APPS
+#     ):
+#         raise ImproperlyConfigured(
+#             'You must include `rest_framework.authtoken` in INSTALLED_APPS '
+#             'or set TOKEN_MODEL to None'
+#         )
+#     return token_model
 
 
-def default_create_token(token_model, user, serializer):
-    token, _ = token_model.objects.get_or_create(user=user)
-    return token
+# def jwt_encode(user):
+
+#     JWTTokenClaimsSerializer = TokenObtainPairSerializer
+
+#     refresh = JWTTokenClaimsSerializer.get_token(user)
+#     print(refresh)
+#     return refresh.access_token, refresh
+
+
+# def default_create_token(token_model, user, serializer):
+#     token, _ = token_model.objects.get_or_create(user=user)
+#     return token
 
 
 def set_jwt_access_cookie(response, access_token):
