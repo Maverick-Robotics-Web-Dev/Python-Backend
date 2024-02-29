@@ -13,7 +13,7 @@ class LoginSerializer(ModelSerializer):
 
     class Meta:
         model = UserEmployeeModel
-        fields = ['id', 'user_employee_user_name']
+        fields = ['id', 'user_employee_user_name', 'user_employee_login']
         read_only_fields = ['id']
 
 

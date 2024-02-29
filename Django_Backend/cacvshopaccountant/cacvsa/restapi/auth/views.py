@@ -17,6 +17,7 @@ from .serializers import *
 
 class LoginViewSet(GenericViewSet):
 
+    model = UserEmployeeModel
     permission_classes = [AllowAny]
     serializer_class = CustomJwtTokenSerializer
 
@@ -32,7 +33,11 @@ class LoginViewSet(GenericViewSet):
             login_serializer = self.serializer_class(data=request.data)
 
             if login_serializer.is_valid():
-                user_serializer = LoginSerializer(user).data
+                user_serializer = LoginSerializer(
+                    user, data={'user_employee_login': True}, partial=True)
+                if user_serializer.is_valid():
+                    user_serializer.save()
+
                 access_token = login_serializer.validated_data['access']
                 refresh_token = login_serializer.validated_data['refresh']
 
@@ -52,20 +57,20 @@ class LoginViewSet(GenericViewSet):
                         'refresh': refresh_token,
                         'access_expiration': access_token_expiration,
                         'refresh_expiration': refresh_token_expiration,
-                        'user': user_serializer
+                        'user': user_serializer.data,
                     }
 
                 data = {
                     'msg': 'OK',
                     'access': access_token,
                     'refresh': refresh_token,
-                    'user': user_serializer
+                    'user': user_serializer.data
                 }
 
-                serializer = self.serializer_class(
-                    instance=data, context=self.get_serializer_context())
+                # serializer = self.serializer_class(
+                #     instance=data, context=self.get_serializer_context())
 
-                response = Response(serializer.instance, HTTP_200_OK)
+                response = Response(data, HTTP_200_OK)
 
                 if CACV_KEY['USE_JWT']:
                     set_jwt_cookies(response, access_token, refresh_token)
