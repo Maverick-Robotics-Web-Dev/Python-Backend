@@ -104,3 +104,18 @@ def set_jwt_refresh_cookie(response, refresh_token):
 def set_jwt_cookies(response, access_token, refresh_token):
     set_jwt_access_cookie(response, access_token)
     set_jwt_refresh_cookie(response, refresh_token)
+
+
+def unset_jwt_cookies(response):
+    cookie_name = CACV_KEY['JWT_AUTH_COOKIE']
+    refresh_cookie_name = CACV_KEY['JWT_AUTH_REFRESH_COOKIE']
+    refresh_cookie_path = CACV_KEY['JWT_AUTH_REFRESH_COOKIE_PATH']
+    cookie_samesite = CACV_KEY['JWT_AUTH_SAMESITE']
+    cookie_domain = CACV_KEY['JWT_AUTH_COOKIE_DOMAIN']
+
+    if cookie_name:
+        response.delete_cookie(
+            cookie_name, samesite=cookie_samesite, domain=cookie_domain)
+    if refresh_cookie_name:
+        response.delete_cookie(refresh_cookie_name, path=refresh_cookie_path,
+                               samesite=cookie_samesite, domain=cookie_domain)

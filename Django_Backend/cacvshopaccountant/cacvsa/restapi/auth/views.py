@@ -1,13 +1,13 @@
-from django.contrib.auth import login as django_login
-from django.contrib.auth import authenticate
+from django.conf import settings
+from django.contrib.auth import authenticate, login as django_login, logout as django_logout
+from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.settings import api_settings as jwt_settings
-from rest_framework.viewsets import GenericViewSet
-from rest_framework.generics import GenericAPIView
+from rest_framework.viewsets import GenericViewSet, ViewSet
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.status import *
 from rest_framework.decorators import action
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from cacvsa.settings.base import *
@@ -90,18 +90,79 @@ class LoginViewSet(GenericViewSet):
         return Response(response, HTTP_400_BAD_REQUEST)
 
 
-# class LogoutViewSet(APIView):
+class LogoutViewSet(ViewSet):
 
-#     def post(self, request, *args, **kwargs):
-#         print(request.data.get('user', ''))
-#         queryres = UserEmployeeModel.objects.filter(
-#             id=request.data.get('user', ''))
-#         if queryres.exists():
-#             RefreshToken.for_user(queryres.first())
-#             data = {'msg': 'OK'}
-#             return Response(data, HTTP_200_OK)
-#         data = {'error': 'ERROR'}
-#         return Response(data, HTTP_400_BAD_REQUEST)
+    model = UserEmployeeModel
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        if getattr(settings, 'ACCOUNT_LOGOUT_ON_GET', False):
+            response = self.logout(request)
+            print(f'Res: {response}')
+        else:
+            response = self.http_method_not_allowed(request, *args, **kwargs)
+            print(f'Res: {response}')
+
+        return self.finalize_response(request, response, *args, **kwargs)
+
+    def create(self, request):
+        return self.logout(request)
+
+    def logout(self, request):
+
+        # print(f'res: {request.user.id}')
+
+        if CACV_KEY['SESSION_LOGIN']:
+            django_logout(request)
+
+        # user_serializer = LoginSerializer(user, data={'user_employee_login': True}, partial=True)
+        # if user_serializer.is_valid():
+        #     user_serializer.save()
+
+        response = Response(
+            {'msg': _('Successfully logged out.')},
+            HTTP_200_OK,
+        )
+
+        if CACV_KEY['USE_JWT']:
+
+            cookie_name = CACV_KEY['JWT_AUTH_COOKIE']
+            unset_jwt_cookies(response)
+            tok = RefreshToken(request.data['refresh'])
+            print(tok)
+
+            if 'rest_framework_simplejwt.token_blacklist' in settings.INSTALLED_APPS:
+                # add refresh token to blacklist
+                try:
+                    token = RefreshToken(request.data['refresh'])
+                    token.blacklist()
+                except KeyError:
+                    response.data = {'msg': _(
+                        'Refresh token was not included in request data.')}
+                    response.status_code = HTTP_401_UNAUTHORIZED
+                except (TokenError, AttributeError, TypeError) as error:
+                    if hasattr(error, 'args'):
+                        if 'Token is blacklisted' in error.args or 'Token is invalid or expired' in error.args:
+                            response.data = {'msg': _(error.args[0])}
+                            response.status_code = HTTP_401_UNAUTHORIZED
+                        else:
+                            response.data = {'msg': _(
+                                'An error has occurred.')}
+                            response.status_code = HTTP_500_INTERNAL_SERVER_ERROR
+
+                    else:
+                        response.data = {'msg': _('An error has occurred.')}
+                        response.status_code = HTTP_500_INTERNAL_SERVER_ERROR
+
+            elif not cookie_name:
+
+                message = _(
+                    'Neither cookies or blacklist are enabled, so the token '
+                    'has not been deleted server side. Please make sure the token is deleted client side.',
+                )
+                response.data = {'msg': message}
+                response.status_code = HTTP_200_OK
+        return response
 
 # class LoginViewSet(GenericViewSet):
 
@@ -127,5 +188,18 @@ class LoginViewSet(GenericViewSet):
 #                 return Response(data, HTTP_200_OK)
 #             data = {'error': 'ERROR'}
 #             return Response(data, HTTP_400_BAD_REQUEST)
+#         data = {'error': 'ERROR'}
+#         return Response(data, HTTP_400_BAD_REQUEST)
+
+# class LogoutViewSet(APIView):
+
+#     def post(self, request, *args, **kwargs):
+#         print(request.data.get('user', ''))
+#         queryres = UserEmployeeModel.objects.filter(
+#             id=request.data.get('user', ''))
+#         if queryres.exists():
+#             RefreshToken.for_user(queryres.first())
+#             data = {'msg': 'OK'}
+#             return Response(data, HTTP_200_OK)
 #         data = {'error': 'ERROR'}
 #         return Response(data, HTTP_400_BAD_REQUEST)

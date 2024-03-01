@@ -14,6 +14,7 @@ from restapi.users.views import *
 router = DefaultRouter()
 
 router.register('auth/login', LoginViewSet, 'login')
+router.register('auth/logout', LogoutViewSet, 'logout')
 router.register('business/waytopay', WayToPayViewSet, 'waytopay')
 router.register('business/vouchertype', VoucherTypeViewSet, 'vouchertype')
 router.register('business/creditnote', CreditNoteViewSet, 'creditnote')
