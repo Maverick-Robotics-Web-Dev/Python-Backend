@@ -98,26 +98,20 @@ class LogoutViewSet(ViewSet):
     def get(self, request, *args, **kwargs):
         if getattr(settings, 'ACCOUNT_LOGOUT_ON_GET', False):
             response = self.logout(request)
-            print(f'Res: {response}')
+            
         else:
             response = self.http_method_not_allowed(request, *args, **kwargs)
-            print(f'Res: {response}')
 
         return self.finalize_response(request, response, *args, **kwargs)
 
-    def create(self, request):
-        return self.logout(request)
-
     def logout(self, request):
 
-        # print(f'res: {request.user.id}')
-
         if CACV_KEY['SESSION_LOGIN']:
+            user_serializer = LoginSerializer(
+                request.user, data={'user_employee_login': False}, partial=True)
+            if user_serializer.is_valid():
+                user_serializer.save()
             django_logout(request)
-
-        # user_serializer = LoginSerializer(user, data={'user_employee_login': True}, partial=True)
-        # if user_serializer.is_valid():
-        #     user_serializer.save()
 
         response = Response(
             {'msg': _('Successfully logged out.')},
@@ -128,8 +122,6 @@ class LogoutViewSet(ViewSet):
 
             cookie_name = CACV_KEY['JWT_AUTH_COOKIE']
             unset_jwt_cookies(response)
-            tok = RefreshToken(request.data['refresh'])
-            print(tok)
 
             if 'rest_framework_simplejwt.token_blacklist' in settings.INSTALLED_APPS:
                 # add refresh token to blacklist
@@ -163,6 +155,9 @@ class LogoutViewSet(ViewSet):
                 response.data = {'msg': message}
                 response.status_code = HTTP_200_OK
         return response
+
+    def create(self, request):
+        return self.logout(request)
 
 # class LoginViewSet(GenericViewSet):
 
