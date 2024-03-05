@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.hashers import make_password
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from rest_framework.status import *
@@ -20,21 +21,18 @@ class UserLevelViewSet(GenericViewSet):
         return self.queryset
 
     def list(self, request):
-        # print(request)
         queryres = self.get_queryset()
         serializer = self.serializer_class(queryres, many=True)
         data = {'msg': 'OK', 'data': serializer.data}
         return Response(data, HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
-        # print(pk)
         queryres = self.get_object(pk)
         serializer = self.serializer_class(queryres)
         data = {'msg': 'OK', 'data': serializer.data}
         return Response(data, HTTP_200_OK)
 
     def create(self, request):
-        # print(request.data)
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -78,21 +76,21 @@ class UserEmployeeViewSet(GenericViewSet):
         return self.queryset
 
     def list(self, request):
-        # print(request)
         queryres = self.get_queryset()
         serializer = self.serializer_class(queryres, many=True)
         data = {'msg': 'OK', 'data': serializer.data}
         return Response(data, HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
-        # print(pk)
         queryres = self.get_object(pk)
         serializer = self.serializer_class(queryres)
         data = {'msg': 'OK', 'data': serializer.data}
         return Response(data, HTTP_200_OK)
 
     def create(self, request):
-        # print(request.data)
+        request.data["password"] = make_password(request.data["password"])
+        request.data["user_employee_status"] = True
+        request.data["is_active"] = True
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -131,26 +129,29 @@ class UserClientViewSet(GenericViewSet):
         return get_object_or_404(self.model, pk=pk)
 
     def get_queryset(self):
+
         if self.queryset is None:
             return self.model.objects.filter(user_client_status=True)
         return self.queryset
 
     def list(self, request):
-        # print(request)
+
         queryres = self.get_queryset()
         serializer = self.serializer_class(queryres, many=True)
         data = {'msg': 'OK', 'data': serializer.data}
         return Response(data, HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
-        # print(pk)
+
         queryres = self.get_object(pk)
         serializer = self.serializer_class(queryres)
         data = {'msg': 'OK', 'data': serializer.data}
         return Response(data, HTTP_200_OK)
 
     def create(self, request):
-        # print(request.data)
+
+        request.data["password"] = make_password(request.data["password"])
+        request.data["user_client_status"] = True
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()

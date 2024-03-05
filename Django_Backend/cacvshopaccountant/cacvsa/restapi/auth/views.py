@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import authenticate, login as django_login, logout as django_logout
+from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.settings import api_settings as jwt_settings
 from rest_framework.viewsets import GenericViewSet, ViewSet
@@ -28,77 +29,83 @@ class LoginViewSet(GenericViewSet):
             'user_employee_user_name', None)
         password = request.data.get('password', None)
         user = authenticate(username=username, password=password)
+        print(user)
 
         if user:
-            login_serializer = self.serializer_class(data=request.data)
 
-            if login_serializer.is_valid():
-                user_serializer = LoginSerializer(
-                    user, data={'user_employee_login': True}, partial=True)
-                if user_serializer.is_valid():
-                    user_serializer.save()
+            if user.user_employee_login and user.is_authenticated:
+                return redirect(settings.HOME_URL)
 
-                access_token = login_serializer.validated_data['access']
-                refresh_token = login_serializer.validated_data['refresh']
+            else:
 
-                if CACV_KEY['SESSION_LOGIN']:
-                    django_login(request, user)
+                login_serializer = self.serializer_class(data=request.data)
+                if login_serializer.is_valid():
+                    user_serializer = LoginSerializer(
+                        user, data={'user_employee_login': True}, partial=True)
+                    if user_serializer.is_valid():
+                        user_serializer.save()
 
-                access_token_expiration = (
-                    timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME)
-                refresh_token_expiration = (
-                    timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME)
-                return_expiration_times = CACV_KEY['JWT_AUTH_RETURN_EXPIRATION']
+                    access_token = login_serializer.validated_data['access']
+                    refresh_token = login_serializer.validated_data['refresh']
 
-                if return_expiration_times:
-                    data = {
-                        'msg': 'OK',
-                        'access': access_token,
-                        'refresh': refresh_token,
-                        'access_expiration': access_token_expiration,
-                        'refresh_expiration': refresh_token_expiration,
-                        'user': user_serializer.data,
+                    if CACV_KEY['SESSION_LOGIN']:
+                        django_login(request, user)
+
+                    access_token_expiration = (
+                        timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME)
+                    refresh_token_expiration = (
+                        timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME)
+                    return_expiration_times = CACV_KEY['JWT_AUTH_RETURN_EXPIRATION']
+
+                    if return_expiration_times:
+                        data = {
+                            'msg': 'OK',
+                            'access-token': access_token,
+                            'refresh-token': refresh_token,
+                            'access-expiration': access_token_expiration,
+                            'refresh-expiration': refresh_token_expiration,
+                            'user': user_serializer.data,
+                        }
+                    else:
+                        data = {
+                            'msg': 'OK',
+                            'access-token': access_token,
+                            'refresh-token': refresh_token,
+                            'user': user_serializer.data
+                        }
+
+                    # serializer = self.serializer_class(
+                    #     instance=data, context=self.get_serializer_context())
+
+                    response = Response(data, HTTP_200_OK)
+
+                    if CACV_KEY['USE_JWT']:
+                        set_jwt_cookies(response, access_token, refresh_token)
+
+                    return response
+                else:
+                    response = {
+                        'error': 'ERROR',
+                        'msg': 'No existe el Usuario con esas credenciales'
                     }
+                    return Response(response, HTTP_400_BAD_REQUEST)
 
-                data = {
-                    'msg': 'OK',
-                    'access': access_token,
-                    'refresh': refresh_token,
-                    'user': user_serializer.data
-                }
-
-                # serializer = self.serializer_class(
-                #     instance=data, context=self.get_serializer_context())
-
-                response = Response(data, HTTP_200_OK)
-
-                if CACV_KEY['USE_JWT']:
-                    set_jwt_cookies(response, access_token, refresh_token)
-
-                return response
-
+        else:
             response = {
                 'error': 'ERROR',
                 'msg': 'Usuario o Contraseña Incorrectos'
             }
-            return Response(response, HTTP_400_BAD_REQUEST)
-
-        response = {
-            'error': 'ERROR',
-            'msg': 'Usuario o Contraseña Incorrectos'
-        }
         return Response(response, HTTP_400_BAD_REQUEST)
 
 
 class LogoutViewSet(ViewSet):
 
     model = UserEmployeeModel
-    permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
         if getattr(settings, 'ACCOUNT_LOGOUT_ON_GET', False):
             response = self.logout(request)
-            
+
         else:
             response = self.http_method_not_allowed(request, *args, **kwargs)
 
@@ -126,7 +133,8 @@ class LogoutViewSet(ViewSet):
             if 'rest_framework_simplejwt.token_blacklist' in settings.INSTALLED_APPS:
                 # add refresh token to blacklist
                 try:
-                    token = RefreshToken(request.data['refresh'])
+                    black_token = request.data['refresh-token']
+                    token = RefreshToken(black_token)
                     token.blacklist()
                 except KeyError:
                     response.data = {'msg': _(

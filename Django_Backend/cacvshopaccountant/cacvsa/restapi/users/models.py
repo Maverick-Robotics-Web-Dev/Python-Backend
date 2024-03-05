@@ -30,8 +30,8 @@ class UserEmployeeModel(AbstractBaseUser, PermissionsMixin):
         'users.UserLevelModel', on_delete=models.CASCADE, verbose_name='Nivel', blank=True, null=True)
     user_employee_login = models.BooleanField(
         'Logueado', blank=True, null=True, default=False)
-    user_employee_status = models.CharField(
-        'Estado', max_length=50, blank=True, null=True)
+    user_employee_status = models.BooleanField(
+        'Estado', max_length=50, blank=True, null=True, default=False)
     user_employee_status_description = models.CharField(
         'Descripción', max_length=256, default='Ninguna')
     user_employee_create_at = models.DateTimeField(

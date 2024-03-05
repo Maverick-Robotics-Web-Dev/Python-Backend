@@ -1,4 +1,5 @@
-from rest_framework.serializers import *
+from rest_framework.serializers import ModelSerializer, Serializer
+from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from restapi.users.models import *
@@ -16,6 +17,9 @@ class LoginSerializer(ModelSerializer):
         fields = ['id', 'user_employee_user_name', 'user_employee_login']
         read_only_fields = ['id']
 
+
+class LogoutSerializer(Serializer):
+    refresh_token = serializers.CharField()
 
 # class JWTSerializer(Serializer):
 #     """
