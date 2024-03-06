@@ -18,7 +18,6 @@ from .serializers import *
 
 class LoginViewSet(GenericViewSet):
 
-    model = UserEmployeeModel
     permission_classes = [AllowAny]
     serializer_class = CustomJwtTokenSerializer
 
@@ -28,8 +27,20 @@ class LoginViewSet(GenericViewSet):
         username = request.data.get(
             'user_employee_user_name', None)
         password = request.data.get('password', None)
+
+        status = self.model.objects.filter(
+            user_employee_user_name=username).first().user_employee_status
+        active = self.model.objects.filter(
+            user_employee_user_name=username).first().is_active
+
+        if not status and not active:
+            response = {
+                'error': 'ERROR',
+                'msg': 'No existe el Usuario con esas credenciales'
+            }
+            return Response(response, HTTP_204_NO_CONTENT)
+
         user = authenticate(username=username, password=password)
-        print(user)
 
         if user:
 
@@ -57,16 +68,18 @@ class LoginViewSet(GenericViewSet):
 
                 if return_expiration_times:
                     data = {
-                        'msg': 'OK',
+                        'ok': 'OK',
+                        'msg': 'Iniciado sesión exitosamente',
                         'access-token': access_token,
                         'refresh-token': refresh_token,
                         'access-expiration': access_token_expiration,
                         'refresh-expiration': refresh_token_expiration,
                         'user': user_serializer.data,
                     }
-                
+
                 data = {
-                    'msg': 'OK',
+                    'ok': 'OK',
+                    'msg': 'Iniciado sesión exitosamente',
                     'access-token': access_token,
                     'refresh-token': refresh_token,
                     'user': user_serializer.data
@@ -90,8 +103,6 @@ class LoginViewSet(GenericViewSet):
 
 class LogoutViewSet(ViewSet):
 
-    model = UserEmployeeModel
-
     def get(self, request, *args, **kwargs):
         if getattr(settings, 'ACCOUNT_LOGOUT_ON_GET', False):
             response = self.logout(request)
@@ -111,7 +122,7 @@ class LogoutViewSet(ViewSet):
             django_logout(request)
 
         response = Response(
-            {'msg': _('Successfully logged out.')},
+            {'msg': _('Cerró sesión exitosamente')},
             HTTP_200_OK,
         )
 
@@ -128,7 +139,7 @@ class LogoutViewSet(ViewSet):
                     token.blacklist()
                 except KeyError:
                     response.data = {'msg': _(
-                        'Refresh token was not included in request data.')}
+                        'El token de actualización no se incluyó en los datos de la solicitud.')}
                     response.status_code = HTTP_401_UNAUTHORIZED
                 except (TokenError, AttributeError, TypeError) as error:
                     if hasattr(error, 'args'):
@@ -137,18 +148,18 @@ class LogoutViewSet(ViewSet):
                             response.status_code = HTTP_401_UNAUTHORIZED
                         else:
                             response.data = {'msg': _(
-                                'An error has occurred.')}
+                                'Se ha producido un error.')}
                             response.status_code = HTTP_500_INTERNAL_SERVER_ERROR
 
                     else:
-                        response.data = {'msg': _('An error has occurred.')}
+                        response.data = {'msg': _('Se ha producido un error.')}
                         response.status_code = HTTP_500_INTERNAL_SERVER_ERROR
 
             elif not cookie_name:
 
                 message = _(
-                    'Neither cookies or blacklist are enabled, so the token '
-                    'has not been deleted server side. Please make sure the token is deleted client side.',
+                    'Ni las cookies ni la lista negra están habilitadas, por lo que el token '
+                    'no se ha eliminado del lado del servidor. Asegúrese de que el token se elimine del lado del cliente.',
                 )
                 response.data = {'msg': message}
                 response.status_code = HTTP_200_OK
@@ -156,43 +167,3 @@ class LogoutViewSet(ViewSet):
 
     def create(self, request):
         return self.logout(request)
-
-# class LoginViewSet(GenericViewSet):
-
-#     permission_classes = [AllowAny]
-#     serializer_class = CustomJwtTokenSerializer
-
-#     @sensitive_post_parameters_m
-#     def create(self, request):
-
-#         username = request.data.get(
-#             'user_employee_user_name', None)
-#         password = request.data.get('password', None)
-#         user = authenticate(username=username, password=password)
-
-#         if user:
-#             login_serializer = self.serializer_class(data=request.data)
-#             if login_serializer.is_valid():
-#                 user_serializer = LoginSerializer(user).data
-#                 access = login_serializer.validated_data['access']
-#                 refresh = login_serializer.validated_data['refresh']
-#                 data = {'msg': 'OK', 'access': access,
-#                         'refresh': refresh, 'user': user_serializer}
-#                 return Response(data, HTTP_200_OK)
-#             data = {'error': 'ERROR'}
-#             return Response(data, HTTP_400_BAD_REQUEST)
-#         data = {'error': 'ERROR'}
-#         return Response(data, HTTP_400_BAD_REQUEST)
-
-# class LogoutViewSet(APIView):
-
-#     def post(self, request, *args, **kwargs):
-#         print(request.data.get('user', ''))
-#         queryres = UserEmployeeModel.objects.filter(
-#             id=request.data.get('user', ''))
-#         if queryres.exists():
-#             RefreshToken.for_user(queryres.first())
-#             data = {'msg': 'OK'}
-#             return Response(data, HTTP_200_OK)
-#         data = {'error': 'ERROR'}
-#         return Response(data, HTTP_400_BAD_REQUEST)

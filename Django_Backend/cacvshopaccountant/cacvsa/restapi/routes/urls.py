@@ -1,4 +1,5 @@
 from django.urls import path
+from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 from rest_framework.routers import DefaultRouter
 
 from restapi.auth.views import *
@@ -44,3 +45,8 @@ router.register('users/userlevel', UserLevelViewSet, 'userlevel')
 router.register('users/useremployee', UserEmployeeViewSet, 'useremployee')
 router.register('users/userclient', UserClientViewSet, 'userclient')
 urlpatterns = router.urls
+
+urlpatterns += [
+    path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('auth/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+]

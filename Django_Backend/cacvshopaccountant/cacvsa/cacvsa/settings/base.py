@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from django.core.exceptions import ImproperlyConfigured
+from datetime import timedelta
 import json
 from unipath import Path
 
@@ -178,6 +179,10 @@ REST_FRAMEWORK = {
 
 }
 
-# SIMPLE_JWT = {
-#     'TOKEN_OBTAIN_SERIALIZER': 'restapi.users.serializers.CustomJwtToken'
-# }
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+    # 'TOKEN_OBTAIN_SERIALIZER': 'restapi.users.serializers.CustomJwtToken'
+}

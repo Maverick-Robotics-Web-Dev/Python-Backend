@@ -20,7 +20,6 @@ from rest_framework.documentation import include_docs_urls
 from rest_framework.permissions import AllowAny
 from dj_rest_auth.views import LoginView
 from rest_framework.permissions import IsAuthenticated
-from dj_rest_auth.urls
 
 urlpatterns = [
     path('api/v1/', LoginView.as_view(), name='login'),
