@@ -36,65 +36,55 @@ class LoginViewSet(GenericViewSet):
             if user.user_employee_login and user.is_authenticated:
                 return redirect(settings.HOME_URL)
 
-            else:
+            login_serializer = self.serializer_class(data=request.data)
+            if login_serializer.is_valid():
+                user_serializer = LoginSerializer(
+                    user, data={'user_employee_login': True}, partial=True)
+                if user_serializer.is_valid():
+                    user_serializer.save()
 
-                login_serializer = self.serializer_class(data=request.data)
-                if login_serializer.is_valid():
-                    user_serializer = LoginSerializer(
-                        user, data={'user_employee_login': True}, partial=True)
-                    if user_serializer.is_valid():
-                        user_serializer.save()
+                access_token = login_serializer.validated_data['access']
+                refresh_token = login_serializer.validated_data['refresh']
 
-                    access_token = login_serializer.validated_data['access']
-                    refresh_token = login_serializer.validated_data['refresh']
+                if CACV_KEY['SESSION_LOGIN']:
+                    django_login(request, user)
 
-                    if CACV_KEY['SESSION_LOGIN']:
-                        django_login(request, user)
+                access_token_expiration = (
+                    timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME)
+                refresh_token_expiration = (
+                    timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME)
+                return_expiration_times = CACV_KEY['JWT_AUTH_RETURN_EXPIRATION']
 
-                    access_token_expiration = (
-                        timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME)
-                    refresh_token_expiration = (
-                        timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME)
-                    return_expiration_times = CACV_KEY['JWT_AUTH_RETURN_EXPIRATION']
-
-                    if return_expiration_times:
-                        data = {
-                            'msg': 'OK',
-                            'access-token': access_token,
-                            'refresh-token': refresh_token,
-                            'access-expiration': access_token_expiration,
-                            'refresh-expiration': refresh_token_expiration,
-                            'user': user_serializer.data,
-                        }
-                    else:
-                        data = {
-                            'msg': 'OK',
-                            'access-token': access_token,
-                            'refresh-token': refresh_token,
-                            'user': user_serializer.data
-                        }
-
-                    # serializer = self.serializer_class(
-                    #     instance=data, context=self.get_serializer_context())
-
-                    response = Response(data, HTTP_200_OK)
-
-                    if CACV_KEY['USE_JWT']:
-                        set_jwt_cookies(response, access_token, refresh_token)
-
-                    return response
-                else:
-                    response = {
-                        'error': 'ERROR',
-                        'msg': 'No existe el Usuario con esas credenciales'
+                if return_expiration_times:
+                    data = {
+                        'msg': 'OK',
+                        'access-token': access_token,
+                        'refresh-token': refresh_token,
+                        'access-expiration': access_token_expiration,
+                        'refresh-expiration': refresh_token_expiration,
+                        'user': user_serializer.data,
                     }
-                    return Response(response, HTTP_400_BAD_REQUEST)
+                
+                data = {
+                    'msg': 'OK',
+                    'access-token': access_token,
+                    'refresh-token': refresh_token,
+                    'user': user_serializer.data
+                }
 
-        else:
-            response = {
-                'error': 'ERROR',
-                'msg': 'Usuario o Contraseña Incorrectos'
-            }
+                # serializer = self.serializer_class(
+                #     instance=data, context=self.get_serializer_context())
+
+            response = Response(data, HTTP_200_OK)
+
+            if CACV_KEY['USE_JWT']:
+                set_jwt_cookies(response, access_token, refresh_token)
+            return response
+
+        response = {
+            'error': 'ERROR',
+            'msg': 'Usuario o Contraseña Incorrectos'
+        }
         return Response(response, HTTP_400_BAD_REQUEST)
 
 
