@@ -180,9 +180,10 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "ROTATE_REFRESH_TOKENS": False,
-    "BLACKLIST_AFTER_ROTATION": False,
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    # 'SIGNING_KEY': env('SIMPLE_JWT_SIGNING_KEY', default=None) or SECRET_KEY,
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
     # 'TOKEN_OBTAIN_SERIALIZER': 'restapi.users.serializers.CustomJwtToken'
 }

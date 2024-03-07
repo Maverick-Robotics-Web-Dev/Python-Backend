@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import authenticate, login as django_login, logout as django_logout
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.settings import api_settings as jwt_settings
 from rest_framework.viewsets import GenericViewSet, ViewSet
@@ -18,10 +18,14 @@ from .serializers import *
 
 class LoginViewSet(GenericViewSet):
 
+    model = UserEmployeeModel
     permission_classes = [AllowAny]
     serializer_class = CustomJwtTokenSerializer
 
-    # @sensitive_post_parameters_m
+    @sensitive_post_parameters_m
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
     def create(self, request):
 
         username = request.data.get(
@@ -45,7 +49,12 @@ class LoginViewSet(GenericViewSet):
         if user:
 
             if user.user_employee_login and user.is_authenticated:
-                return redirect(settings.HOME_URL)
+                response = {
+                    'ok': 'OK',
+                    'msg': 'Ya has iniciado sesión',
+                    'home': HOME_URL
+                }
+                return Response(response, HTTP_200_OK)
 
             login_serializer = self.serializer_class(data=request.data)
             if login_serializer.is_valid():
@@ -167,3 +176,40 @@ class LogoutViewSet(ViewSet):
 
     def create(self, request):
         return self.logout(request)
+
+
+class PasswordChangeViewSet(GenericViewSet):
+
+    model = UserEmployeeModel
+    serializer_class = PasswordChangeSerializer
+
+    def get_object(self, pk):
+        return get_object_or_404(self.model, pk=pk)
+
+    @action(['post'], True,)
+    def password_change(self, request, pk=None):
+        user = self.get_object(pk)
+        print(user)
+        if user:
+            password_serializer = self.serializer_class(data=request.data)
+            if password_serializer.is_valid():
+                user.set_password(
+                    password_serializer.validated_data['password'])
+                user.save()
+                response = {
+                    'ok': 'OK',
+                    'msg': 'Cambio de contraseña exitoso'
+                }
+                return Response(response, HTTP_200_OK)
+            else:
+                response = {
+                    'error': password_serializer.errors,
+                    'msg': 'Existen errores en la informaacion enviada'
+                }
+                return Response(response, HTTP_200_OK)
+        else:
+            response = {
+                'error': 'Error',
+                'msg': 'No existe el usuario con esas credenciales'
+            }
+            return Response(response, HTTP_204_NO_CONTENT)

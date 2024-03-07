@@ -9,15 +9,15 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from cacvsa.settings.base import *
 
-# sensitive_post_parameters_m = method_decorator(
-#     sensitive_post_parameters(
-#         'password', 'old_password', 'new_password1', 'new_password2',
-#     ),
-# )
-
 sensitive_post_parameters_m = method_decorator(
-    sensitive_post_parameters(),
+    sensitive_post_parameters(
+        'password', 'new_password',
+    ),
 )
+
+# sensitive_post_parameters_m = method_decorator(
+#     sensitive_post_parameters(),
+# )
 
 
 # def get_token_model():

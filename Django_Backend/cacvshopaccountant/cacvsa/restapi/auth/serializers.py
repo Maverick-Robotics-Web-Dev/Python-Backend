@@ -18,42 +18,13 @@ class LoginSerializer(ModelSerializer):
         read_only_fields = ['id']
 
 
-class LogoutSerializer(Serializer):
-    refresh_token = serializers.CharField()
+class PasswordChangeSerializer(Serializer):
 
-# class JWTSerializer(Serializer):
-#     """
-#     Serializer for JWT authentication.
-#     """
-#     access = CharField()
-#     refresh = CharField()
-#     user = SerializerMethodField()
+    password = serializers.CharField(max_length=128, write_only=True)
+    confirm_password = serializers.CharField(max_length=128, write_only=True)
 
-#     def get_user(self, obj):
-#         """
-#         Required to allow using custom USER_DETAILS_SERIALIZER in
-#         JWTSerializer. Defining it here to avoid circular imports
-#         """
-#         JWTUserDetailsSerializer = LoginSerializer
-
-#         user_data = JWTUserDetailsSerializer(
-#             obj['user'], context=self.context).data
-#         return user_data
-
-
-# class JWTSerializerWithExpiration(JWTSerializer):
-#     """
-#     Serializer for JWT authentication with expiration times.
-#     """
-#     access_expiration = DateTimeField()
-#     refresh_expiration = DateTimeField()
-
-
-# class TokenSerializer(ModelSerializer):
-#     """
-#     Serializer for Token model.
-#     """
-
-#     class Meta:
-#         model = get_token_model()
-#         fields = ('key',)
+    def validate(self, data):
+        if data['password'] != data['confirm_password']:
+            raise serializers.ValidationError(
+                {'password': 'No coinciden las contraseñas'})
+        return data

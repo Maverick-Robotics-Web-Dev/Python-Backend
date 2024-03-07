@@ -1,4 +1,5 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .models import *
@@ -14,7 +15,8 @@ class UserLevelSerializer(ModelSerializer):
 class UserEmployeeSerializer(ModelSerializer):
     class Meta:
         model = UserEmployeeModel
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ['groups', 'user_permissions']
         read_only_fields = ['user_employee_id']
 
 

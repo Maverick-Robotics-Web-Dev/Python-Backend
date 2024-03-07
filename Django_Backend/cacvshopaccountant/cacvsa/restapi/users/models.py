@@ -42,6 +42,7 @@ class UserEmployeeModel(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'user_employee_user_name'
+    # REQUIRED_FIELDS=[]
 
     objects = UserEmployeeManager()
 
