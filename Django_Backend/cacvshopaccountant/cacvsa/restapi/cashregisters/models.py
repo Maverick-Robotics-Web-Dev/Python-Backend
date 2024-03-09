@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 
 
@@ -6,7 +7,11 @@ class CashRegisterModel(models.Model):
     cash_register_number = models.CharField('Caja', max_length=256)
     fk_user_employee = models.ForeignKey(
         'users.UserEmployeeModel', on_delete=models.CASCADE, verbose_name='Usuario')
-    cash_register_status = models.CharField('Estado', max_length=50)
+    cash_register_status = models.BooleanField('Estado', default=False)
+    cash_register_created_at = models.DateTimeField(
+        'Fecha de Creación', default=datetime.now())
+    cash_register_update_at = models.DateTimeField(
+        'Fecha de Actualización', blank=True, null=True)
 
     class Meta:
         db_table = 'APIS_CASH_REGISTER'
@@ -41,7 +46,7 @@ class CashRegisterMovementsModel(models.Model):
     cash_register_movements_amount = models.DecimalField(
         'Monto', max_digits=11, decimal_places=2)
     cash_register_movements_created_at = models.DateTimeField(
-        'Fecha de Creación')
+        'Fecha de Creación', default=datetime.now().strftime('%B %d, %Y - %H:%M:%S'))
     cash_register_movements_update_at = models.DateTimeField(
         'Fecha de Actualización', blank=True, null=True)
 

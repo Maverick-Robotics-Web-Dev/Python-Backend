@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.hashers import make_password
 from rest_framework.viewsets import GenericViewSet
@@ -23,6 +24,7 @@ class UserLevelViewSet(GenericViewSet):
         return self.queryset
 
     def list(self, request):
+
         queryres = self.get_queryset()
         serializer = self.serializer_class(queryres, many=True)
         data = {'msg': 'OK', 'data': serializer.data}
@@ -78,6 +80,7 @@ class UserEmployeeViewSet(GenericViewSet):
         return self.queryset
 
     def list(self, request):
+
         queryres = self.get_queryset()
         serializer = self.serializer_class(queryres, many=True)
         data = {'msg': 'OK', 'data': serializer.data}
@@ -113,8 +116,8 @@ class UserEmployeeViewSet(GenericViewSet):
         return Response(data, HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
-        queryres = self.model.objects.filter(
-            id=pk).update(is_active=False)
+        queryres = self.model.objects.filter(id=pk).update(
+            is_active=False, user_employee_status=False, user_employee_update_at=datetime.now().strftime('%B %d, %Y - %H:%M:%S'))
         if queryres == 1:
             data = {'msg': 'OK'}
             return Response(data, HTTP_200_OK)

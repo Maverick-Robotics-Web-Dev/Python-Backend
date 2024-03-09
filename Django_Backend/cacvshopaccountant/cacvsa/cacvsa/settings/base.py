@@ -14,6 +14,7 @@ from django.core.exceptions import ImproperlyConfigured
 from datetime import timedelta
 import json
 from unipath import Path
+from locale import setlocale, LC_ALL
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).ancestor(3)
@@ -128,7 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Guayaquil'
 
 USE_I18N = True
 
@@ -142,6 +143,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ###### Custom Settings #########
 
+setlocale(LC_ALL, '')
 AUTH_USER_MODEL = 'users.UserEmployeeModel'
 LOGIN_URL = '/api/v1/routes/business/vouchertype'
 HOME_URL = '/'
@@ -173,7 +175,8 @@ REST_FRAMEWORK = {
 
     # To activate JWT
     'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework_simplejwt.authentication.JWTAuthentication'],
-
+    'DATETIME_FORMAT': '%B %d, %Y - %H:%M:%S',
+    'DATE_INPUT_FORMATS': ['%B %d, %Y - %H:%M:%S'],
     # The default permission policy may be set globally
     # 'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated']
 
