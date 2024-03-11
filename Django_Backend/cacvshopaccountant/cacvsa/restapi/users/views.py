@@ -72,7 +72,13 @@ class UserEmployeeViewSet(GenericViewSet):
     serializer_class = UserEmployeeSerializer
 
     def get_object(self, pk):
-        return get_object_or_404(self.model, pk=pk)
+
+        try:
+            obj = self.model.objects.get(pk=pk,
+                                         user_employee_status=True, is_active=True)
+            return obj
+        except self.model.DoesNotExist:
+            pass
 
     def get_queryset(self):
         if self.queryset is None:
@@ -89,6 +95,7 @@ class UserEmployeeViewSet(GenericViewSet):
 
     def retrieve(self, request, pk=None):
         queryres = self.get_object(pk)
+        print(queryres)
         serializer = self.serializer_class(queryres)
         data = {'msg': 'OK', 'data': serializer.data}
         return Response(data, HTTP_200_OK)
@@ -107,26 +114,37 @@ class UserEmployeeViewSet(GenericViewSet):
         return Response(data, HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        print(datetime.now())
+
         request.data["user_employee_update_at"] = datetime.now()
         queryres = self.get_object(pk)
-        serializer = self.serializer_class(
-            queryres, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            data = {'msg': 'OK', 'data': serializer.data}
-            return Response(data, HTTP_201_CREATED)
-        data = {'msg': 'ERROR', 'errors': serializer.errors}
-        return Response(data, HTTP_400_BAD_REQUEST)
+
+        if queryres:
+            serializer = self.serializer_class(
+                queryres, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                data = {'msg': 'OK', 'data': serializer.data}
+                return Response(data, HTTP_201_CREATED)
+            data = {'msg': 'ERROR', 'errors': serializer.errors}
+        data = {'error': 'ERROR', 'msg': 'No existe'}
+        return Response(data, HTTP_204_NO_CONTENT)
 
     def destroy(self, request, pk=None):
-        queryres = self.model.objects.filter(id=pk).update(
-            is_active=False, user_employee_status=False, user_employee_update_at=datetime.now())
-        if queryres == 1:
-            data = {'msg': 'OK'}
-            return Response(data, HTTP_200_OK)
-        data = {'msg': 'ERROR'}
-        return Response(data, HTTP_404_NOT_FOUND)
+
+        request.data["user_employee_status"] = False
+        request.data["is_active"] = False
+        request.data["user_employee_update_at"] = datetime.now()
+        queryres = self.get_object(pk)
+        if queryres.user_employee_status and queryres.is_active:
+            serializer = self.serializer_class(
+                queryres, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                data = {'msg': 'OK'}
+                return Response(data, HTTP_201_CREATED)
+            data = {'msg': 'ERROR', 'errors': serializer.errors}
+        data = {'error': 'ERROR', 'msg': 'No existe'}
+        return Response(data, HTTP_204_NO_CONTENT)
 
 
 class UserClientViewSet(GenericViewSet):
