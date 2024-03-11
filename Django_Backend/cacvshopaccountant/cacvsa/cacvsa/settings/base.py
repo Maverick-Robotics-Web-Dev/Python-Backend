@@ -129,7 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'America/Guayaquil'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -143,7 +143,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ###### Custom Settings #########
 
-setlocale(LC_ALL, '')
+setlocale(LC_ALL, 'es')
 AUTH_USER_MODEL = 'users.UserEmployeeModel'
 LOGIN_URL = '/api/v1/routes/business/vouchertype'
 HOME_URL = '/'

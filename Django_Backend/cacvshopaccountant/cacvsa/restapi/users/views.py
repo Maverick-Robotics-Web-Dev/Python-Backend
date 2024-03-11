@@ -81,6 +81,7 @@ class UserEmployeeViewSet(GenericViewSet):
 
     def list(self, request):
 
+        print(datetime.now())
         queryres = self.get_queryset()
         serializer = self.serializer_class(queryres, many=True)
         data = {'msg': 'OK', 'data': serializer.data}
@@ -96,6 +97,7 @@ class UserEmployeeViewSet(GenericViewSet):
         request.data["password"] = make_password(request.data["password"])
         request.data["user_employee_status"] = True
         request.data["is_active"] = True
+        request.data["user_employee_create_at"] = datetime.now()
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -105,6 +107,8 @@ class UserEmployeeViewSet(GenericViewSet):
         return Response(data, HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
+        print(datetime.now())
+        request.data["user_employee_update_at"] = datetime.now()
         queryres = self.get_object(pk)
         serializer = self.serializer_class(
             queryres, data=request.data, partial=True)
@@ -117,7 +121,7 @@ class UserEmployeeViewSet(GenericViewSet):
 
     def destroy(self, request, pk=None):
         queryres = self.model.objects.filter(id=pk).update(
-            is_active=False, user_employee_status=False, user_employee_update_at=datetime.now().strftime('%B %d, %Y - %H:%M:%S'))
+            is_active=False, user_employee_status=False, user_employee_update_at=datetime.now())
         if queryres == 1:
             data = {'msg': 'OK'}
             return Response(data, HTTP_200_OK)

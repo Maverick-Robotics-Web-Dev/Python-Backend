@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.utils.timezone import make_aware, get_current_timezone, now
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
@@ -36,7 +37,7 @@ class UserEmployeeModel(AbstractBaseUser, PermissionsMixin):
     user_employee_status_description = models.CharField(
         'Descripción', max_length=256, default='Ninguna')
     user_employee_create_at = models.DateTimeField(
-        'Fecha de Creación', auto_now_add=True)
+        'Fecha de Creación')
     user_employee_update_at = models.DateTimeField(
         'Fecha de Actualización', blank=True, null=True)
     is_staff = models.BooleanField(default=False)
