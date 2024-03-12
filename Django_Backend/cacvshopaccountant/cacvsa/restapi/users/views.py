@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from rest_framework.status import *
-from rest_framework.decorators import action
+from rest_framework import exceptions
 
 from .models import *
 from .serializers import *
@@ -78,7 +78,8 @@ class UserEmployeeViewSet(GenericViewSet):
                                          user_employee_status=True, is_active=True)
             return obj
         except self.model.DoesNotExist:
-            pass
+            data = {'error': 'ERROR', 'msg': 'No existe'}
+            raise exceptions.ValidationError(data)
 
     def get_queryset(self):
         if self.queryset is None:
@@ -87,7 +88,6 @@ class UserEmployeeViewSet(GenericViewSet):
 
     def list(self, request):
 
-        print(datetime.now())
         queryres = self.get_queryset()
         serializer = self.serializer_class(queryres, many=True)
         data = {'msg': 'OK', 'data': serializer.data}
@@ -95,7 +95,6 @@ class UserEmployeeViewSet(GenericViewSet):
 
     def retrieve(self, request, pk=None):
         queryres = self.get_object(pk)
-        print(queryres)
         serializer = self.serializer_class(queryres)
         data = {'msg': 'OK', 'data': serializer.data}
         return Response(data, HTTP_200_OK)
@@ -118,15 +117,13 @@ class UserEmployeeViewSet(GenericViewSet):
         request.data["user_employee_update_at"] = datetime.now()
         queryres = self.get_object(pk)
 
-        if queryres:
-            serializer = self.serializer_class(
-                queryres, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                data = {'msg': 'OK', 'data': serializer.data}
-                return Response(data, HTTP_201_CREATED)
-            data = {'msg': 'ERROR', 'errors': serializer.errors}
-        data = {'error': 'ERROR', 'msg': 'No existe'}
+        serializer = self.serializer_class(
+            queryres, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            data = {'msg': 'OK', 'data': serializer.data}
+            return Response(data, HTTP_201_CREATED)
+        data = {'msg': 'ERROR', 'errors': serializer.errors}
         return Response(data, HTTP_204_NO_CONTENT)
 
     def destroy(self, request, pk=None):
@@ -135,15 +132,13 @@ class UserEmployeeViewSet(GenericViewSet):
         request.data["is_active"] = False
         request.data["user_employee_update_at"] = datetime.now()
         queryres = self.get_object(pk)
-        if queryres.user_employee_status and queryres.is_active:
-            serializer = self.serializer_class(
-                queryres, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                data = {'msg': 'OK'}
-                return Response(data, HTTP_201_CREATED)
-            data = {'msg': 'ERROR', 'errors': serializer.errors}
-        data = {'error': 'ERROR', 'msg': 'No existe'}
+        serializer = self.serializer_class(
+            queryres, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            data = {'msg': 'OK'}
+            return Response(data, HTTP_200_OK)
+        data = {'msg': 'ERROR', 'errors': serializer.errors}
         return Response(data, HTTP_204_NO_CONTENT)
 
 

@@ -1,7 +1,8 @@
-from django.shortcuts import get_object_or_404
+from datetime import datetime
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from rest_framework.status import *
+from rest_framework import exceptions
 
 from cacvsa.settings.base import *
 from .models import *
@@ -15,7 +16,16 @@ class WayToPayViewSet(GenericViewSet):
     serializer_class = WayToPaySerializer
 
     def get_object(self, pk):
-        return get_object_or_404(self.model, pk=pk)
+
+        try:
+
+            obj = self.model.objects.get(pk=pk, way_to_pay_status=True)
+            return obj
+
+        except self.model.DoesNotExist:
+
+            response = {'error': 'ERROR', 'msg': 'No existe'}
+            raise exceptions.ValidationError(response)
 
     def get_queryset(self):
 
@@ -33,7 +43,6 @@ class WayToPayViewSet(GenericViewSet):
             'ok': 'OK',
             'data': serializer.data
         }
-
         return Response(response, HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
@@ -45,11 +54,12 @@ class WayToPayViewSet(GenericViewSet):
             'ok': 'OK',
             'data': serializer.data
         }
-
         return Response(response, HTTP_200_OK)
 
     def create(self, request):
 
+        request.data["way_to_pay_status"] = True
+        request.data["way_to_pay_create_at"] = datetime.now()
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
@@ -61,18 +71,17 @@ class WayToPayViewSet(GenericViewSet):
                 'msg': 'Creado Exitosamente',
                 'data': serializer.data
             }
-
             return Response(response, HTTP_201_CREATED)
 
         response = {
             'error': 'ERROR',
             'msg': serializer.errors
         }
-
         return Response(response, HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
 
+        request.data["way_to_pay_update_at"] = datetime.now()
         queryres = self.get_object(pk)
         serializer = self.serializer_class(
             queryres, data=request.data, partial=True)
@@ -86,36 +95,37 @@ class WayToPayViewSet(GenericViewSet):
                 'msg': 'Actualizado Exitosamente',
                 'data': serializer.data
             }
-
             return Response(response, HTTP_201_CREATED)
 
         response = {
             'error': 'ERROR',
             'msg': serializer.errors
         }
-
         return Response(response, HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
 
-        queryres = self.model.objects.filter(
-            way_to_pay_id=pk).update(way_to_pay_status=False)
+        request.data["way_to_pay_status"] = False
+        request.data["way_to_pay_update_at"] = datetime.now()
+        queryres = self.get_object(pk)
+        serializer = self.serializer_class(
+            queryres, data=request.data, partial=True)
 
-        if queryres == 1:
+        if serializer.is_valid():
+
+            serializer.save()
 
             response = {
                 'ok': 'OK',
-                'msg': 'Eliminado Exitosamente'
+                'msg': 'Eliminado Exitosamente',
             }
-
             return Response(response, HTTP_200_OK)
 
         response = {
             'error': 'ERROR',
-            'msg': 'No existe'
+            'msg': serializer.errors
         }
-
-        return Response(response, HTTP_404_NOT_FOUND)
+        return Response(response, HTTP_400_BAD_REQUEST)
 
 
 class VoucherTypeViewSet(GenericViewSet):
@@ -124,7 +134,16 @@ class VoucherTypeViewSet(GenericViewSet):
     serializer_class = VoucherTypeSerializer
 
     def get_object(self, pk):
-        return get_object_or_404(self.model, pk=pk)
+
+        try:
+
+            obj = self.model.objects.get(pk=pk, voucher_type_status=True)
+            return obj
+
+        except self.model.DoesNotExist:
+
+            response = {'error': 'ERROR', 'msg': 'No existe'}
+            raise exceptions.ValidationError(response)
 
     def get_queryset(self):
 
@@ -142,7 +161,6 @@ class VoucherTypeViewSet(GenericViewSet):
             'ok': 'OK',
             'data': serializer.data
         }
-
         return Response(response, HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
@@ -154,11 +172,12 @@ class VoucherTypeViewSet(GenericViewSet):
             'ok': 'OK',
             'data': serializer.data
         }
-
         return Response(response, HTTP_200_OK)
 
     def create(self, request):
 
+        request.data['voucher_type_status'] = True
+        request.data['voucher_type_create_at'] = datetime.now()
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
@@ -170,18 +189,17 @@ class VoucherTypeViewSet(GenericViewSet):
                 'msg': 'Creado Exitosamente',
                 'data': serializer.data
             }
-
             return Response(response, HTTP_201_CREATED)
 
         response = {
             'error': 'ERROR',
             'msg': serializer.errors
         }
-
         return Response(response, HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
 
+        request.data['voucher_type_update_at'] = datetime.now()
         queryres = self.get_object(pk)
         serializer = self.serializer_class(
             queryres, data=request.data, partial=True)
@@ -195,36 +213,37 @@ class VoucherTypeViewSet(GenericViewSet):
                 'msg': 'Actualizado Exitosamente',
                 'data': serializer.data
             }
-
-            return Response(response, HTTP_201_CREATED)
+            return Response(response, HTTP_200_OK)
 
         response = {
             'error': 'ERROR',
             'msg': serializer.errors
         }
-
         return Response(response, HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
 
-        queryres = self.model.objects.filter(
-            voucher_type_id=pk).update(voucher_type_status=False)
+        request.data['voucher_type_status'] = False
+        request.data['voucher_type_update_at'] = datetime.now()
+        queryres = self.get_object(pk)
+        serializer = self.serializer_class(
+            queryres, data=request.data, partial=True)
 
-        if queryres == 1:
+        if serializer.is_valid():
+
+            serializer.save()
 
             response = {
                 'ok': 'OK',
                 'msg': 'Eliminado Exitosamente',
             }
-
             return Response(response, HTTP_200_OK)
 
         response = {
             'error': 'ERROR',
-            'msg': 'No existe'
+            'msg': serializer.errors
         }
-
-        return Response(response, HTTP_404_NOT_FOUND)
+        return Response(response, HTTP_400_BAD_REQUEST)
 
 
 class CreditNoteViewSet(GenericViewSet):
@@ -233,7 +252,16 @@ class CreditNoteViewSet(GenericViewSet):
     serializer_class = CreditNoteSerializaer
 
     def get_object(self, pk):
-        return get_object_or_404(self.model, pk=pk)
+
+        try:
+
+            obj = self.model.objects.get(pk=pk, credit_note_status=True)
+            return obj
+
+        except self.model.DoesNotExist:
+
+            response = {'error': 'ERROR', 'msg': 'No existe'}
+            raise exceptions.ValidationError(response)
 
     def get_queryset(self):
 
@@ -251,7 +279,6 @@ class CreditNoteViewSet(GenericViewSet):
             'ok': 'OK',
             'data': serializer.data
         }
-
         return Response(response, HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
@@ -263,11 +290,12 @@ class CreditNoteViewSet(GenericViewSet):
             'ok': 'OK',
             'data': serializer.data
         }
-
         return Response(response, HTTP_200_OK)
 
     def create(self, request):
 
+        request.data['credit_note_status'] = True
+        request.data['credit_note_create_at'] = datetime.now()
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
@@ -278,18 +306,17 @@ class CreditNoteViewSet(GenericViewSet):
                 'msg': 'Creado Exitosamente',
                 'data': serializer.data
             }
-
             return Response(response, HTTP_201_CREATED)
 
         response = {
             'error': 'ERROR',
             'msg': serializer.errors
         }
-
         return Response(response, HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
 
+        request.data['credit_note_update_at'] = datetime.now()
         queryres = self.get_object(pk)
         serializer = self.serializer_class(
             queryres, data=request.data, partial=True)
@@ -303,36 +330,37 @@ class CreditNoteViewSet(GenericViewSet):
                 'msg': 'Actualizado Exitosamente',
                 'data': serializer.data
             }
-
-            return Response(response, HTTP_201_CREATED)
+            return Response(response, HTTP_200_OK)
 
         response = {
             'error': 'ERROR',
             'msg': serializer.errors
         }
-
         return Response(response, HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
 
-        queryres = self.model.objects.filter(
-            credit_note_id=pk).update(credit_note_status=False)
+        request.data['credit_note_status'] = False
+        request.data['credit_note_update_at'] = datetime.now()
+        queryres = self.get_object(pk)
+        serializer = self.serializer_class(
+            queryres, data=request.data, partial=True)
 
-        if queryres == 1:
+        if serializer.is_valid():
+
+            serializer.save()
 
             response = {
                 'ok': 'OK',
                 'msg': 'Eliminado Exitosamente',
             }
-
             return Response(response, HTTP_200_OK)
 
         response = {
             'error': 'ERROR',
-            'msg': 'No existe'
+            'msg': serializer.errors
         }
-
-        return Response(response, HTTP_404_NOT_FOUND)
+        return Response(response, HTTP_400_BAD_REQUEST)
 
 
 class CreditNoteDetailViewSet(GenericViewSet):
@@ -341,12 +369,21 @@ class CreditNoteDetailViewSet(GenericViewSet):
     serializer_class = CreditNoteDetailSerializer
 
     def get_object(self, pk):
-        return get_object_or_404(self.model, pk=pk)
+
+        try:
+
+            obj = self.model.objects.get(pk=pk, credit_note_detail_status=True)
+            return obj
+
+        except self.model.DoesNotExist:
+
+            response = {'error': 'ERROR', 'msg': 'No existe'}
+            raise exceptions.ValidationError(response)
 
     def get_queryset(self):
 
         if self.queryset is None:
-            return self.model.objects.all()
+            return self.model.objects.filter(credit_note_detail_status=True)
 
         return self.queryset
 
@@ -359,7 +396,6 @@ class CreditNoteDetailViewSet(GenericViewSet):
             'ok': 'OK',
             'data': serializer.data
         }
-
         return Response(response, HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
@@ -371,11 +407,12 @@ class CreditNoteDetailViewSet(GenericViewSet):
             'ok': 'OK',
             'data': serializer.data
         }
-
         return Response(response, HTTP_200_OK)
 
     def create(self, request):
 
+        request.data['credit_note_detail_status'] = True
+        request.data['credit_note_detail_create_at'] = datetime.now()
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
@@ -387,18 +424,17 @@ class CreditNoteDetailViewSet(GenericViewSet):
                 'msg': 'Creado Exitosamente',
                 'data': serializer.data
             }
-
             return Response(response, HTTP_201_CREATED)
 
         response = {
             'error': 'ERROR',
             'msg': serializer.errors
         }
-
         return Response(response, HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
 
+        request.data['credit_note_detail_update_at'] = datetime.now()
         queryres = self.get_object(pk)
         serializer = self.serializer_class(
             queryres, data=request.data, partial=True)
@@ -412,14 +448,36 @@ class CreditNoteDetailViewSet(GenericViewSet):
                 'msg': 'Actualizado Exitosamente',
                 'data': serializer.data
             }
-
-            return Response(response, HTTP_201_CREATED)
+            return Response(response, HTTP_200_OK)
 
         response = {
             'error': 'ERROR',
             'msg': serializer.errors
         }
+        return Response(response, HTTP_400_BAD_REQUEST)
 
+    def desytoy(self, request, pk=None):
+
+        request.data['credit_note_detail_status'] = False
+        request.data['credit_note_detail_update_at'] = datetime.now()
+        queryres = self.get_object(pk)
+        serializer = self.serializer_class(
+            queryres, data=request.data, partial=True)
+
+        if serializer.is_valid():
+
+            serializer.save()
+
+            response = {
+                'ok': 'OK',
+                'msg': 'Eliminado Exitosamente',
+            }
+            return Response(response, HTTP_200_OK)
+
+        response = {
+            'error': 'ERROR',
+            'msg': serializer.errors
+        }
         return Response(response, HTTP_400_BAD_REQUEST)
 
 

@@ -48,6 +48,9 @@ class UserEmployeeModel(AbstractBaseUser, PermissionsMixin):
 
     objects = UserEmployeeManager()
 
+    def __str__(self):
+        return self.user_employee_user_name
+
     class Meta:
         db_table = 'APIS_USER_EMPLOYEE'
         verbose_name = 'USURIO DE EMPLEADO'

@@ -10,7 +10,7 @@ class WayToPayModel(models.Model):
         'users.UserEmployeeModel', on_delete=models.CASCADE, verbose_name='Usuario')
     way_to_pay_status = models.BooleanField('Estado', default=False)
     way_to_pay_status_description = models.CharField(
-        'Descripción del Estado', max_length=256, blank=True, null=True)
+        'Descripción del Estado', max_length=256, default='No existe descripción')
     way_to_pay_create_at = models.DateTimeField('Fecha de Creación')
     way_to_pay_update_at = models.DateTimeField(
         'Fecha de Actualización', blank=True, null=True)
@@ -33,7 +33,7 @@ class VoucherTypeModel(models.Model):
         'users.UserEmployeeModel', on_delete=models.CASCADE, verbose_name='Usuario')
     voucher_type_status = models.BooleanField('Estado', default=False)
     voucher_type_status_description = models.CharField(
-        'Descripción', max_length=256, blank=True, null=True)
+        'Descripción', max_length=256, default='No existe descripción')
     voucher_type_create_at = models.DateTimeField('Fecha de Creación')
     voucher_type_update_at = models.DateTimeField(
         'Fecha de Actualización', blank=True, null=True)
@@ -60,8 +60,10 @@ class CreditNoteModel(models.Model):
         'users.UserEmployeeModel', on_delete=models.CASCADE, verbose_name='Usuario')
     credit_note_status = models.BooleanField('Estado', default=False)
     credit_note_description = models.CharField(
-        'Descripción', max_length=256, blank=True, null=True)
+        'Descripción', max_length=256, default='No existe descripción')
     credit_note_create_at = models.DateTimeField('Fecha de Creación')
+    credit_note_update_at = models.DateTimeField(
+        'Fecha de Actualización', blank=True, null=True)
 
     class Meta:
         db_table = 'APIS_CREDIT_NOTE'
@@ -69,7 +71,7 @@ class CreditNoteModel(models.Model):
         verbose_name_plural = 'NOTAS DE CREDITO'
 
     def __str__(self):
-        return self.fk_client
+        return self.credit_note_voucher_number
 
 
 class CreditNoteDetailModel(models.Model):
@@ -82,6 +84,10 @@ class CreditNoteDetailModel(models.Model):
         'Cantidad', max_digits=11, decimal_places=2)
     credit_note_detail_price = models.DecimalField(
         'Precio', max_digits=11, decimal_places=2)
+    credit_note_detail_status = models.BooleanField('Estado', default=False)
+    credit_note_detail_create_at = models.DateTimeField('Fecha de Creación')
+    credit_note_detail_update_at = models.DateTimeField(
+        'Fecha de Actualización', blank=True, null=True)
 
     class Meta:
         db_table = 'APIS_CREDIT_NOTE_DETAIL'
