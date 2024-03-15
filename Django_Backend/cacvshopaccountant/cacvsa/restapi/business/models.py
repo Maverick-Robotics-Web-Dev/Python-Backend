@@ -1,19 +1,28 @@
-from django.db import models
+from django.db.models import (
+    CASCADE,
+    AutoField,
+    CharField,
+    ForeignKey,
+    DateField,
+    DecimalField
+)
+
+from restapi.abstracts.models import NestedModel
 
 
-class WayToPayModel(models.Model):
-    way_to_pay_id = models.AutoField('ID', primary_key=True)
-    way_to_pay_name = models.CharField('Forma de Pago', max_length=100)
-    way_to_pay_description = models.CharField(
+class WayToPayModel(NestedModel):
+
+    id: AutoField = None
+    name: CharField = None
+    description: CharField = None
+    fk_user_employee: ForeignKey = None
+
+    id = AutoField('ID', primary_key=True)
+    name = CharField('Forma de Pago', max_length=100)
+    description = CharField(
         'Descripcion', max_length=256, blank=True, null=True)
-    fk_user_employee = models.ForeignKey(
-        'users.UserEmployeeModel', on_delete=models.CASCADE, verbose_name='Usuario')
-    way_to_pay_status = models.BooleanField('Estado', default=False)
-    way_to_pay_status_description = models.CharField(
-        'Descripción del Estado', max_length=256, default='No existe descripción')
-    way_to_pay_create_at = models.DateTimeField('Fecha de Creación')
-    way_to_pay_update_at = models.DateTimeField(
-        'Fecha de Actualización', blank=True, null=True)
+    fk_user_employee = ForeignKey(
+        'users.UserEmployeeModel', on_delete=CASCADE, verbose_name='Usuario')
 
     class Meta:
         db_table = 'APIS_WAY_TO_PAY'
@@ -21,22 +30,22 @@ class WayToPayModel(models.Model):
         verbose_name_plural = 'FORMAS DE PAGO'
 
     def __str__(self):
-        return self.way_to_pay_name
+        return self.name
 
 
-class VoucherTypeModel(models.Model):
-    voucher_type_id = models.AutoField('ID', primary_key=True)
-    voucher_type_name = models.CharField('Tipo de Comprobante', max_length=100)
-    voucher_type_description = models.CharField(
+class VoucherTypeModel(NestedModel):
+
+    id: AutoField = None
+    name: CharField = None
+    description: CharField = None
+    fk_user_employee: ForeignKey = None
+
+    id = AutoField('ID', primary_key=True)
+    name = CharField('Tipo de Comprobante', max_length=100)
+    description = CharField(
         'Descripción', max_length=256, default='No existe descripción')
-    fk_user_employee = models.ForeignKey(
-        'users.UserEmployeeModel', on_delete=models.CASCADE, verbose_name='Usuario')
-    voucher_type_status = models.BooleanField('Estado', default=False)
-    voucher_type_status_description = models.CharField(
-        'Descripción', max_length=256, default='No existe descripción')
-    voucher_type_create_at = models.DateTimeField('Fecha de Creación')
-    voucher_type_update_at = models.DateTimeField(
-        'Fecha de Actualización', blank=True, null=True)
+    fk_user_employee = ForeignKey(
+        'users.UserEmployeeModel', on_delete=CASCADE, verbose_name='Usuario')
 
     class Meta:
         db_table = 'APIS_VOUCHER_TYPE'
@@ -44,26 +53,28 @@ class VoucherTypeModel(models.Model):
         verbose_name_plural = 'TIPOS DE COMPROBANTE'
 
     def __str__(self):
-        return self.voucher_type_name
+        return self.name
 
 
-class CreditNoteModel(models.Model):
-    credit_note_id = models.AutoField('ID', primary_key=True)
-    fk_client = models.ForeignKey(
-        'clients.ClientModel', on_delete=models.CASCADE, verbose_name='Cliente')
-    credit_note_voucher_number = models.CharField(
+class CreditNoteModel(NestedModel):
+
+    id: AutoField = None
+    fk_client: ForeignKey = None
+    voucher_number: CharField = None
+    date: DateField = None
+    total: DecimalField = None
+    fk_user_employee: ForeignKey = None
+
+    id = AutoField('ID', primary_key=True)
+    fk_client = ForeignKey(
+        'clients.ClientModel', on_delete=CASCADE, verbose_name='Cliente')
+    voucher_number = CharField(
         'Numero de Comprobante', max_length=100)
-    credit_note_date = models.DateField('Fecha')
-    credit_note_total = models.DecimalField(
+    date = DateField('Fecha')
+    total = DecimalField(
         'Total', max_digits=11, decimal_places=0)
-    fk_user_employee = models.ForeignKey(
-        'users.UserEmployeeModel', on_delete=models.CASCADE, verbose_name='Usuario')
-    credit_note_status = models.BooleanField('Estado', default=False)
-    credit_note_description = models.CharField(
-        'Descripción', max_length=256, default='No existe descripción')
-    credit_note_create_at = models.DateTimeField('Fecha de Creación')
-    credit_note_update_at = models.DateTimeField(
-        'Fecha de Actualización', blank=True, null=True)
+    fk_user_employee = ForeignKey(
+        'users.UserEmployeeModel', on_delete=CASCADE, verbose_name='Usuario')
 
     class Meta:
         db_table = 'APIS_CREDIT_NOTE'
@@ -71,23 +82,26 @@ class CreditNoteModel(models.Model):
         verbose_name_plural = 'NOTAS DE CREDITO'
 
     def __str__(self):
-        return self.credit_note_voucher_number
+        return self.voucher_number
 
 
-class CreditNoteDetailModel(models.Model):
-    credit_note_detail_id = models.AutoField('ID', primary_key=True)
-    fk_credit_note = models.ForeignKey(
-        'business.CreditNoteModel', on_delete=models.CASCADE, verbose_name='Nota de Credito')
-    fk_product = models.ForeignKey(
-        'products.ProductModel', on_delete=models.CASCADE, verbose_name='Producto')
-    credit_note_detail_quantity = models.DecimalField(
+class CreditNoteDetailModel(NestedModel):
+
+    id: AutoField = None
+    fk_credit_note: ForeignKey = None
+    fk_product: ForeignKey = None
+    quantity: DecimalField = None
+    price: DecimalField = None
+
+    id = AutoField('ID', primary_key=True)
+    fk_credit_note = ForeignKey(
+        'business.CreditNoteModel', on_delete=CASCADE, verbose_name='Nota de Credito')
+    fk_product = ForeignKey(
+        'products.ProductModel', on_delete=CASCADE, verbose_name='Producto')
+    quantity = DecimalField(
         'Cantidad', max_digits=11, decimal_places=2)
-    credit_note_detail_price = models.DecimalField(
+    price = DecimalField(
         'Precio', max_digits=11, decimal_places=2)
-    credit_note_detail_status = models.BooleanField('Estado', default=False)
-    credit_note_detail_create_at = models.DateTimeField('Fecha de Creación')
-    credit_note_detail_update_at = models.DateTimeField(
-        'Fecha de Actualización', blank=True, null=True)
 
     class Meta:
         db_table = 'APIS_CREDIT_NOTE_DETAIL'
@@ -98,28 +112,37 @@ class CreditNoteDetailModel(models.Model):
         return self.fk_credit_note
 
 
-class SaleModel(models.Model):
-    sale_id = models.AutoField('ID', primary_key=True)
-    fk_client = models.ForeignKey(
-        'clients.ClientModel', on_delete=models.CASCADE, verbose_name='Cliente')
-    fk_sale_voucher_type = models.ForeignKey(
-        'business.VoucherTypeModel', on_delete=models.CASCADE, verbose_name='Tipo de Comprobante')
-    sale_establishment = models.CharField(
+class SaleModel(NestedModel):
+
+    id: AutoField = None
+    fk_client: ForeignKey = None
+    fk_sale_voucher_type: ForeignKey = None
+    establishment: CharField = None
+    sale_billing_number: CharField = None
+    voucher_number: CharField = None
+    date: DateField = None
+    tax: DecimalField = None
+    total: DecimalField = None
+    fk_way_to_pay: ForeignKey = None
+    fk_user_employee: ForeignKey = None
+
+    id = AutoField('ID', primary_key=True)
+    fk_client = ForeignKey(
+        'clients.ClientModel', on_delete=CASCADE, verbose_name='Cliente')
+    fk_sale_voucher_type = ForeignKey(
+        'business.VoucherTypeModel', on_delete=CASCADE, verbose_name='Tipo de Comprobante')
+    establishment = CharField(
         'Numero de establecimiento', max_length=50)
-    sale_billing_number = models.CharField('Numero de Libretin', max_length=50)
-    sale_voucher_number = models.CharField(
+    sale_billing_number = CharField('Numero de Libretin', max_length=50)
+    voucher_number = CharField(
         'Numero de Comprobante', max_length=100)
-    sale_date = models.DateField('Fecha')
-    sale_tax = models.DecimalField('IVA', max_digits=11, decimal_places=2)
-    sale_total = models.DecimalField('Total', max_digits=11, decimal_places=2)
-    fk_way_to_pay = models.ForeignKey(
-        'business.WayToPayModel', on_delete=models.CASCADE, verbose_name='Forma de Pago')
-    fk_user_employee = models.ForeignKey(
-        'users.UserEmployeeModel', on_delete=models.CASCADE, verbose_name='Usuario')
-    sale_status = models.BooleanField('Estado', default=False)
-    sale_status_description = models.CharField(
-        'Descripción', max_length=256, blank=True, null=True)
-    sale_create_at = models.DateTimeField('Fecha de Creación')
+    date = DateField('Fecha')
+    tax = DecimalField('IVA', max_digits=11, decimal_places=2)
+    total = DecimalField('Total', max_digits=11, decimal_places=2)
+    fk_way_to_pay = ForeignKey(
+        'business.WayToPayModel', on_delete=CASCADE, verbose_name='Forma de Pago')
+    fk_user_employee = ForeignKey(
+        'users.UserEmployeeModel', on_delete=CASCADE, verbose_name='Usuario')
 
     class Meta:
         db_table = 'APIS_SALE'
@@ -130,15 +153,22 @@ class SaleModel(models.Model):
         return self.fk_client
 
 
-class SaleDetailModel(models.Model):
-    sale_detail_id = models.AutoField('ID', primary_key=True)
-    fk_sale = models.ForeignKey(
-        'business.SaleModel', on_delete=models.CASCADE, verbose_name='Factura')
-    fk_product = models.ForeignKey(
-        'products.ProductModel', on_delete=models.CASCADE, verbose_name='Producto')
-    sale_detail_quantity = models.DecimalField(
+class SaleDetailModel(NestedModel):
+
+    id: AutoField = None
+    fk_sale: ForeignKey = None
+    fk_product: ForeignKey = None
+    quantity: DecimalField = None
+    price: DecimalField = None
+
+    id = AutoField('ID', primary_key=True)
+    fk_sale = ForeignKey(
+        'business.SaleModel', on_delete=CASCADE, verbose_name='Factura')
+    fk_product = ForeignKey(
+        'products.ProductModel', on_delete=CASCADE, verbose_name='Producto')
+    quantity = DecimalField(
         'Cantidad', max_digits=11, decimal_places=2)
-    sale_detail_price = models.DecimalField(
+    price = DecimalField(
         'Precio', max_digits=11, decimal_places=2)
 
     class Meta:

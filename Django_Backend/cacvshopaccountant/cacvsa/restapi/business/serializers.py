@@ -14,7 +14,7 @@ class WayToPaySerializer(ModelSerializer):
     class Meta:
         model = WayToPayModel
         fields = '__all__'
-        read_only_fields = ['way_to_pay_id']
+        read_only_fields = ['id']
 
 
 class VoucherTypeSerializer(ModelSerializer):
@@ -24,7 +24,7 @@ class VoucherTypeSerializer(ModelSerializer):
     class Meta:
         model = VoucherTypeModel
         fields = '__all__'
-        read_only_fields = ['voucher_type_id']
+        read_only_fields = ['id']
 
 
 class CreditNoteSerializaer(ModelSerializer):
@@ -35,7 +35,7 @@ class CreditNoteSerializaer(ModelSerializer):
     class Meta:
         model = CreditNoteModel
         fields = '__all__'
-        read_only_fields = ['credit_note_id']
+        read_only_fields = ['id']
 
 
 class CreditNoteDetailSerializer(ModelSerializer):
@@ -47,7 +47,7 @@ class CreditNoteDetailSerializer(ModelSerializer):
     class Meta:
         model = CreditNoteDetailModel
         fields = '__all__'
-        read_only_fields = ['credit_note_detail_id']
+        read_only_fields = ['id']
 
 
 class SaleSerializer(ModelSerializer):
@@ -57,7 +57,7 @@ class SaleSerializer(ModelSerializer):
     class Meta:
         model = SaleModel
         fields = '__all__'
-        read_only_fields = ['sale_id']
+        read_only_fields = ['id']
 
 
 class SaleDetailSerializer(ModelSerializer):
@@ -67,4 +67,4 @@ class SaleDetailSerializer(ModelSerializer):
     class Meta:
         model = SaleDetailModel
         fields = '__all__'
-        read_only_fields = ['sale_detail_id']
+        read_only_fields = ['id']
