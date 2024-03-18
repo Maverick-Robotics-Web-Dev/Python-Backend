@@ -7,19 +7,24 @@ from rest_framework import exceptions
 from cacvsa.settings.base import *
 from .models import *
 from .serializers import *
+from restapi.support.views import MultiSerializerViewSet
 from restapi.mixins.usermixins import *
 
 
-class WayToPayViewSet(GenericViewSet):
+class WayToPayViewSet(MultiSerializerViewSet, GenericViewSet):
 
     model = WayToPayModel
-    serializer_class = WayToPaySerializer
+    serializers = {
+        'default': WayToPaySerializer,
+        'list': WayToPayRelatedSerializer
+    }
+    serializer_class = serializers
 
     def get_object(self, pk):
 
         try:
 
-            obj = self.model.objects.get(pk=pk, way_to_pay_status=True)
+            obj = self.model.objects.get(pk=pk, status=True)
             return obj
 
         except self.model.DoesNotExist:
@@ -30,7 +35,7 @@ class WayToPayViewSet(GenericViewSet):
     def get_queryset(self):
 
         if self.queryset is None:
-            return self.model.objects.filter(way_to_pay_status=True)
+            return self.model.objects.filter(status=True)
 
         return self.queryset
 
@@ -58,8 +63,9 @@ class WayToPayViewSet(GenericViewSet):
 
     def create(self, request):
 
-        request.data["way_to_pay_status"] = True
-        request.data["way_to_pay_create_at"] = datetime.now()
+        request.data["status"] = True
+        request.data["create_at"] = datetime.now()
+        print(request.data)
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
@@ -81,7 +87,7 @@ class WayToPayViewSet(GenericViewSet):
 
     def partial_update(self, request, pk=None):
 
-        request.data["way_to_pay_update_at"] = datetime.now()
+        request.data["update_at"] = datetime.now()
         queryres = self.get_object(pk)
         serializer = self.serializer_class(
             queryres, data=request.data, partial=True)
@@ -105,8 +111,8 @@ class WayToPayViewSet(GenericViewSet):
 
     def destroy(self, request, pk=None):
 
-        request.data["way_to_pay_status"] = False
-        request.data["way_to_pay_update_at"] = datetime.now()
+        request.data["status"] = False
+        request.data["update_at"] = datetime.now()
         queryres = self.get_object(pk)
         serializer = self.serializer_class(
             queryres, data=request.data, partial=True)

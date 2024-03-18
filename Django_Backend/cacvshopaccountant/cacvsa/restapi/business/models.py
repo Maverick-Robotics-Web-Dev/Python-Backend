@@ -1,3 +1,4 @@
+from typing import LiteralString
 from django.db.models import (
     CASCADE,
     AutoField,
@@ -25,11 +26,16 @@ class WayToPayModel(NestedModel):
         'users.UserEmployeeModel', on_delete=CASCADE, verbose_name='Usuario')
 
     class Meta:
+
+        db_table: str = None
+        verbose_name: str = None
+        verbose_name_plural: str = None
+
         db_table = 'APIS_WAY_TO_PAY'
         verbose_name = 'FORMA DE PAGO'
         verbose_name_plural = 'FORMAS DE PAGO'
 
-    def __str__(self):
+    def __str__(self) -> LiteralString:
         return self.name
 
 

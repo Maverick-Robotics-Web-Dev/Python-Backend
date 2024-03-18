@@ -1,16 +1,25 @@
 from rest_framework.serializers import ModelSerializer, StringRelatedField
 
 from .models import *
-# from restapi.users.serializers import UserEmployeeSerializer
+from restapi.users.serializers import UserEmployeeSerializer
 
 
 class WayToPaySerializer(ModelSerializer):
 
-    # Method 1
-    # fk_user_employee = UserEmployeeSerializer()
-    # Method 2
-    fk_user_employee: StringRelatedField = None
+    class Meta:
 
+        model: WayToPayModel = None
+        fields: str | list[str] = None
+        read_only_fields: list[str] = None
+
+        model = WayToPayModel
+        fields = '__all__'
+        read_only_fields = ['id']
+
+
+class WayToPayRelatedSerializer(ModelSerializer):
+
+    fk_user_employee: StringRelatedField = None
     fk_user_employee = StringRelatedField()
 
     class Meta:
@@ -81,9 +90,22 @@ class CreditNoteDetailSerializer(ModelSerializer):
 
 class SaleSerializer(ModelSerializer):
 
+    fk_client: StringRelatedField = None
+    fk_sale_voucher_type: StringRelatedField = None
+    fk_way_to_pay: StringRelatedField = None
+    fk_user_employee: StringRelatedField = None
+
+    fk_client = StringRelatedField()
+    fk_sale_voucher_type = StringRelatedField()
+    fk_way_to_pay = StringRelatedField()
     fk_user_employee = StringRelatedField()
 
     class Meta:
+
+        model: SaleModel = None
+        fields: str | list[str] = None
+        read_only_fields: list[str] = None
+
         model = SaleModel
         fields = '__all__'
         read_only_fields = ['id']
@@ -91,9 +113,18 @@ class SaleSerializer(ModelSerializer):
 
 class SaleDetailSerializer(ModelSerializer):
 
-    fk_user_employee = StringRelatedField()
+    fk_sale: StringRelatedField = None
+    fk_product: StringRelatedField = None
+
+    fk_sale = StringRelatedField()
+    fk_product = StringRelatedField()
 
     class Meta:
+
+        model: SaleDetailModel = None
+        fields: str | list[str] = None
+        read_only_fields: list[str] = None
+
         model = SaleDetailModel
         fields = '__all__'
         read_only_fields = ['id']
