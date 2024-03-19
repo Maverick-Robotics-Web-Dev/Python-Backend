@@ -1,4 +1,6 @@
 from datetime import datetime
+from typing import Any
+from rest_framework.serializers import ListSerializer
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from rest_framework.status import *
@@ -11,14 +13,14 @@ from restapi.support.views import MultiSerializerViewSet
 from restapi.mixins.usermixins import *
 
 
-class WayToPayViewSet(MultiSerializerViewSet, GenericViewSet):
+class WayToPayViewSet(MultiSerializerViewSet):
 
     model = WayToPayModel
-    serializers = {
-        'default': WayToPaySerializer,
-        'list': WayToPayRelatedSerializer
+    serializers_classes = {
+        'default': WayToPayRelatedSerializer,
+        # 'list': WayToPayRelatedSerializer,
+        # 'retrieve': WayToPayRelatedSerializer
     }
-    serializer_class = serializers
 
     def get_object(self, pk):
 
@@ -42,7 +44,7 @@ class WayToPayViewSet(MultiSerializerViewSet, GenericViewSet):
     def list(self, request):
 
         queryres = self.get_queryset()
-        serializer = self.serializer_class(queryres, many=True)
+        serializer = self.get_serializer(queryres, many=True)
 
         response = {
             'ok': 'OK',
@@ -53,7 +55,7 @@ class WayToPayViewSet(MultiSerializerViewSet, GenericViewSet):
     def retrieve(self, request, pk=None):
 
         queryres = self.get_object(pk)
-        serializer = self.serializer_class(queryres)
+        serializer = self.get_serializer(queryres)
 
         response = {
             'ok': 'OK',
@@ -65,8 +67,8 @@ class WayToPayViewSet(MultiSerializerViewSet, GenericViewSet):
 
         request.data["status"] = True
         request.data["create_at"] = datetime.now()
-        print(request.data)
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer(
+            data=request.data)
 
         if serializer.is_valid():
 
@@ -89,7 +91,7 @@ class WayToPayViewSet(MultiSerializerViewSet, GenericViewSet):
 
         request.data["update_at"] = datetime.now()
         queryres = self.get_object(pk)
-        serializer = self.serializer_class(
+        serializer = self.get_serializer(
             queryres, data=request.data, partial=True)
 
         if serializer.is_valid():
@@ -114,7 +116,7 @@ class WayToPayViewSet(MultiSerializerViewSet, GenericViewSet):
         request.data["status"] = False
         request.data["update_at"] = datetime.now()
         queryres = self.get_object(pk)
-        serializer = self.serializer_class(
+        serializer = self.get_serializer(
             queryres, data=request.data, partial=True)
 
         if serializer.is_valid():
