@@ -1,7 +1,9 @@
+from typing import Any
 from rest_framework.serializers import ModelSerializer, StringRelatedField, SlugRelatedField
 
 from .models import *
-from restapi.users.serializers import UserEmployeeSerializer
+from restapi.users.models import UserEmployeeModel
+from restapi.users.serializers import UserEmployeeRelatedSerializer
 
 
 class WayToPaySerializer(ModelSerializer):
@@ -19,9 +21,8 @@ class WayToPaySerializer(ModelSerializer):
 
 class WayToPayRelatedSerializer(ModelSerializer):
 
-    fk_user_employee: SlugRelatedField = None
-    fk_user_employee = SlugRelatedField(
-        slug_field='user_employee_user_name', read_only=True)
+    fk_user_employee: StringRelatedField = None
+    fk_user_employee = StringRelatedField
 
     class Meta:
 
@@ -33,10 +34,18 @@ class WayToPayRelatedSerializer(ModelSerializer):
         fields = '__all__'
         read_only_fields = ['id']
 
+    # # def validate_fk_user_employee(self, value):
+    # #     print(value)
+    # #     return value
+
     # def create(self, validated_data):
-    #     user = validated_data
-    #     print(user)
-    #     return validated_data
+    #     user_model = UserEmployeeModel
+    #     user = validated_data.pop('user_employee_user_name')
+    #     user_data = user_model.objects.get(user_employee_user_name=user)
+    #     way_to_pay = self.Meta.model.objects.create(
+    #         fk_user_employee=user_data, **validated_data)
+    #     print(user_data)
+    #     return way_to_pay
 
 
 class VoucherTypeSerializer(ModelSerializer):

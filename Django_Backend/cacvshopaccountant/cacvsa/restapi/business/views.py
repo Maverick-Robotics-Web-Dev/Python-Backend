@@ -18,9 +18,11 @@ class WayToPayViewSet(MultiSerializerViewSet):
     model = WayToPayModel
     serializers_classes = {
         'default': WayToPayRelatedSerializer,
-        # 'list': WayToPayRelatedSerializer,
-        # 'retrieve': WayToPayRelatedSerializer
+        'list': WayToPayRelatedSerializer,
+        'retrieve': WayToPayRelatedSerializer
     }
+
+    serializer_class = WayToPayRelatedSerializer
 
     def get_object(self, pk):
 
