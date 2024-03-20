@@ -17,7 +17,7 @@ class WayToPayViewSet(MultiSerializerViewSet):
 
     model = WayToPayModel
     serializers_classes = {
-        'default': WayToPayRelatedSerializer,
+        'default': WayToPaySerializer,
         'list': WayToPayRelatedSerializer,
         'retrieve': WayToPayRelatedSerializer
     }

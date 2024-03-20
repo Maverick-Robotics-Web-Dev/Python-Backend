@@ -20,12 +20,6 @@ class UserEmployeeSerializer(ModelSerializer):
         read_only_fields = ['user_employee_id']
 
 
-class UserEmployeeRelatedSerializer(ModelSerializer):
-    class Meta:
-        model = UserEmployeeModel
-        fields = ['user_employee_user_name']
-
-
 class UserClientSerializer(ModelSerializer):
     class Meta:
         model = UserClientModel
