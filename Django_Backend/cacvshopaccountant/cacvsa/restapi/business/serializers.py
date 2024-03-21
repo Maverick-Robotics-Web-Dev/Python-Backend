@@ -3,7 +3,6 @@ from rest_framework.serializers import ModelSerializer, StringRelatedField, Slug
 
 from .models import *
 from restapi.users.models import UserEmployeeModel
-from restapi.users.serializers import UserEmployeeRelatedSerializer
 
 
 class WayToPaySerializer(ModelSerializer):

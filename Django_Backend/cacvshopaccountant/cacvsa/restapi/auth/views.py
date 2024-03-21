@@ -1,13 +1,16 @@
+from typing import Self, Any
 from django.conf import settings
+from django.http.response import HttpResponseBase
 from django.contrib.auth import authenticate, login as django_login, logout as django_logout
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
-from rest_framework_simplejwt.settings import api_settings as jwt_settings
 from rest_framework.viewsets import GenericViewSet, ViewSet
 from rest_framework.permissions import AllowAny
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.status import *
 from rest_framework.decorators import action
+from rest_framework_simplejwt.settings import api_settings as jwt_settings
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -18,15 +21,19 @@ from .serializers import *
 
 class LoginViewSet(GenericViewSet):
 
+    model: UserEmployeeModel = None
+    permission_classes: list = None
+    serializer_class: CustomJwtTokenSerializer = None
+
     model = UserEmployeeModel
     permission_classes = [AllowAny]
     serializer_class = CustomJwtTokenSerializer
 
     @sensitive_post_parameters_m
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self: Self, *args: tuple, **kwargs: dict[str, Any]) -> (Response | HttpResponseBase):
         return super().dispatch(*args, **kwargs)
 
-    def create(self, request):
+    def create(self: Self, request: Request) -> Response:
 
         username = request.data.get(
             'user_employee_user_name', None)

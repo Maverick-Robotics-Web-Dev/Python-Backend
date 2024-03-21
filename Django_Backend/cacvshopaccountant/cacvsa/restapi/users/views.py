@@ -1,7 +1,9 @@
 from datetime import datetime
+from typing import Self
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.hashers import make_password
 from rest_framework.viewsets import GenericViewSet
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.status import *
 from rest_framework import exceptions
@@ -86,8 +88,7 @@ class UserEmployeeViewSet(GenericViewSet):
             return self.model.objects.filter(is_active=True)
         return self.queryset
 
-    def list(self, request):
-
+    def list(self: Self, request: Request):
         queryres = self.get_queryset()
         serializer = self.serializer_class(queryres, many=True)
         data = {'msg': 'OK', 'data': serializer.data}
