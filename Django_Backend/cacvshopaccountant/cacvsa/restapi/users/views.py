@@ -95,6 +95,7 @@ class UserEmployeeViewSet(GenericViewSet):
         return Response(data, HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
+
         queryres = self.get_object(pk)
         serializer = self.serializer_class(queryres)
         data = {'msg': 'OK', 'data': serializer.data}
