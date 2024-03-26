@@ -1,4 +1,11 @@
-from django.db.models import *
+from django.db.models import (
+    Model,
+    CharField,
+    PositiveIntegerField,
+    ImageField,
+    BooleanField,
+    DateTimeField
+)
 
 
 class PersonModel(Model):
@@ -26,13 +33,15 @@ class PersonModel(Model):
     city = CharField('Ciudad', max_length=200)
     address = CharField('Dirección', max_length=200)
     postal_code = CharField('Codigo Postal', max_length=200, default='S/N')
-    phone_number = CharField('Telefono', max_length=50,
-                             default='Sin Telefono Convencional')
+    phone_number = CharField('Telefono', max_length=50, default='Sin Telefono Convencional')
     cellphone_number = CharField('Celular', max_length=50)
     email = CharField('E-mail', max_length=100, default='No Posee email')
     img = ImageField('Imagen', upload_to='persons/', blank=True, null=True)
 
     class Meta:
+
+        abstract: bool = None
+
         abstract = True
 
 
@@ -44,10 +53,12 @@ class NestedModel(Model):
     update_at: DateTimeField = None
 
     status = BooleanField('Estado', default=False)
-    status_description = CharField(
-        'Descripción del Estado', max_length=256, default='No existe descripción')
+    status_description = CharField('Descripción del Estado', max_length=256, default='No existe descripción')
     create_at = DateTimeField('Fecha de Creación')
     update_at = DateTimeField('Fecha de Actualización', blank=True, null=True)
 
     class Meta:
+
+        abstract: bool = None
+
         abstract = True

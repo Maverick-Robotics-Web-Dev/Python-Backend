@@ -1,8 +1,16 @@
-from typing import Any
-from rest_framework.serializers import ModelSerializer, StringRelatedField, SlugRelatedField
+from rest_framework.serializers import (
+    ModelSerializer,
+    StringRelatedField
+)
 
-from .models import *
-from restapi.users.models import UserEmployeeModel
+from .models import (
+    WayToPayModel,
+    VoucherTypeModel,
+    CreditNoteModel,
+    CreditNoteDetailModel,
+    SaleModel,
+    SaleDetailModel
+)
 
 
 class WayToPaySerializer(ModelSerializer):
@@ -11,30 +19,38 @@ class WayToPaySerializer(ModelSerializer):
 
         model: WayToPayModel = None
         fields: str | list[str] = None
-        read_only_fields: list[str] = None
 
         model = WayToPayModel
         fields = '__all__'
-        read_only_fields = ['id']
 
 
 class WayToPayRelatedSerializer(ModelSerializer):
 
     fk_user_employee: StringRelatedField = None
-    fk_user_employee = StringRelatedField
+
+    fk_user_employee = StringRelatedField()
 
     class Meta:
 
         model: WayToPayModel = None
         fields: str | list[str] = None
-        read_only_fields: list[str] = None
 
         model = WayToPayModel
         fields = '__all__'
-        read_only_fields = ['id']
 
 
 class VoucherTypeSerializer(ModelSerializer):
+
+    class Meta:
+
+        model: VoucherTypeModel = None
+        fields: str | list[str] = None
+
+        model = VoucherTypeModel
+        fields = '__all__'
+
+
+class VoucherTypeRelatedSerializer(ModelSerializer):
 
     fk_user_employee: StringRelatedField = None
 
@@ -44,14 +60,23 @@ class VoucherTypeSerializer(ModelSerializer):
 
         model: VoucherTypeModel = None
         fields: str | list[str] = None
-        read_only_fields: list[str] = None
 
         model = VoucherTypeModel
         fields = '__all__'
-        read_only_fields = ['id']
 
 
 class CreditNoteSerializaer(ModelSerializer):
+
+    class Meta:
+
+        model: CreditNoteModel = None
+        fields: str | list[str] = None
+
+        model = CreditNoteModel
+        fields = '__all__'
+
+
+class CreditNoteRelatedSerializaer(ModelSerializer):
 
     fk_client: StringRelatedField = None
     fk_user_employee: StringRelatedField = None
@@ -63,14 +88,23 @@ class CreditNoteSerializaer(ModelSerializer):
 
         model: CreditNoteModel = None
         fields: str | list[str] = None
-        read_only_fields: list[str] = None
 
         model = CreditNoteModel
         fields = '__all__'
-        read_only_fields = ['id']
 
 
 class CreditNoteDetailSerializer(ModelSerializer):
+
+    class Meta:
+
+        model: CreditNoteDetailModel = None
+        fields: str | list[str] = None
+
+        model = CreditNoteDetailModel
+        fields = '__all__'
+
+
+class CreditNoteDetailRelatedSerializer(ModelSerializer):
 
     fk_credit_note: StringRelatedField = None
     fk_product: StringRelatedField = None
@@ -82,11 +116,9 @@ class CreditNoteDetailSerializer(ModelSerializer):
 
         model: CreditNoteDetailModel = None
         fields: str | list[str] = None
-        read_only_fields: list[str] = None
 
         model = CreditNoteDetailModel
         fields = '__all__'
-        read_only_fields = ['id']
 
 
 class SaleSerializer(ModelSerializer):

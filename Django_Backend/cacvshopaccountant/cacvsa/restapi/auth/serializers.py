@@ -1,9 +1,15 @@
-from typing import Any, Self
+from typing import OrderedDict,  Self
+
 from rest_framework.serializers import (
-    ModelSerializer, Serializer, CharField, ValidationError)
+    ModelSerializer,
+    Serializer,
+    CharField,
+    ValidationError
+)
+
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from restapi.users.models import *
+from restapi.users.models import UserEmployeeModel
 
 
 class CustomJwtTokenSerializer(TokenObtainPairSerializer):
@@ -31,8 +37,11 @@ class PasswordChangeSerializer(Serializer):
     password = CharField(max_length=128, write_only=True)
     confirm_password = CharField(max_length=128, write_only=True)
 
-    def validate(self: Self, data: Any) -> Any:
+    def validate(self: Self, data: OrderedDict) -> OrderedDict:
+
         if data['password'] != data['confirm_password']:
+
             raise ValidationError(
                 {'password': 'No coinciden las contraseñas'})
+
         return data

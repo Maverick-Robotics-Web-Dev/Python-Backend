@@ -71,6 +71,7 @@ class WayToPayViewSet(MultiSerializerViewSet):
         request.data["create_at"] = datetime.now()
         serializer = self.get_serializer(
             data=request.data)
+        print(type(serializer))
 
         if serializer.is_valid():
 

@@ -11,7 +11,7 @@ credit_note_update_at = models.DateTimeField(
         'Fecha de Actualización', blank=True, null=True)
 credit_note_status = models.BooleanField('Estado', default=False)
 
-
+c
 models.BooleanField('Estado', default=False)
 
         try:
