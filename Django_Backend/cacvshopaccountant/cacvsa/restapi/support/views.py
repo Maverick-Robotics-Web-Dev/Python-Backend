@@ -1,20 +1,31 @@
-from typing import Any
-from rest_framework.viewsets import ViewSet, GenericViewSet
+from typing import Self
+
+from rest_framework.serializers import Serializer
+from rest_framework.viewsets import GenericViewSet
 
 
 class MultiSerializerViewSet(GenericViewSet):
 
-    action: str | Any = None
-    serializers_classes: dict[str, None] = None
+    action: str = None
+    serializers: dict = None
 
-    serializers_classes = {"default": None}
+    serializers = {"default": None}
 
-    def get_serializer_class(self) -> None:
+    def get_serializer_class(self: Self) -> Serializer:
         """
         Devuelve un serializador en función del verbo HTTP
         (o acción). Si no está definido, devuelve el serializador
         por defecto.
         """
 
-        return self.serializers_classes.get(
-            self.action, self.serializers_classes["default"])
+        return self.serializers.get(
+            self.action, self.serializers["default"])
+
+    def get_serializer(self, *args, **kwargs) -> Serializer:
+        """
+        Return the serializer instance that should be used for validating and
+        deserializing input, and for serializing output.
+        """
+        serializer_class = self.get_serializer_class()
+        kwargs.setdefault('context', self.get_serializer_context())
+        return serializer_class(*args, **kwargs)

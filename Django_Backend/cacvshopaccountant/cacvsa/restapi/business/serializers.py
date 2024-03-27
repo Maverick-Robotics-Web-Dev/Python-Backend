@@ -123,6 +123,18 @@ class CreditNoteDetailRelatedSerializer(ModelSerializer):
 
 class SaleSerializer(ModelSerializer):
 
+    class Meta:
+
+        model: SaleModel = None
+        fields: str | list[str] = None
+        read_only_fields: list[str] = None
+
+        model = SaleModel
+        fields = '__all__'
+
+
+class SaleRelatedSerializer(ModelSerializer):
+
     fk_client: StringRelatedField = None
     fk_sale_voucher_type: StringRelatedField = None
     fk_way_to_pay: StringRelatedField = None
@@ -137,14 +149,23 @@ class SaleSerializer(ModelSerializer):
 
         model: SaleModel = None
         fields: str | list[str] = None
-        read_only_fields: list[str] = None
 
         model = SaleModel
         fields = '__all__'
-        read_only_fields = ['id']
 
 
 class SaleDetailSerializer(ModelSerializer):
+
+    class Meta:
+
+        model: SaleDetailModel = None
+        fields: str | list[str] = None
+
+        model = SaleDetailModel
+        fields = '__all__'
+
+
+class SaleDetailRelatedSerializer(ModelSerializer):
 
     fk_sale: StringRelatedField = None
     fk_product: StringRelatedField = None
@@ -156,8 +177,6 @@ class SaleDetailSerializer(ModelSerializer):
 
         model: SaleDetailModel = None
         fields: str | list[str] = None
-        read_only_fields: list[str] = None
 
         model = SaleDetailModel
         fields = '__all__'
-        read_only_fields = ['id']

@@ -1,49 +1,93 @@
 from datetime import datetime
-from typing import Any
-from rest_framework.serializers import ListSerializer
-from rest_framework.viewsets import GenericViewSet
-from rest_framework.response import Response
-from rest_framework.status import *
-from rest_framework import exceptions
+from typing import Self
 
-from cacvsa.settings.base import *
-from .models import *
-from .serializers import *
+from django.db.models.query import QuerySet
+
+from rest_framework.serializers import Serializer, ListSerializer
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
+from rest_framework.status import (
+    HTTP_200_OK,
+    HTTP_201_CREATED,
+    HTTP_400_BAD_REQUEST,
+    HTTP_404_NOT_FOUND,
+    HTTP_204_NO_CONTENT
+)
+
 from restapi.support.views import MultiSerializerViewSet
-from restapi.mixins.usermixins import *
+
+from .models import (
+    WayToPayModel,
+    VoucherTypeModel,
+    CreditNoteModel,
+    CreditNoteDetailModel,
+    SaleModel,
+    SaleDetailModel
+)
+from .serializers import (
+    WayToPaySerializer,
+    WayToPayRelatedSerializer,
+    VoucherTypeSerializer,
+    VoucherTypeRelatedSerializer,
+    CreditNoteSerializaer,
+    CreditNoteRelatedSerializaer,
+    CreditNoteDetailSerializer,
+    CreditNoteDetailRelatedSerializer,
+    SaleSerializer,
+    SaleRelatedSerializer,
+    SaleDetailSerializer,
+    SaleDetailRelatedSerializer
+)
 
 
 class WayToPayViewSet(MultiSerializerViewSet):
 
+    model: WayToPayModel = None
+    serializers: dict = None
+
     model = WayToPayModel
-    serializers_classes = {
+    serializers = {
         'default': WayToPaySerializer,
         'list': WayToPayRelatedSerializer,
         'retrieve': WayToPayRelatedSerializer
     }
 
-    serializer_class = WayToPayRelatedSerializer
-
-    def get_object(self, pk):
+    def get_object(self: Self, pk: str) -> WayToPayModel:
 
         try:
+
+            obj: WayToPayModel = None
 
             obj = self.model.objects.get(pk=pk, status=True)
             return obj
 
         except self.model.DoesNotExist:
 
-            response = {'error': 'ERROR', 'msg': 'No existe'}
-            raise exceptions.ValidationError(response)
+            data: dict = None
+            response: ValidationError = None
 
-    def get_queryset(self):
+            data = {
+                'error': 'ERROR',
+                'msg': 'No existe'
+            }
+
+            response = ValidationError(data, HTTP_204_NO_CONTENT)
+
+            raise response
+
+    def get_queryset(self: Self) -> QuerySet:
 
         if self.queryset is None:
             return self.model.objects.filter(status=True)
 
         return self.queryset
 
-    def list(self, request):
+    def list(self: Self, request: Request) -> Response:
+
+        serializer: ListSerializer = None
+        queryres: QuerySet = None
 
         queryres = self.get_queryset()
         serializer = self.get_serializer(queryres, many=True)

@@ -6,23 +6,33 @@ fk_user_employee = models.ForeignKey(
 
 fk_user_employee = StringRelatedField()
 default='No existe descripción'
-credit_note_create_at = models.DateTimeField('Fecha de Creación')
-credit_note_update_at = models.DateTimeField(
-        'Fecha de Actualización', blank=True, null=True)
-credit_note_status = models.BooleanField('Estado', default=False)
 
-c
+->
+Related
 models.BooleanField('Estado', default=False)
+
+def get_object(self: Self, pk: str):
 
         try:
 
-            obj = self.model.objects.get(pk=pk, way_to_pay_status=True)
+            obj: WayToPayModel = None
+
+            obj = self.model.objects.get(pk=pk, status=True)
             return obj
 
         except self.model.DoesNotExist:
 
-            response = {'error': 'ERROR', 'msg': 'No existe'}
-            raise exceptions.ValidationError(response)
+            data: dict = None
+            response: ValidationError = None
+
+            data = {
+                'error': 'ERROR',
+                'msg': 'No existe'
+            }
+
+            response = ValidationError(data, HTTP_204_NO_CONTENT)
+
+            raise response
 
 response = {
             'ok': 'OK',

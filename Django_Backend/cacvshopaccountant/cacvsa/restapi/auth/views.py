@@ -275,14 +275,15 @@ class PasswordChangeViewSet(GenericViewSet):
         try:
 
             obj: UserEmployeeModel = None
-            data: dict = None
-            response: ValidationError = None
 
             obj = self.model.objects.get(pk=pk, status=True, is_active=True)
 
             return obj
 
         except self.model.DoesNotExist:
+
+            data: dict = None
+            response: ValidationError = None
 
             data = {
                 'error': 'ERROR',
