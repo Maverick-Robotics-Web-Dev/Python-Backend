@@ -62,3 +62,18 @@ class NestedModel(Model):
         abstract: bool = None
 
         abstract = True
+
+
+class MiniModel(Model):
+
+    create_at: DateTimeField = None
+    update_at: DateTimeField = None
+
+    create_at = DateTimeField('Fecha de Creación')
+    update_at = DateTimeField('Fecha de Actualización', blank=True, null=True)
+
+    class Meta:
+
+        abstract: bool = None
+
+        abstract = True

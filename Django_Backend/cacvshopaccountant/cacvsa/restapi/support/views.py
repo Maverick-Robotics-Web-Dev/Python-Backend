@@ -21,11 +21,13 @@ class MultiSerializerViewSet(GenericViewSet):
         return self.serializers.get(
             self.action, self.serializers["default"])
 
-    def get_serializer(self, *args, **kwargs) -> Serializer:
+    def get_serializer(self: Self, *args: tuple, **kwargs: dict) -> Serializer:
         """
         Return the serializer instance that should be used for validating and
         deserializing input, and for serializing output.
         """
+        serializer_class: Serializer = None
+
         serializer_class = self.get_serializer_class()
         kwargs.setdefault('context', self.get_serializer_context())
         return serializer_class(*args, **kwargs)

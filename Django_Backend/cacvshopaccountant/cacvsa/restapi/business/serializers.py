@@ -65,7 +65,7 @@ class VoucherTypeRelatedSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class CreditNoteSerializaer(ModelSerializer):
+class CreditNoteSerializer(ModelSerializer):
 
     class Meta:
 
@@ -76,7 +76,7 @@ class CreditNoteSerializaer(ModelSerializer):
         fields = '__all__'
 
 
-class CreditNoteRelatedSerializaer(ModelSerializer):
+class CreditNoteRelatedSerializer(ModelSerializer):
 
     fk_client: StringRelatedField = None
     fk_user_employee: StringRelatedField = None
