@@ -1,15 +1,15 @@
-from datetime import datetime
 from typing import Self
-
-from restapi.abstracts.models import NestedModel
-
+from datetime import datetime
 from django.db.models.query import QuerySet
+
+
 
 from rest_framework.serializers import (
     ModelSerializer,
     StringRelatedField
 )
 
+from rest_framework.serializers import Serializer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
@@ -21,6 +21,8 @@ from rest_framework.status import (
 )
 
 from restapi.support.views import MultiSerializerViewSet
+
+from restapi.abstracts.models import NestedModel
 
 
 fk_user_employee = ForeignKey('users.UserEmployeeModel', on_delete=models.CASCADE, verbose_name='Usuario')

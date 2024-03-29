@@ -206,6 +206,12 @@ class VoucherTypeViewSet(MultiSerializerViewSet):
 
     model: VoucherTypeModel = None
     serializers: dict = None
+    obj: VoucherTypeModel = None
+    query_res: QuerySet = None
+    serializer: Serializer = None
+    data: dict = None
+    response_error: ValidationError = None
+    response: Response = None
 
     model = VoucherTypeModel
     serializers = {
@@ -218,24 +224,19 @@ class VoucherTypeViewSet(MultiSerializerViewSet):
 
         try:
 
-            obj: VoucherTypeModel = None
-
-            obj = self.model.objects.get(pk=pk, status=True)
-            return obj
+            self.obj = self.model.objects.get(pk=pk, status=True)
+            return self.obj
 
         except self.model.DoesNotExist:
 
-            data: dict = None
-            response: ValidationError = None
-
-            data = {
+            self.data = {
                 'error': 'ERROR',
                 'msg': 'No existe'
             }
 
-            response = ValidationError(data, HTTP_204_NO_CONTENT)
+            self.response_error = ValidationError(self.data, HTTP_204_NO_CONTENT)
 
-            raise response
+            raise self.response_error
 
     def get_queryset(self: Self) -> QuerySet:
 
@@ -246,153 +247,133 @@ class VoucherTypeViewSet(MultiSerializerViewSet):
 
     def list(self: Self, request: Request) -> Response:
 
-        queryres: QuerySet = None
-        serializer: VoucherTypeRelatedSerializer = None
-        data: dict = None
-        response: Response = None
+        self.query_res = self.get_queryset()
+        self.serializer = self.get_serializer(self.query_res, many=True)
 
-        queryres = self.get_queryset()
-        serializer = self.get_serializer(queryres, many=True)
-
-        data = {
+        self.data = {
             'ok': 'OK',
-            'data': serializer.data
+            'data': self.serializer.data
         }
 
-        response = Response(data, HTTP_200_OK)
+        self.response = Response(self.data, HTTP_200_OK)
 
-        return response
+        return self.response
 
     def retrieve(self: Self, request: Request, pk: str = None):
 
-        queryres: VoucherTypeModel = None
-        serializer: VoucherTypeRelatedSerializer = None
-        data: dict = None
-        response: Response = None
+        self.obj = self.get_object(pk)
+        self.serializer = self.get_serializer(self.obj)
 
-        queryres = self.get_object(pk)
-        serializer = self.get_serializer(queryres)
-
-        data = {
+        self.data = {
             'ok': 'OK',
-            'data': serializer.data
+            'data': self.serializer.data
         }
 
-        response = Response(data, HTTP_200_OK)
+        self.response = Response(self.data, HTTP_200_OK)
 
-        return response
+        return self.response
 
     def create(self: Self, request: Request):
-
-        serializer: VoucherTypeSerializer = None
-        data: dict = None
-        response: Response = None
 
         request.data["status"] = True
         request.data["create_at"] = datetime.now()
 
-        serializer = self.get_serializer(data=request.data)
+        self.serializer = self.get_serializer(data=request.data)
 
-        if serializer.is_valid():
+        if self.serializer.is_valid():
 
-            serializer.save()
+            self.serializer.save()
 
-            data = {
+            self.data = {
                 'ok': 'OK',
                 'msg': 'Creado Exitosamente',
-                'data': serializer.data
+                'data': self.serializer.data
             }
 
-            response = Response(data, HTTP_201_CREATED)
+            self.response = Response(self.data, HTTP_201_CREATED)
 
-            return response
+            return self.response
 
-        data = {
+        self.data = {
             'error': 'ERROR',
-            'msg': serializer.errors
+            'msg': self.serializer.errors
         }
 
-        response = Response(data, HTTP_400_BAD_REQUEST)
+        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return response
+        return self.response
 
     def partial_update(self: Self, request: Request, pk: str = None):
 
-        queryres: VoucherTypeModel = None
-        serializer: VoucherTypeSerializer = None
-        data: dict = None
-        response: Response = None
-
         request.data["update_at"] = datetime.now()
 
-        queryres = self.get_object(pk)
-        serializer = self.get_serializer(
-            queryres, data=request.data, partial=True)
+        self.obj = self.get_object(pk)
+        self.serializer = self.get_serializer(self.obj, data=request.data, partial=True)
 
-        if serializer.is_valid():
+        if self.serializer.is_valid():
 
-            serializer.save()
+            self.serializer.save()
 
-            data = {
+            self.data = {
                 'ok': 'OK',
                 'msg': 'Actualizado Exitosamente',
-                'data': serializer.data
+                'data': self.serializer.data
             }
 
-            response = Response(data, HTTP_201_CREATED)
+            self.response = Response(self.data, HTTP_201_CREATED)
 
-            return response
+            return self.response
 
-        data = {
+        self.data = {
             'error': 'ERROR',
-            'msg': serializer.errors
+            'msg': self.serializer.errors
         }
 
-        response = Response(data, HTTP_400_BAD_REQUEST)
+        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return response
+        return self.response
 
     def destroy(self: Self, request: Request, pk: str = None):
-
-        queryres: VoucherTypeModel = None
-        serializer: VoucherTypeSerializer = None
-        data: dict = None
-        response: Response = None
 
         request.data["status"] = False
         request.data["update_at"] = datetime.now()
 
-        queryres = self.get_object(pk)
-        serializer = self.get_serializer(
-            queryres, data=request.data, partial=True)
+        self.obj = self.get_object(pk)
+        self.serializer = self.get_serializer(self.obj, data=request.data, partial=True)
 
-        if serializer.is_valid():
+        if self.serializer.is_valid():
 
-            serializer.save()
+            self.serializer.save()
 
-            data = {
+            self.data = {
                 'ok': 'OK',
                 'msg': 'Eliminado Exitosamente',
             }
 
-            response = Response(data, HTTP_200_OK)
+            self.response = Response(self.data, HTTP_200_OK)
 
-            return response
+            return self.response
 
-        data = {
+        self.data = {
             'error': 'ERROR',
-            'msg': serializer.errors
+            'msg': self.serializer.errors
         }
 
-        response = Response(data, HTTP_400_BAD_REQUEST)
+        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return response
+        return self.response
 
 
 class CreditNoteViewSet(MultiSerializerViewSet):
 
     model: CreditNoteModel = None
     serializers: dict = None
+    obj: CreditNoteModel = None
+    query_res: QuerySet = None
+    serializer: Serializer = None
+    data: dict = None
+    response_error: ValidationError = None
+    response: Response = None
 
     model = CreditNoteModel
     serializers = {
@@ -405,24 +386,19 @@ class CreditNoteViewSet(MultiSerializerViewSet):
 
         try:
 
-            obj: CreditNoteModel = None
-
-            obj = self.model.objects.get(pk=pk, status=True)
-            return obj
+            self.obj = self.model.objects.get(pk=pk, status=True)
+            return self.obj
 
         except self.model.DoesNotExist:
 
-            data: dict = None
-            response: ValidationError = None
-
-            data = {
+            self.data = {
                 'error': 'ERROR',
                 'msg': 'No existe'
             }
 
-            response = ValidationError(data, HTTP_204_NO_CONTENT)
+            self.response_error = ValidationError(self.data, HTTP_204_NO_CONTENT)
 
-            raise response
+            raise self.response_error
 
     def get_queryset(self: Self) -> QuerySet:
 
@@ -433,153 +409,133 @@ class CreditNoteViewSet(MultiSerializerViewSet):
 
     def list(self: Self, request: Request) -> Response:
 
-        queryres: QuerySet = None
-        serializer: CreditNoteRelatedSerializer = None
-        data: dict = None
-        response: Response = None
+        self.query_res = self.get_queryset()
+        self.serializer = self.get_serializer(self.query_res, many=True)
 
-        queryres = self.get_queryset()
-        serializer = self.get_serializer(queryres, many=True)
-
-        data = {
+        self.data = {
             'ok': 'OK',
-            'data': serializer.data
+            'data': self.serializer.data
         }
 
-        response = Response(data, HTTP_200_OK)
+        self.response = Response(self.data, HTTP_200_OK)
 
-        return response
+        return self.response
 
     def retrieve(self: Self, request: Request, pk: str = None):
 
-        queryres: CreditNoteModel = None
-        serializer: CreditNoteRelatedSerializer = None
-        data: dict = None
-        response: Response = None
+        self.obj = self.get_object(pk)
+        self.serializer = self.get_serializer(self.obj)
 
-        queryres = self.get_object(pk)
-        serializer = self.get_serializer(queryres)
-
-        data = {
+        self.data = {
             'ok': 'OK',
-            'data': serializer.data
+            'data': self.serializer.data
         }
 
-        response = Response(data, HTTP_200_OK)
+        self.response = Response(self.data, HTTP_200_OK)
 
-        return response
+        return self.response
 
     def create(self: Self, request: Request):
-
-        serializer: CreditNoteSerializer = None
-        data: dict = None
-        response: Response = None
 
         request.data["status"] = True
         request.data["create_at"] = datetime.now()
 
-        serializer = self.get_serializer(data=request.data)
+        self.serializer = self.get_serializer(data=request.data)
 
-        if serializer.is_valid():
+        if self.serializer.is_valid():
 
-            serializer.save()
+            self.serializer.save()
 
-            data = {
+            self.data = {
                 'ok': 'OK',
                 'msg': 'Creado Exitosamente',
-                'data': serializer.data
+                'data': self.serializer.data
             }
 
-            response = Response(data, HTTP_201_CREATED)
+            self.response = Response(self.data, HTTP_201_CREATED)
 
-            return response
+            return self.response
 
-        data = {
+        self.data = {
             'error': 'ERROR',
-            'msg': serializer.errors
+            'msg': self.serializer.errors
         }
 
-        response = Response(data, HTTP_400_BAD_REQUEST)
+        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return response
+        return self.response
 
     def partial_update(self: Self, request: Request, pk: str = None):
 
-        queryres: CreditNoteModel = None
-        serializer: CreditNoteSerializer = None
-        data: dict = None
-        response: Response = None
-
         request.data["update_at"] = datetime.now()
 
-        queryres = self.get_object(pk)
-        serializer = self.get_serializer(
-            queryres, data=request.data, partial=True)
+        self.obj = self.get_object(pk)
+        self.serializer = self.get_serializer(self.obj, data=request.data, partial=True)
 
-        if serializer.is_valid():
+        if self.serializer.is_valid():
 
-            serializer.save()
+            self.serializer.save()
 
-            data = {
+            self.data = {
                 'ok': 'OK',
                 'msg': 'Actualizado Exitosamente',
-                'data': serializer.data
+                'data': self.serializer.data
             }
 
-            response = Response(data, HTTP_201_CREATED)
+            self.response = Response(self.data, HTTP_201_CREATED)
 
-            return response
+            return self.response
 
-        data = {
+        self.data = {
             'error': 'ERROR',
-            'msg': serializer.errors
+            'msg': self.serializer.errors
         }
 
-        response = Response(data, HTTP_400_BAD_REQUEST)
+        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return response
+        return self.response
 
     def destroy(self: Self, request: Request, pk: str = None):
-
-        queryres: CreditNoteModel = None
-        serializer: CreditNoteSerializer = None
-        data: dict = None
-        response: Response = None
 
         request.data["status"] = False
         request.data["update_at"] = datetime.now()
 
-        queryres = self.get_object(pk)
-        serializer = self.get_serializer(
-            queryres, data=request.data, partial=True)
+        self.obj = self.get_object(pk)
+        self.serializer = self.get_serializer(self.obj, data=request.data, partial=True)
 
-        if serializer.is_valid():
+        if self.serializer.is_valid():
 
-            serializer.save()
+            self.serializer.save()
 
-            data = {
+            self.data = {
                 'ok': 'OK',
                 'msg': 'Eliminado Exitosamente',
             }
 
-            response = Response(data, HTTP_200_OK)
+            self.response = Response(self.data, HTTP_200_OK)
 
-            return response
+            return self.response
 
-        data = {
+        self.data = {
             'error': 'ERROR',
-            'msg': serializer.errors
+            'msg': self.serializer.errors
         }
 
-        response = Response(data, HTTP_400_BAD_REQUEST)
+        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return response
+        return self.response
 
 
 class CreditNoteDetailViewSet(MultiSerializerViewSet):
 
     model: CreditNoteDetailModel = None
     serializers: dict = None
+    obj: CreditNoteDetailModel = None
+    query_res: QuerySet = None
+    serializer: Serializer = None
+    data: dict = None
+    response_error: ValidationError = None
+    response: Response = None
 
     model = CreditNoteDetailModel
     serializers = {
@@ -592,24 +548,19 @@ class CreditNoteDetailViewSet(MultiSerializerViewSet):
 
         try:
 
-            obj: CreditNoteDetailModel = None
-
-            obj = self.model.objects.get(pk=pk, status=True)
-            return obj
+            self.obj = self.model.objects.get(pk=pk, status=True)
+            return self.obj
 
         except self.model.DoesNotExist:
 
-            data: dict = None
-            response: ValidationError = None
-
-            data = {
+            self.data = {
                 'error': 'ERROR',
                 'msg': 'No existe'
             }
 
-            response = ValidationError(data, HTTP_204_NO_CONTENT)
+            self.response_error = ValidationError(self.data, HTTP_204_NO_CONTENT)
 
-            raise response
+            raise self.response_error
 
     def get_queryset(self: Self) -> QuerySet:
 
@@ -620,153 +571,133 @@ class CreditNoteDetailViewSet(MultiSerializerViewSet):
 
     def list(self: Self, request: Request) -> Response:
 
-        queryres: QuerySet = None
-        serializer: CreditNoteDetailRelatedSerializer = None
-        data: dict = None
-        response: Response = None
+        self.query_res = self.get_queryset()
+        self.serializer = self.get_serializer(self.query_res, many=True)
 
-        queryres = self.get_queryset()
-        serializer = self.get_serializer(queryres, many=True)
-
-        data = {
+        self.data = {
             'ok': 'OK',
-            'data': serializer.data
+            'data': self.serializer.data
         }
 
-        response = Response(data, HTTP_200_OK)
+        self.response = Response(self.data, HTTP_200_OK)
 
-        return response
+        return self.response
 
     def retrieve(self: Self, request: Request, pk: str = None):
 
-        queryres: CreditNoteDetailModel = None
-        serializer: CreditNoteDetailRelatedSerializer = None
-        data: dict = None
-        response: Response = None
+        self.obj = self.get_object(pk)
+        self.serializer = self.get_serializer(self.obj)
 
-        queryres = self.get_object(pk)
-        serializer = self.get_serializer(queryres)
-
-        data = {
+        self.data = {
             'ok': 'OK',
-            'data': serializer.data
+            'data': self.serializer.data
         }
 
-        response = Response(data, HTTP_200_OK)
+        self.response = Response(self.data, HTTP_200_OK)
 
-        return response
+        return self.response
 
     def create(self: Self, request: Request):
-
-        serializer: CreditNoteDetailSerializer = None
-        data: dict = None
-        response: Response = None
 
         request.data["status"] = True
         request.data["create_at"] = datetime.now()
 
-        serializer = self.get_serializer(data=request.data)
+        self.serializer = self.get_serializer(data=request.data)
 
-        if serializer.is_valid():
+        if self.serializer.is_valid():
 
-            serializer.save()
+            self.serializer.save()
 
-            data = {
+            self.data = {
                 'ok': 'OK',
                 'msg': 'Creado Exitosamente',
-                'data': serializer.data
+                'data': self.serializer.data
             }
 
-            response = Response(data, HTTP_201_CREATED)
+            self.response = Response(self.data, HTTP_201_CREATED)
 
-            return response
+            return self.response
 
-        data = {
+        self.data = {
             'error': 'ERROR',
-            'msg': serializer.errors
+            'msg': self.serializer.errors
         }
 
-        response = Response(data, HTTP_400_BAD_REQUEST)
+        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return response
+        return self.response
 
     def partial_update(self: Self, request: Request, pk: str = None):
 
-        queryres: CreditNoteDetailModel = None
-        serializer: CreditNoteDetailSerializer = None
-        data: dict = None
-        response: Response = None
-
         request.data["update_at"] = datetime.now()
 
-        queryres = self.get_object(pk)
-        serializer = self.get_serializer(
-            queryres, data=request.data, partial=True)
+        self.obj = self.get_object(pk)
+        self.serializer = self.get_serializer(self.obj, data=request.data, partial=True)
 
-        if serializer.is_valid():
+        if self.serializer.is_valid():
 
-            serializer.save()
+            self.serializer.save()
 
-            data = {
+            self.data = {
                 'ok': 'OK',
                 'msg': 'Actualizado Exitosamente',
-                'data': serializer.data
+                'data': self.serializer.data
             }
 
-            response = Response(data, HTTP_201_CREATED)
+            self.response = Response(self.data, HTTP_201_CREATED)
 
-            return response
+            return self.response
 
-        data = {
+        self.data = {
             'error': 'ERROR',
-            'msg': serializer.errors
+            'msg': self.serializer.errors
         }
 
-        response = Response(data, HTTP_400_BAD_REQUEST)
+        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return response
+        return self.response
 
     def destroy(self: Self, request: Request, pk: str = None):
-
-        queryres: CreditNoteDetailModel = None
-        serializer: CreditNoteDetailSerializer = None
-        data: dict = None
-        response: Response = None
 
         request.data["status"] = False
         request.data["update_at"] = datetime.now()
 
-        queryres = self.get_object(pk)
-        serializer = self.get_serializer(
-            queryres, data=request.data, partial=True)
+        self.obj = self.get_object(pk)
+        self.serializer = self.get_serializer(self.obj, data=request.data, partial=True)
 
-        if serializer.is_valid():
+        if self.serializer.is_valid():
 
-            serializer.save()
+            self.serializer.save()
 
-            data = {
+            self.data = {
                 'ok': 'OK',
                 'msg': 'Eliminado Exitosamente',
             }
 
-            response = Response(data, HTTP_200_OK)
+            self.response = Response(self.data, HTTP_200_OK)
 
-            return response
+            return self.response
 
-        data = {
+        self.data = {
             'error': 'ERROR',
-            'msg': serializer.errors
+            'msg': self.serializer.errors
         }
 
-        response = Response(data, HTTP_400_BAD_REQUEST)
+        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return response
+        return self.response
 
 
 class SaleViewSet(MultiSerializerViewSet):
 
     model: SaleModel = None
     serializers: dict = None
+    obj: SaleModel = None
+    query_res: QuerySet = None
+    serializer: Serializer = None
+    data: dict = None
+    response_error: ValidationError = None
+    response: Response = None
 
     model = SaleModel
     serializers = {
@@ -779,24 +710,19 @@ class SaleViewSet(MultiSerializerViewSet):
 
         try:
 
-            obj: SaleModel = None
-
-            obj = self.model.objects.get(pk=pk, status=True)
-            return obj
+            self.obj = self.model.objects.get(pk=pk, status=True)
+            return self.obj
 
         except self.model.DoesNotExist:
 
-            data: dict = None
-            response: ValidationError = None
-
-            data = {
+            self.data = {
                 'error': 'ERROR',
                 'msg': 'No existe'
             }
 
-            response = ValidationError(data, HTTP_204_NO_CONTENT)
+            self.response_error = ValidationError(self.data, HTTP_204_NO_CONTENT)
 
-            raise response
+            raise self.response_error
 
     def get_queryset(self: Self) -> QuerySet:
 
@@ -807,153 +733,133 @@ class SaleViewSet(MultiSerializerViewSet):
 
     def list(self: Self, request: Request) -> Response:
 
-        queryres: QuerySet = None
-        serializer: SaleRelatedSerializer = None
-        data: dict = None
-        response: Response = None
+        self.query_res = self.get_queryset()
+        self.serializer = self.get_serializer(self.query_res, many=True)
 
-        queryres = self.get_queryset()
-        serializer = self.get_serializer(queryres, many=True)
-
-        data = {
+        self.data = {
             'ok': 'OK',
-            'data': serializer.data
+            'data': self.serializer.data
         }
 
-        response = Response(data, HTTP_200_OK)
+        self.response = Response(self.data, HTTP_200_OK)
 
-        return response
+        return self.response
 
     def retrieve(self: Self, request: Request, pk: str = None):
 
-        queryres: SaleModel = None
-        serializer: SaleRelatedSerializer = None
-        data: dict = None
-        response: Response = None
+        self.obj = self.get_object(pk)
+        self.serializer = self.get_serializer(self.obj)
 
-        queryres = self.get_object(pk)
-        serializer = self.get_serializer(queryres)
-
-        data = {
+        self.data = {
             'ok': 'OK',
-            'data': serializer.data
+            'data': self.serializer.data
         }
 
-        response = Response(data, HTTP_200_OK)
+        self.response = Response(self.data, HTTP_200_OK)
 
-        return response
+        return self.response
 
     def create(self: Self, request: Request):
-
-        serializer: SaleSerializer = None
-        data: dict = None
-        response: Response = None
 
         request.data["status"] = True
         request.data["create_at"] = datetime.now()
 
-        serializer = self.get_serializer(data=request.data)
+        self.serializer = self.get_serializer(data=request.data)
 
-        if serializer.is_valid():
+        if self.serializer.is_valid():
 
-            serializer.save()
+            self.serializer.save()
 
-            data = {
+            self.data = {
                 'ok': 'OK',
                 'msg': 'Creado Exitosamente',
-                'data': serializer.data
+                'data': self.serializer.data
             }
 
-            response = Response(data, HTTP_201_CREATED)
+            self.response = Response(self.data, HTTP_201_CREATED)
 
-            return response
+            return self.response
 
-        data = {
+        self.data = {
             'error': 'ERROR',
-            'msg': serializer.errors
+            'msg': self.serializer.errors
         }
 
-        response = Response(data, HTTP_400_BAD_REQUEST)
+        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return response
+        return self.response
 
     def partial_update(self: Self, request: Request, pk: str = None):
 
-        queryres: SaleModel = None
-        serializer: SaleSerializer = None
-        data: dict = None
-        response: Response = None
-
         request.data["update_at"] = datetime.now()
 
-        queryres = self.get_object(pk)
-        serializer = self.get_serializer(
-            queryres, data=request.data, partial=True)
+        self.obj = self.get_object(pk)
+        self.serializer = self.get_serializer(self.obj, data=request.data, partial=True)
 
-        if serializer.is_valid():
+        if self.serializer.is_valid():
 
-            serializer.save()
+            self.serializer.save()
 
-            data = {
+            self.data = {
                 'ok': 'OK',
                 'msg': 'Actualizado Exitosamente',
-                'data': serializer.data
+                'data': self.serializer.data
             }
 
-            response = Response(data, HTTP_201_CREATED)
+            self.response = Response(self.data, HTTP_201_CREATED)
 
-            return response
+            return self.response
 
-        data = {
+        self.data = {
             'error': 'ERROR',
-            'msg': serializer.errors
+            'msg': self.serializer.errors
         }
 
-        response = Response(data, HTTP_400_BAD_REQUEST)
+        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return response
+        return self.response
 
     def destroy(self: Self, request: Request, pk: str = None):
-
-        queryres: SaleModel = None
-        serializer: SaleSerializer = None
-        data: dict = None
-        response: Response = None
 
         request.data["status"] = False
         request.data["update_at"] = datetime.now()
 
-        queryres = self.get_object(pk)
-        serializer = self.get_serializer(
-            queryres, data=request.data, partial=True)
+        self.obj = self.get_object(pk)
+        self.serializer = self.get_serializer(self.obj, data=request.data, partial=True)
 
-        if serializer.is_valid():
+        if self.serializer.is_valid():
 
-            serializer.save()
+            self.serializer.save()
 
-            data = {
+            self.data = {
                 'ok': 'OK',
                 'msg': 'Eliminado Exitosamente',
             }
 
-            response = Response(data, HTTP_200_OK)
+            self.response = Response(self.data, HTTP_200_OK)
 
-            return response
+            return self.response
 
-        data = {
+        self.data = {
             'error': 'ERROR',
-            'msg': serializer.errors
+            'msg': self.serializer.errors
         }
 
-        response = Response(data, HTTP_400_BAD_REQUEST)
+        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return response
+        return self.response
 
 
 class SaleDetailViewSet(MultiSerializerViewSet):
 
     model: SaleDetailModel = None
     serializers: dict = None
+    obj: SaleDetailModel = None
+    query_res: QuerySet = None
+    serializer: Serializer = None
+    data: dict = None
+    response_error: ValidationError = None
+    response: Response = None
 
     model = SaleDetailModel
     serializers = {
@@ -966,24 +872,19 @@ class SaleDetailViewSet(MultiSerializerViewSet):
 
         try:
 
-            obj: SaleDetailModel = None
-
-            obj = self.model.objects.get(pk=pk, status=True)
-            return obj
+            self.obj = self.model.objects.get(pk=pk, status=True)
+            return self.obj
 
         except self.model.DoesNotExist:
 
-            data: dict = None
-            response: ValidationError = None
-
-            data = {
+            self.data = {
                 'error': 'ERROR',
                 'msg': 'No existe'
             }
 
-            response = ValidationError(data, HTTP_204_NO_CONTENT)
+            self.response_error = ValidationError(self.data, HTTP_204_NO_CONTENT)
 
-            raise response
+            raise self.response_error
 
     def get_queryset(self: Self) -> QuerySet:
 
@@ -994,144 +895,118 @@ class SaleDetailViewSet(MultiSerializerViewSet):
 
     def list(self: Self, request: Request) -> Response:
 
-        queryres: QuerySet = None
-        serializer: SaleDetailRelatedSerializer = None
-        data: dict = None
-        response: Response = None
+        self.query_res = self.get_queryset()
+        self.serializer = self.get_serializer(self.query_res, many=True)
 
-        queryres = self.get_queryset()
-        serializer = self.get_serializer(queryres, many=True)
-
-        data = {
+        self.data = {
             'ok': 'OK',
-            'data': serializer.data
+            'data': self.serializer.data
         }
 
-        response = Response(data, HTTP_200_OK)
+        self.response = Response(self.data, HTTP_200_OK)
 
-        return response
+        return self.response
 
     def retrieve(self: Self, request: Request, pk: str = None):
 
-        queryres: SaleDetailModel = None
-        serializer: SaleDetailRelatedSerializer = None
-        data: dict = None
-        response: Response = None
+        self.obj = self.get_object(pk)
+        self.serializer = self.get_serializer(self.obj)
 
-        queryres = self.get_object(pk)
-        serializer = self.get_serializer(queryres)
-
-        data = {
+        self.data = {
             'ok': 'OK',
-            'data': serializer.data
+            'data': self.serializer.data
         }
 
-        response = Response(data, HTTP_200_OK)
+        self.response = Response(self.data, HTTP_200_OK)
 
-        return response
+        return self.response
 
     def create(self: Self, request: Request):
-
-        serializer: SaleDetailSerializer = None
-        data: dict = None
-        response: Response = None
 
         request.data["status"] = True
         request.data["create_at"] = datetime.now()
 
-        serializer = self.get_serializer(data=request.data)
+        self.serializer = self.get_serializer(data=request.data)
 
-        if serializer.is_valid():
+        if self.serializer.is_valid():
 
-            serializer.save()
+            self.serializer.save()
 
-            data = {
+            self.data = {
                 'ok': 'OK',
                 'msg': 'Creado Exitosamente',
-                'data': serializer.data
+                'data': self.serializer.data
             }
 
-            response = Response(data, HTTP_201_CREATED)
+            self.response = Response(self.data, HTTP_201_CREATED)
 
-            return response
+            return self.response
 
-        data = {
+        self.data = {
             'error': 'ERROR',
-            'msg': serializer.errors
+            'msg': self.serializer.errors
         }
 
-        response = Response(data, HTTP_400_BAD_REQUEST)
+        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return response
+        return self.response
 
     def partial_update(self: Self, request: Request, pk: str = None):
 
-        queryres: SaleDetailModel = None
-        serializer: SaleDetailSerializer = None
-        data: dict = None
-        response: Response = None
-
         request.data["update_at"] = datetime.now()
 
-        queryres = self.get_object(pk)
-        serializer = self.get_serializer(
-            queryres, data=request.data, partial=True)
+        self.obj = self.get_object(pk)
+        self.serializer = self.get_serializer(self.obj, data=request.data, partial=True)
 
-        if serializer.is_valid():
+        if self.serializer.is_valid():
 
-            serializer.save()
+            self.serializer.save()
 
-            data = {
+            self.data = {
                 'ok': 'OK',
                 'msg': 'Actualizado Exitosamente',
-                'data': serializer.data
+                'data': self.serializer.data
             }
 
-            response = Response(data, HTTP_201_CREATED)
+            self.response = Response(self.data, HTTP_201_CREATED)
 
-            return response
+            return self.response
 
-        data = {
+        self.data = {
             'error': 'ERROR',
-            'msg': serializer.errors
+            'msg': self.serializer.errors
         }
 
-        response = Response(data, HTTP_400_BAD_REQUEST)
+        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return response
+        return self.response
 
     def destroy(self: Self, request: Request, pk: str = None):
-
-        queryres: SaleDetailModel = None
-        serializer: SaleDetailSerializer = None
-        data: dict = None
-        response: Response = None
 
         request.data["status"] = False
         request.data["update_at"] = datetime.now()
 
-        queryres = self.get_object(pk)
-        serializer = self.get_serializer(
-            queryres, data=request.data, partial=True)
+        self.obj = self.get_object(pk)
+        self.serializer = self.get_serializer(self.obj, data=request.data, partial=True)
 
-        if serializer.is_valid():
+        if self.serializer.is_valid():
 
-            serializer.save()
+            self.serializer.save()
 
-            data = {
+            self.data = {
                 'ok': 'OK',
                 'msg': 'Eliminado Exitosamente',
             }
 
-            response = Response(data, HTTP_200_OK)
+            self.response = Response(self.data, HTTP_200_OK)
 
-            return response
+            return self.response
 
-        data = {
+        self.data = {
             'error': 'ERROR',
-            'msg': serializer.errors
+            'msg': self.serializer.errors
         }
 
-        response = Response(data, HTTP_400_BAD_REQUEST)
+        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return response
+        return self.response

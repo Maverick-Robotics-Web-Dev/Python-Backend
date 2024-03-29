@@ -18,7 +18,7 @@ class WayToPaySerializer(ModelSerializer):
     class Meta:
 
         model: WayToPayModel = None
-        fields: str | list[str] = None
+        fields: str | list = None
 
         model = WayToPayModel
         fields = '__all__'
@@ -33,7 +33,7 @@ class WayToPayRelatedSerializer(ModelSerializer):
     class Meta:
 
         model: WayToPayModel = None
-        fields: str | list[str] = None
+        fields: str | list = None
 
         model = WayToPayModel
         fields = '__all__'
@@ -44,7 +44,7 @@ class VoucherTypeSerializer(ModelSerializer):
     class Meta:
 
         model: VoucherTypeModel = None
-        fields: str | list[str] = None
+        fields: str | list = None
 
         model = VoucherTypeModel
         fields = '__all__'
@@ -59,7 +59,7 @@ class VoucherTypeRelatedSerializer(ModelSerializer):
     class Meta:
 
         model: VoucherTypeModel = None
-        fields: str | list[str] = None
+        fields: str | list = None
 
         model = VoucherTypeModel
         fields = '__all__'
@@ -70,7 +70,7 @@ class CreditNoteSerializer(ModelSerializer):
     class Meta:
 
         model: CreditNoteModel = None
-        fields: str | list[str] = None
+        fields: str | list = None
 
         model = CreditNoteModel
         fields = '__all__'
@@ -87,7 +87,7 @@ class CreditNoteRelatedSerializer(ModelSerializer):
     class Meta:
 
         model: CreditNoteModel = None
-        fields: str | list[str] = None
+        fields: str | list = None
 
         model = CreditNoteModel
         fields = '__all__'
@@ -98,7 +98,7 @@ class CreditNoteDetailSerializer(ModelSerializer):
     class Meta:
 
         model: CreditNoteDetailModel = None
-        fields: str | list[str] = None
+        fields: str | list = None
 
         model = CreditNoteDetailModel
         fields = '__all__'
@@ -115,7 +115,7 @@ class CreditNoteDetailRelatedSerializer(ModelSerializer):
     class Meta:
 
         model: CreditNoteDetailModel = None
-        fields: str | list[str] = None
+        fields: str | list = None
 
         model = CreditNoteDetailModel
         fields = '__all__'
@@ -126,8 +126,7 @@ class SaleSerializer(ModelSerializer):
     class Meta:
 
         model: SaleModel = None
-        fields: str | list[str] = None
-        read_only_fields: list[str] = None
+        fields: str | list = None
 
         model = SaleModel
         fields = '__all__'
@@ -148,7 +147,7 @@ class SaleRelatedSerializer(ModelSerializer):
     class Meta:
 
         model: SaleModel = None
-        fields: str | list[str] = None
+        fields: str | list = None
 
         model = SaleModel
         fields = '__all__'
@@ -159,7 +158,7 @@ class SaleDetailSerializer(ModelSerializer):
     class Meta:
 
         model: SaleDetailModel = None
-        fields: str | list[str] = None
+        fields: str | list = None
 
         model = SaleDetailModel
         fields = '__all__'
@@ -176,7 +175,7 @@ class SaleDetailRelatedSerializer(ModelSerializer):
     class Meta:
 
         model: SaleDetailModel = None
-        fields: str | list[str] = None
+        fields: str | list = None
 
         model = SaleDetailModel
         fields = '__all__'
