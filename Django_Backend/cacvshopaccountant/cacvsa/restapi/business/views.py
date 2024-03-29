@@ -3,6 +3,7 @@ from typing import Self
 
 from django.db.models.query import QuerySet
 
+from rest_framework.serializers import Serializer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
@@ -43,6 +44,12 @@ class WayToPayViewSet(MultiSerializerViewSet):
 
     model: WayToPayModel = None
     serializers: dict = None
+    obj: WayToPayModel = None
+    query_res: QuerySet = None
+    serializer: Serializer = None
+    data: dict = None
+    response_error: ValidationError = None
+    response: Response = None
 
     model = WayToPayModel
     serializers = {
@@ -55,24 +62,19 @@ class WayToPayViewSet(MultiSerializerViewSet):
 
         try:
 
-            obj: WayToPayModel = None
-
-            obj = self.model.objects.get(pk=pk, status=True)
-            return obj
+            self.obj = self.model.objects.get(pk=pk, status=True)
+            return self.obj
 
         except self.model.DoesNotExist:
 
-            data: dict = None
-            response: ValidationError = None
-
-            data = {
+            self.data = {
                 'error': 'ERROR',
                 'msg': 'No existe'
             }
 
-            response = ValidationError(data, HTTP_204_NO_CONTENT)
+            self.response_error = ValidationError(self.data, HTTP_204_NO_CONTENT)
 
-            raise response
+            raise self.response_error
 
     def get_queryset(self: Self) -> QuerySet:
 
@@ -83,145 +85,121 @@ class WayToPayViewSet(MultiSerializerViewSet):
 
     def list(self: Self, request: Request) -> Response:
 
-        queryres: QuerySet = None
-        serializer: WayToPayRelatedSerializer = None
-        data: dict = None
-        response: Response = None
+        self.query_res = self.get_queryset()
+        self.serializer = self.get_serializer(self.query_res, many=True)
 
-        queryres = self.get_queryset()
-        serializer = self.get_serializer(queryres, many=True)
-
-        data = {
+        self.data = {
             'ok': 'OK',
-            'data': serializer.data
+            'data': self.serializer.data
         }
 
-        response = Response(data, HTTP_200_OK)
+        self.response = Response(self.data, HTTP_200_OK)
 
-        return response
+        return self.response
 
     def retrieve(self: Self, request: Request, pk: str = None):
 
-        queryres: WayToPayModel = None
-        serializer: WayToPayRelatedSerializer = None
-        data: dict = None
-        response: Response = None
+        self.obj = self.get_object(pk)
+        self.serializer = self.get_serializer(self.obj)
 
-        queryres = self.get_object(pk)
-        serializer = self.get_serializer(queryres)
-
-        data = {
+        self.data = {
             'ok': 'OK',
-            'data': serializer.data
+            'data': self.serializer.data
         }
 
-        response = Response(data, HTTP_200_OK)
+        self.response = Response(self.data, HTTP_200_OK)
 
-        return response
+        return self.response
 
     def create(self: Self, request: Request):
-
-        serializer: WayToPaySerializer = None
-        data: dict = None
-        response: Response = None
 
         request.data["status"] = True
         request.data["create_at"] = datetime.now()
 
-        serializer = self.get_serializer(data=request.data)
+        self.serializer = self.get_serializer(data=request.data)
 
-        if serializer.is_valid():
+        if self.serializer.is_valid():
 
-            serializer.save()
+            self.serializer.save()
 
-            data = {
+            self.data = {
                 'ok': 'OK',
                 'msg': 'Creado Exitosamente',
-                'data': serializer.data
+                'data': self.serializer.data
             }
 
-            response = Response(data, HTTP_201_CREATED)
+            self.response = Response(self.data, HTTP_201_CREATED)
 
-            return response
+            return self.response
 
-        data = {
+        self.data = {
             'error': 'ERROR',
-            'msg': serializer.errors
+            'msg': self.serializer.errors
         }
 
-        response = Response(data, HTTP_400_BAD_REQUEST)
+        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return response
+        return self.response
 
     def partial_update(self: Self, request: Request, pk: str = None):
 
-        queryres: WayToPayModel = None
-        serializer: WayToPaySerializer = None
-        data: dict = None
-        response: Response = None
-
         request.data["update_at"] = datetime.now()
 
-        queryres = self.get_object(pk)
-        serializer = self.get_serializer(queryres, data=request.data, partial=True)
+        self.obj = self.get_object(pk)
+        self.serializer = self.get_serializer(self.obj, data=request.data, partial=True)
 
-        if serializer.is_valid():
+        if self.serializer.is_valid():
 
-            serializer.save()
+            self.serializer.save()
 
-            data = {
+            self.data = {
                 'ok': 'OK',
                 'msg': 'Actualizado Exitosamente',
-                'data': serializer.data
+                'data': self.serializer.data
             }
 
-            response = Response(data, HTTP_201_CREATED)
+            self.response = Response(self.data, HTTP_201_CREATED)
 
-            return response
+            return self.response
 
-        data = {
+        self.data = {
             'error': 'ERROR',
-            'msg': serializer.errors
+            'msg': self.serializer.errors
         }
 
-        response = Response(data, HTTP_400_BAD_REQUEST)
+        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return response
+        return self.response
 
     def destroy(self: Self, request: Request, pk: str = None):
-
-        queryres: WayToPayModel = None
-        serializer: WayToPaySerializer = None
-        data: dict = None
-        response: Response = None
 
         request.data["status"] = False
         request.data["update_at"] = datetime.now()
 
-        queryres = self.get_object(pk)
-        serializer = self.get_serializer(queryres, data=request.data, partial=True)
+        self.obj = self.get_object(pk)
+        self.serializer = self.get_serializer(self.obj, data=request.data, partial=True)
 
-        if serializer.is_valid():
+        if self.serializer.is_valid():
 
-            serializer.save()
+            self.serializer.save()
 
-            data = {
+            self.data = {
                 'ok': 'OK',
                 'msg': 'Eliminado Exitosamente',
             }
 
-            response = Response(data, HTTP_200_OK)
+            self.response = Response(self.data, HTTP_200_OK)
 
-            return response
+            return self.response
 
-        data = {
+        self.data = {
             'error': 'ERROR',
-            'msg': serializer.errors
+            'msg': self.serializer.errors
         }
 
-        response = Response(data, HTTP_400_BAD_REQUEST)
+        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return response
+        return self.response
 
 
 class VoucherTypeViewSet(MultiSerializerViewSet):
@@ -348,7 +326,8 @@ class VoucherTypeViewSet(MultiSerializerViewSet):
         request.data["update_at"] = datetime.now()
 
         queryres = self.get_object(pk)
-        serializer = self.get_serializer(queryres, data=request.data, partial=True)
+        serializer = self.get_serializer(
+            queryres, data=request.data, partial=True)
 
         if serializer.is_valid():
 
@@ -384,7 +363,8 @@ class VoucherTypeViewSet(MultiSerializerViewSet):
         request.data["update_at"] = datetime.now()
 
         queryres = self.get_object(pk)
-        serializer = self.get_serializer(queryres, data=request.data, partial=True)
+        serializer = self.get_serializer(
+            queryres, data=request.data, partial=True)
 
         if serializer.is_valid():
 
@@ -533,7 +513,8 @@ class CreditNoteViewSet(MultiSerializerViewSet):
         request.data["update_at"] = datetime.now()
 
         queryres = self.get_object(pk)
-        serializer = self.get_serializer(queryres, data=request.data, partial=True)
+        serializer = self.get_serializer(
+            queryres, data=request.data, partial=True)
 
         if serializer.is_valid():
 
@@ -569,7 +550,8 @@ class CreditNoteViewSet(MultiSerializerViewSet):
         request.data["update_at"] = datetime.now()
 
         queryres = self.get_object(pk)
-        serializer = self.get_serializer(queryres, data=request.data, partial=True)
+        serializer = self.get_serializer(
+            queryres, data=request.data, partial=True)
 
         if serializer.is_valid():
 
@@ -718,7 +700,8 @@ class CreditNoteDetailViewSet(MultiSerializerViewSet):
         request.data["update_at"] = datetime.now()
 
         queryres = self.get_object(pk)
-        serializer = self.get_serializer(queryres, data=request.data, partial=True)
+        serializer = self.get_serializer(
+            queryres, data=request.data, partial=True)
 
         if serializer.is_valid():
 
@@ -754,7 +737,8 @@ class CreditNoteDetailViewSet(MultiSerializerViewSet):
         request.data["update_at"] = datetime.now()
 
         queryres = self.get_object(pk)
-        serializer = self.get_serializer(queryres, data=request.data, partial=True)
+        serializer = self.get_serializer(
+            queryres, data=request.data, partial=True)
 
         if serializer.is_valid():
 
@@ -903,7 +887,8 @@ class SaleViewSet(MultiSerializerViewSet):
         request.data["update_at"] = datetime.now()
 
         queryres = self.get_object(pk)
-        serializer = self.get_serializer(queryres, data=request.data, partial=True)
+        serializer = self.get_serializer(
+            queryres, data=request.data, partial=True)
 
         if serializer.is_valid():
 
@@ -939,7 +924,8 @@ class SaleViewSet(MultiSerializerViewSet):
         request.data["update_at"] = datetime.now()
 
         queryres = self.get_object(pk)
-        serializer = self.get_serializer(queryres, data=request.data, partial=True)
+        serializer = self.get_serializer(
+            queryres, data=request.data, partial=True)
 
         if serializer.is_valid():
 
@@ -1088,7 +1074,8 @@ class SaleDetailViewSet(MultiSerializerViewSet):
         request.data["update_at"] = datetime.now()
 
         queryres = self.get_object(pk)
-        serializer = self.get_serializer(queryres, data=request.data, partial=True)
+        serializer = self.get_serializer(
+            queryres, data=request.data, partial=True)
 
         if serializer.is_valid():
 
@@ -1124,7 +1111,8 @@ class SaleDetailViewSet(MultiSerializerViewSet):
         request.data["update_at"] = datetime.now()
 
         queryres = self.get_object(pk)
-        serializer = self.get_serializer(queryres, data=request.data, partial=True)
+        serializer = self.get_serializer(
+            queryres, data=request.data, partial=True)
 
         if serializer.is_valid():
 
