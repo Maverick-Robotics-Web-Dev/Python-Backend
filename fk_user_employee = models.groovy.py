@@ -2,13 +2,35 @@ from typing import Self
 from datetime import datetime
 from django.db.models.query import QuerySet
 
+from restapi.abstracts.models import NestedModel
 
+fk_user_employee = ForeignKey('users.UserEmployeeModel', on_delete=models.CASCADE, verbose_name='Usuario')
+
+        db_table: str = None
+        verbose_name: str = None
+        verbose_name_plural: str = None
+
+    def __str__(self: Self) -> LiteralString:
+        return self.name
+
+        model:ClientModel=None
+        fields:str=None
 
 from rest_framework.serializers import (
     ModelSerializer,
     StringRelatedField
 )
 
+fk_user_employee = StringRelatedField()
+default='No existe descripción'
+
+->
+Related
+models.BooleanField('Estado', default=False)
+
+from typing import Self
+from datetime import datetime
+from django.db.models.query import QuerySet
 from rest_framework.serializers import Serializer
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -22,24 +44,6 @@ from rest_framework.status import (
 
 from restapi.support.views import MultiSerializerViewSet
 
-from restapi.abstracts.models import NestedModel
-
-
-fk_user_employee = ForeignKey('users.UserEmployeeModel', on_delete=models.CASCADE, verbose_name='Usuario')
-
-        db_table: str = None
-        verbose_name: str = None
-        verbose_name_plural: str = None
-
-def __str__(self: Self) -> LiteralString:
-        return self.name
-
-fk_user_employee = StringRelatedField()
-default='No existe descripción'
-
-->
-Related
-models.BooleanField('Estado', default=False)
 
     model: WayToPayModel = None
     serializers: dict = None
