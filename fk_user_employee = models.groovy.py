@@ -1,4 +1,4 @@
-from typing import Self
+from typing import Self, LiteralString
 from datetime import datetime
 from django.db.models.query import QuerySet
 
@@ -13,13 +13,13 @@ fk_user_employee = ForeignKey('users.UserEmployeeModel', on_delete=models.CASCAD
     def __str__(self: Self) -> LiteralString:
         return self.name
 
-        model:ClientModel=None
-        fields:str=None
-
 from rest_framework.serializers import (
     ModelSerializer,
     StringRelatedField
 )
+
+        model:ClientModel=None
+        fields:str=None
 
 fk_user_employee = StringRelatedField()
 default='No existe descripción'

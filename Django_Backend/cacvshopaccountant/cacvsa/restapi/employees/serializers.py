@@ -1,10 +1,32 @@
-from rest_framework import serializers
+from rest_framework.serializers import (
+    ModelSerializer,
+    StringRelatedField
+)
 
-from .models import *
+from .models import EmployeeModel
 
 
-class EmployeeSerializer(serializers.ModelSerializer):
+class EmployeeSerializer(ModelSerializer):
+
     class Meta:
+
+        model: EmployeeModel = None
+        fields: str = None
+
         model = EmployeeModel
         fields = '__all__'
-        read_only_fields = ['employee_id']
+
+
+class EmployeeRelatedSerializer(ModelSerializer):
+
+    fk_user_employee: StringRelatedField = None
+
+    fk_user_employee = StringRelatedField()
+
+    class Meta:
+
+        model: EmployeeModel = None
+        fields: str = None
+
+        model = EmployeeModel
+        fields = '__all__'
