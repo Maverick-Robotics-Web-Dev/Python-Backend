@@ -4,7 +4,7 @@ from django.db.models.query import QuerySet
 
 from restapi.abstracts.models import NestedModel
 
-fk_user_employee = ForeignKey('users.UserEmployeeModel', on_delete=models.CASCADE, verbose_name='Usuario')
+fk_user_employee = ForeignKey('users.UserEmployeeModel', on_delete=CASCADE, verbose_name='Usuario')
 
         db_table: str = None
         verbose_name: str = None

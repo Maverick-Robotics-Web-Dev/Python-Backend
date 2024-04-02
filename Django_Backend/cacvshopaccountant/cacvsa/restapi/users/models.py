@@ -1,55 +1,74 @@
-from datetime import datetime
-from django.utils.timezone import make_aware, get_current_timezone, now
-from django.db import models
+from typing import Self, LiteralString
+
+from django.db.models import (
+    CASCADE,
+    ForeignKey,
+    AutoField,
+    CharField,
+    BooleanField
+)
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
-from restapi.users.managers import UserEmployeeManager
+from restapi.abstracts.models import NestedModel
+
+from .managers import UserEmployeeManager
 
 
-class UserLevelModel(models.Model):
-    user_level_id = models.AutoField('ID', primary_key=True)
-    user_level_name = models.CharField('Nombre del Nivel', max_length=256)
-    user_level_status = models.CharField('Estado', max_length=50)
-    user_level_status_description = models.CharField(
-        'Descripción', max_length=256, blank=True, null=True)
-    user_level_create_at = models.DateTimeField('Fecha de Creación')
-    user_level_update_at = models.DateTimeField(
-        'Fecha de Actualización', blank=True, null=True)
+class UserLevelModel(NestedModel):
+
+    id: AutoField = None
+    name: CharField = None
+    fk_user_employee: ForeignKey = None
+
+    id = AutoField('ID', primary_key=True)
+    name = CharField('Nombre del Nivel', max_length=256)
+    fk_user_employee = ForeignKey('users.UserEmployeeModel', on_delete=CASCADE, verbose_name='Usuario')
 
     class Meta:
+
+        db_table: str = None
+        verbose_name: str = None
+        verbose_name_plural: str = None
+
         db_table = 'APIS_USER_LEVEL'
         verbose_name = 'NIVEL DE USUARIO'
         verbose_name_plural = 'NIVELES DE USUARIO'
 
+    def __str__(self: Self) -> LiteralString:
+        return self.name
 
-class UserEmployeeModel(AbstractBaseUser, PermissionsMixin):
 
-    user_employee_user_name = models.CharField(
-        'Nombre de Usuario', max_length=20, unique=True)
-    fk_employee = models.ForeignKey(
-        'employees.EmployeeModel', on_delete=models.CASCADE, verbose_name='Empeado', blank=True, null=True)
-    fk_user_level = models.ForeignKey(
-        'users.UserLevelModel', on_delete=models.CASCADE, verbose_name='Nivel', blank=True, null=True)
-    user_employee_login = models.BooleanField(
-        'Logueado', blank=True, null=True, default=False)
-    user_employee_status = models.BooleanField(
-        'Estado', max_length=50, blank=True, null=True, default=False)
-    user_employee_status_description = models.CharField(
-        'Descripción', max_length=256, default='Ninguna')
-    user_employee_create_at = models.DateTimeField(
-        'Fecha de Creación')
-    user_employee_update_at = models.DateTimeField(
-        'Fecha de Actualización', blank=True, null=True)
-    is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
+class UserEmployeeModel(NestedModel, AbstractBaseUser, PermissionsMixin):
 
-    USERNAME_FIELD = 'user_employee_user_name'
+    id: AutoField = None
+    user_name: CharField = None
+    password: CharField = None
+    fk_employee: ForeignKey = None
+    fk_user_level: ForeignKey = None
+    login: BooleanField = None
+    is_superuser: BooleanField = None
+    is_staff: BooleanField = None
+    is_active: BooleanField = None
+    USERNAME_FIELD: str = None
+    objects: UserEmployeeManager = None
+
+    id = AutoField('ID', primary_key=True)
+    user_name = CharField('Nombre de Usuario', max_length=20, unique=True)
+    password = CharField('Contraseña', max_length=16)
+    fk_employee = ForeignKey('employees.EmployeeModel', on_delete=CASCADE, verbose_name='Empeado', blank=True, null=True)
+    fk_user_level = ForeignKey('users.UserLevelModel', on_delete=CASCADE, verbose_name='Nivel', blank=True, null=True)
+    login = BooleanField('Logueado', blank=True, null=True, default=False)
+    is_superuser = BooleanField(default=False)
+    is_staff = BooleanField(default=False)
+    is_active = BooleanField(default=False)
+
+    USERNAME_FIELD = 'user_name'
     # REQUIRED_FIELDS=[]
 
     objects = UserEmployeeManager()
 
     def __str__(self):
-        return self.user_employee_user_name
+        return self.user_name
 
     class Meta:
         db_table = 'APIS_USER_EMPLOYEE'
@@ -57,22 +76,29 @@ class UserEmployeeModel(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = 'USUARIOS DE EMPLEADO'
 
 
-class UserClientModel(models.Model):
-    user_client_id = models.AutoField('ID', primary_key=True)
-    user_client_user_name = models.CharField(
-        'Nombre de Usuario', max_length=256)
-    user_client_password = models.CharField('Contraseña', max_length=16)
-    fk_client = models.ForeignKey(
-        'clients.ClientModel', on_delete=models.CASCADE, verbose_name='Cliente')
-    user_client_login = models.BooleanField('Logueado')
-    user_client_status = models.CharField('Estado', max_length=50)
-    user_client_status_description = models.CharField(
-        'Descripción', max_length=256, default='Ninguna')
-    user_client_create_at = models.DateTimeField('Fecha de Creación')
-    user_client_update_at = models.DateTimeField(
-        'Fecha de Actualización', blank=True, null=True)
+class UserClientModel(NestedModel):
+
+    id: AutoField = None
+    user_name: CharField = None
+    password: CharField = None
+    fk_client: ForeignKey = None
+    login: BooleanField = None
+
+    id = AutoField('ID', primary_key=True)
+    user_name = CharField('Nombre de Usuario', max_length=256)
+    password = CharField('Contraseña', max_length=16)
+    fk_client = ForeignKey('clients.ClientModel', on_delete=CASCADE, verbose_name='Cliente')
+    login = BooleanField('Logueado')
 
     class Meta:
+
+        db_table: str = None
+        verbose_name: str = None
+        verbose_name_plural: str = None
+
         db_table = 'APIS_USER_CLIENT'
         verbose_name = 'USUARIO DEL CLIENTE'
         verbose_name_plural = 'USUARIOS DEL CLIENTE'
+
+    def __str__(self: Self) -> LiteralString:
+        return self.user_name

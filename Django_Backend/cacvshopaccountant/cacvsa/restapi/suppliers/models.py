@@ -16,7 +16,7 @@ from restapi.abstracts.models import (
 )
 
 
-class SupplierModel(NestedSupplierModel):
+class SupplierModel(NestedModel, NestedSupplierModel):
 
     id: AutoField = None
     code: CharField = None
@@ -34,7 +34,7 @@ class SupplierModel(NestedSupplierModel):
 
     id = AutoField('ID', primary_key=True)
     code = CharField('Codigo de Proveedor', max_length=50)
-    business_name = CharField('Nombre Comercial', max_length=500)
+    business_name = CharField('Razon Social', max_length=500)
     tradename = CharField('Nombre Comercial', max_length=500, blank=True, null=True)
     branch_office_address_one = CharField('Dirección', max_length=200, default='Sin Sucursal')
     branch_office_address_two = CharField('Dirección', max_length=200, default='Sin Sucursal')

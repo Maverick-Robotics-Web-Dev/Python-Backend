@@ -1,16 +1,21 @@
 # from cacvsa.settings.base import *
+from typing import Any, Self
+
 from django.conf import settings
+from django.http import HttpResponsePermanentRedirect, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect
+
+from rest_framework.request import Request
 
 
 class LoginPermissionsMixin():
 
-    def get_login_url(self):
-        if not self.request.user.is_authenticated:
-            print(self.request.user)
+    def get_login_url(self: Self, request: Request) -> (HttpResponseRedirect | HttpResponsePermanentRedirect):
+
+        if not request.user.is_authenticated:
             return redirect(settings.LOGIN_URL)
-        print(self.request.user)
+
         return redirect(settings.HOME_URL)
 
     # def test_func(self):
@@ -21,10 +26,11 @@ class LoginPermissionsMixin():
     #         return True
     #     return False
 
-    def dispatch(self, request, *args, **kwargs):
+    def dispatch(self: Self, request: Request, *args: tuple, **kwargs: dict) -> (HttpResponseRedirect | HttpResponsePermanentRedirect | Any):
+
         if request.user:
-            print(request.user)
-            return self.get_login_url()
+            return self.get_login_url(request)
+
         return super().dispatch(request, *args, **kwargs)
 
 # class LoginPermissionsMixin(LoginRequiredMixin, UserPassesTestMixin):
