@@ -43,7 +43,7 @@ class OwnCheckViewSet(MultiSerializerViewSet):
 
         try:
 
-            self.obj = self.model.objects.get(pk=pk, status=True)
+            self.obj = self.model.objects.get(pk=pk)
             return self.obj
 
         except self.model.DoesNotExist:
@@ -60,7 +60,7 @@ class OwnCheckViewSet(MultiSerializerViewSet):
     def get_queryset(self: Self) -> QuerySet:
 
         if self.queryset is None:
-            return self.model.objects.filter(status=True)
+            return self.model.objects.all()
 
         return self.queryset
 
@@ -94,7 +94,6 @@ class OwnCheckViewSet(MultiSerializerViewSet):
 
     def create(self: Self, request: Request):
 
-        request.data["status"] = True
         request.data["create_at"] = datetime.now()
 
         self.serializer = self.get_serializer(data=request.data)
@@ -152,32 +151,32 @@ class OwnCheckViewSet(MultiSerializerViewSet):
 
         return self.response
 
-    def destroy(self: Self, request: Request, pk: str = None):
+    # def destroy(self: Self, request: Request, pk: str = None):
 
-        request.data["status"] = False
-        request.data["update_at"] = datetime.now()
+    #     request.data["status"] = False
+    #     request.data["update_at"] = datetime.now()
 
-        self.obj = self.get_object(pk)
-        self.serializer = self.get_serializer(self.obj, data=request.data, partial=True)
+    #     self.obj = self.get_object(pk)
+    #     self.serializer = self.get_serializer(self.obj, data=request.data, partial=True)
 
-        if self.serializer.is_valid():
+    #     if self.serializer.is_valid():
 
-            self.serializer.save()
+    #         self.serializer.save()
 
-            self.data = {
-                'ok': 'OK',
-                'msg': 'Eliminado Exitosamente',
-            }
+    #         self.data = {
+    #             'ok': 'OK',
+    #             'msg': 'Eliminado Exitosamente',
+    #         }
 
-            self.response = Response(self.data, HTTP_200_OK)
+    #         self.response = Response(self.data, HTTP_200_OK)
 
-            return self.response
+    #         return self.response
 
-        self.data = {
-            'error': 'ERROR',
-            'msg': self.serializer.errors
-        }
+    #     self.data = {
+    #         'error': 'ERROR',
+    #         'msg': self.serializer.errors
+    #     }
 
-        self.response = Response(self.data, HTTP_400_BAD_REQUEST)
+    #     self.response = Response(self.data, HTTP_400_BAD_REQUEST)
 
-        return self.response
+    #     return self.response

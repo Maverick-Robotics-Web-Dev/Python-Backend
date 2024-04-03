@@ -403,7 +403,7 @@ class CreditNoteViewSet(MultiSerializerViewSet):
     def get_queryset(self: Self) -> QuerySet:
 
         if self.queryset is None:
-            return self.model.objects.filter(status=True)
+            return self.model.objects.all()
 
         return self.queryset
 
@@ -727,7 +727,7 @@ class SaleViewSet(MultiSerializerViewSet):
     def get_queryset(self: Self) -> QuerySet:
 
         if self.queryset is None:
-            return self.model.objects.filter(status=True)
+            return self.model.objects.all()
 
         return self.queryset
 

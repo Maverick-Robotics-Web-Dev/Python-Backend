@@ -36,7 +36,7 @@ class UserLevelRelatedSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class UserAdminSerializer(ModelSerializer):
+class UserSudoSerializer(ModelSerializer):
 
     class Meta:
 
@@ -47,7 +47,7 @@ class UserAdminSerializer(ModelSerializer):
         exclude = ['groups', 'user_permissions']
 
 
-class UserAdminRelatedSerializer(ModelSerializer):
+class UserSudoRelatedSerializer(ModelSerializer):
 
     fk_employee: StringRelatedField = None
     fk_user_level: StringRelatedField = None

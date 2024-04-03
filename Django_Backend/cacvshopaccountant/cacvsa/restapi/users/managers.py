@@ -2,12 +2,12 @@ from typing import Self
 from django.db.models import Manager
 from django.contrib.auth.models import BaseUserManager
 
-from .models import UserEmployeeModel
+from restapi.users.models import *
 
 
 class UserEmployeeManager(BaseUserManager, Manager):
 
-    def _create_user(self: Self, user_name: str, password: str, is_staff: bool, is_superuser: bool, is_active: bool, **extra_fields: dict) -> UserEmployeeModel:
+    def _create_user(self: Self, user_name: str, password: str, is_staff: bool, is_superuser: bool, is_active: bool, **extra_fields: dict):
 
         user_employee_model: UserEmployeeModel = None
 
@@ -23,8 +23,8 @@ class UserEmployeeManager(BaseUserManager, Manager):
 
         return user_employee_model
 
-    def create_user(self: Self, user_name: str, password: str, **extra_fields: dict) -> UserEmployeeModel:
+    def create_user(self: Self, user_name: str, password: str, **extra_fields: dict):
         return self._create_user(user_name, password, False, False, True, **extra_fields)
 
-    def create_superuser(self: Self, user_name: str, password: str, **extra_fields: dict) -> UserEmployeeModel:
+    def create_superuser(self: Self, user_name: str, password: str, **extra_fields: dict):
         return self._create_user(user_name, password, True, True, True, ** extra_fields)

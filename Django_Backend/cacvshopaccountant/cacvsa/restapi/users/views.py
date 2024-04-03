@@ -26,8 +26,8 @@ from .models import (
 from .serializers import (
     UserLevelSerializer,
     UserLevelRelatedSerializer,
-    UserAdminSerializer,
-    UserAdminRelatedSerializer,
+    UserSudoSerializer,
+    UserSudoRelatedSerializer,
     UserEmployeeSerializer,
     UserEmployeeRelatedSerializer,
     UserClientSerializer,
@@ -197,7 +197,7 @@ class UserLevelViewSet(MultiSerializerViewSet):
         return self.response
 
 
-class UserAdminViewSet(MultiSerializerViewSet):
+class UserSudoViewSet(MultiSerializerViewSet):
 
     model = UserEmployeeModel
     serializers: dict = None
@@ -210,9 +210,9 @@ class UserAdminViewSet(MultiSerializerViewSet):
 
     model = UserEmployeeModel
     serializers = {
-        'default': UserAdminSerializer,
-        'list': UserAdminRelatedSerializer,
-        'retrieve': UserAdminRelatedSerializer
+        'default': UserSudoSerializer,
+        'list': UserSudoRelatedSerializer,
+        'retrieve': UserSudoRelatedSerializer
     }
 
     def get_object(self: Self, pk: str) -> UserEmployeeModel:
@@ -272,6 +272,8 @@ class UserAdminViewSet(MultiSerializerViewSet):
 
         request.data["password"] = make_password(request.data["password"])
         request.data["status"] = True
+        request.data["is_superuser"] = True
+        request.data["is_staff"] = True
         request.data["is_active"] = True
         request.data["create_at"] = datetime.now()
 
@@ -437,6 +439,8 @@ class UserEmployeeViewSet(MultiSerializerViewSet):
 
         request.data["password"] = make_password(request.data["password"])
         request.data["status"] = True
+        request.data["is_superuser"] = False
+        request.data["is_staff"] = True
         request.data["is_active"] = True
         request.data["create_at"] = datetime.now()
 

@@ -10,8 +10,7 @@ from django.db.models import (
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
 from restapi.abstracts.models import NestedModel
-
-from .managers import UserEmployeeManager
+from restapi.users.managers import UserEmployeeManager
 
 
 class UserLevelModel(NestedModel):

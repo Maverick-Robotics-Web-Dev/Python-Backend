@@ -16,7 +16,7 @@ from restapi.abstracts.models import (
 )
 
 
-class SupplierModel(NestedModel, NestedSupplierModel):
+class SupplierModel(NestedSupplierModel, NestedModel):
 
     id: AutoField = None
     code: CharField = None

@@ -9,6 +9,7 @@ from django.db.models import (
     CASCADE,
     AutoField,
     CharField,
+    BooleanField,
     ForeignKey,
     DateTimeField,
     DecimalField
@@ -16,7 +17,6 @@ from django.db.models import (
 
 from restapi.abstracts.models import (
     NestedModel,
-    MiniModel
 )
 
 
@@ -24,10 +24,12 @@ class CashRegisterModel(NestedModel):
 
     id: AutoField = None
     number: CharField = None
+    condition: BooleanField = None
     fk_user_employee: ForeignKey = None
 
     id = AutoField('ID', primary_key=True)
     number = CharField('Caja', max_length=256)
+    condition = BooleanField('Condición')
     fk_user_employee = ForeignKey('users.UserEmployeeModel', on_delete=CASCADE, verbose_name='Usuario')
 
     class Meta:
@@ -51,11 +53,13 @@ class CashRegisterOpeningModel(Model):
     opening_date: DateTimeField = None
     opening_amount: DecimalField = None
     fk_user_employee: ForeignKey = None
+    missing_or_surplus: DecimalField = None
 
     id = AutoField('ID', primary_key=True)
     fk_cash_register = ForeignKey('cashregisters.CashRegisterModel', on_delete=CASCADE, verbose_name='Caja')
     opening_date = DateTimeField('Fecha de Apertura')
     opening_amount = DecimalField('Monto de Apertura', max_digits=11, decimal_places=2)
+    missing_or_surplus = DecimalField('Faltante o Excedente', max_digits=11, decimal_places=2, default=0.00)
     fk_user_employee = ForeignKey('users.UserEmployeeModel', on_delete=CASCADE, verbose_name='Usuario')
 
     class Meta:
@@ -72,7 +76,7 @@ class CashRegisterOpeningModel(Model):
         return self.fk_cash_register
 
 
-class CashRegisterMovementsModel(MiniModel):
+class CashRegisterMovementsModel(NestedModel):
 
     id: AutoField = None
     fk_cash_register: ForeignKey = None
@@ -125,7 +129,7 @@ class CashRegisterClosingModel(Model):
     total_sales = DecimalField('Total de Ventas', max_digits=11, decimal_places=2)
     total_transfers = DecimalField('Total Transferencias', max_digits=11, decimal_places=2)
     total_cash = DecimalField('Total en Efectivo', max_digits=11, decimal_places=2)
-    missing_or_surplus = DecimalField('Faltante o Excedente', max_digits=11, decimal_places=2)
+    missing_or_surplus = DecimalField('Faltante o Excedente', max_digits=11, decimal_places=2, default=0.00)
     closing_amount = DecimalField('Monto de Cierre', max_digits=11, decimal_places=2)
     remark = CharField('Observación', max_length=1024, default='Ninguna')
     fk_user_employee = ForeignKey('users.UserEmployeeModel', on_delete=CASCADE, verbose_name='Usuario')

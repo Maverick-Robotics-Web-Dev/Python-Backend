@@ -1,6 +1,7 @@
 from typing import Self, LiteralString
 
 from django.db.models import (
+    Model,
     CASCADE,
     AutoField,
     CharField,
@@ -9,7 +10,10 @@ from django.db.models import (
     DecimalField,
 )
 
-from restapi.abstracts.models import NestedModel
+from restapi.abstracts.models import (
+    NestedModel,
+    MiniModel
+)
 
 
 class ClientModel(NestedModel):
@@ -56,7 +60,7 @@ class ClientModel(NestedModel):
         return self.name
 
 
-class ClientCheckModel(NestedModel):
+class ClientCheckModel(MiniModel):
 
     id: AutoField = None
     date_admission: DateField = None
