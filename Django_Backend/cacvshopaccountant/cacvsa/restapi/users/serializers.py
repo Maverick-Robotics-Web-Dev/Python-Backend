@@ -41,10 +41,10 @@ class UserSudoSerializer(ModelSerializer):
     class Meta:
 
         model: UserEmployeeModel = None
-        exclude: list = None
+        fields: str = None
 
         model = UserEmployeeModel
-        exclude = ['groups', 'user_permissions']
+        fields = '__all__'
 
 
 class UserSudoRelatedSerializer(ModelSerializer):
@@ -69,11 +69,10 @@ class UserEmployeeSerializer(ModelSerializer):
     class Meta:
 
         model: UserEmployeeModel = None
-        fields: list = None
+        fields: str = None
 
         model = UserEmployeeModel
-        # fields = ['user_name', 'password', 'login']
-        exclude = ['fk_employee', 'fk_user_level', 'is_superuser', 'is_staff', 'is_active', 'groups', 'user_permissions']
+        fields = '__all__'
 
 
 class UserEmployeeRelatedSerializer(ModelSerializer):
@@ -87,7 +86,8 @@ class UserEmployeeRelatedSerializer(ModelSerializer):
     class Meta:
 
         model: UserEmployeeModel = None
-        fields: list = None
+        # fields: list = None
+        exclude: list = None
 
         model = UserEmployeeModel
         # fields = ['user_name', 'password', 'login']
