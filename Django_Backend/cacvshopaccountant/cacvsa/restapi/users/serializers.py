@@ -72,17 +72,17 @@ class UserEmployeeSerializer(ModelSerializer):
         fields: list = None
 
         model = UserEmployeeModel
-        fields = ['user_name', 'password', 'login']
-        # exclude = ['groups', 'user_permissions']
+        # fields = ['user_name', 'password', 'login']
+        exclude = ['fk_employee', 'fk_user_level', 'is_superuser', 'is_staff', 'is_active', 'groups', 'user_permissions']
 
 
 class UserEmployeeRelatedSerializer(ModelSerializer):
 
-    fk_employee: StringRelatedField = None
-    fk_user_level: StringRelatedField = None
+    # fk_employee: StringRelatedField = None
+    # fk_user_level: StringRelatedField = None
 
-    fk_employee = StringRelatedField()
-    fk_user_level = StringRelatedField()
+    # fk_employee = StringRelatedField()
+    # fk_user_level = StringRelatedField()
 
     class Meta:
 
@@ -90,8 +90,8 @@ class UserEmployeeRelatedSerializer(ModelSerializer):
         fields: list = None
 
         model = UserEmployeeModel
-        fields = ['user_name', 'password', 'login']
-        # exclude = ['groups', 'user_permissions']
+        # fields = ['user_name', 'password', 'login']
+        exclude = ['fk_employee', 'fk_user_level', 'is_superuser', 'is_staff', 'is_active', 'groups', 'user_permissions']
 
 
 class UserClientSerializer(ModelSerializer):

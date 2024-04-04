@@ -1,4 +1,6 @@
 from typing import Self
+from datetime import datetime
+
 from django.db.models import Manager
 from django.contrib.auth.models import BaseUserManager
 
@@ -16,7 +18,9 @@ class UserEmployeeManager(BaseUserManager, Manager):
             is_staff=is_staff,
             is_superuser=is_superuser,
             is_active=is_active,
-            **extra_fields
+            create_at=datetime.now(),
+            status=True,
+            ** extra_fields
         )
         user_employee_model.set_password(password)
         user_employee_model.save(using=self.db)

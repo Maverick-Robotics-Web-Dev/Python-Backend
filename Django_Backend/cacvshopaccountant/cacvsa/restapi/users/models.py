@@ -53,7 +53,7 @@ class UserEmployeeModel(NestedModel, AbstractBaseUser, PermissionsMixin):
 
     id = AutoField('ID', primary_key=True)
     user_name = CharField('Nombre de Usuario', max_length=20, unique=True)
-    password = CharField('Contraseña', max_length=16)
+    password = CharField('Contraseña', max_length=128)
     fk_employee = ForeignKey('employees.EmployeeModel', on_delete=CASCADE, verbose_name='Empeado', blank=True, null=True)
     fk_user_level = ForeignKey('users.UserLevelModel', on_delete=CASCADE, verbose_name='Nivel', blank=True, null=True)
     login = BooleanField('Logueado', blank=True, null=True, default=False)
@@ -62,7 +62,7 @@ class UserEmployeeModel(NestedModel, AbstractBaseUser, PermissionsMixin):
     is_active = BooleanField(default=False)
 
     USERNAME_FIELD = 'user_name'
-    # REQUIRED_FIELDS=[]
+    # REQUIRED_FIELDS = ['create_at']
 
     objects = UserEmployeeManager()
 
