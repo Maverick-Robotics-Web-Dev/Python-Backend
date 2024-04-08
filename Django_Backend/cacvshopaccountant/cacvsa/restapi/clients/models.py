@@ -12,11 +12,12 @@ from django.db.models import (
 
 from restapi.abstracts.models import (
     NestedModel,
+    PersonModel,
     MiniModel
 )
 
 
-class ClientModel(NestedModel):
+class ClientModel(NestedModel, PersonModel):
 
     id: AutoField = None
     code: CharField = None

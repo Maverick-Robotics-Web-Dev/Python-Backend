@@ -80,7 +80,7 @@ class CreditNoteModel(NestedModel):
     fk_client = ForeignKey('clients.ClientModel', on_delete=CASCADE, verbose_name='Cliente')
     voucher_number = CharField('Numero de Comprobante', max_length=100)
     date = DateField('Fecha')
-    total = DecimalField('Total', max_digits=11, decimal_places=0)
+    total = DecimalField('Total', max_digits=11, decimal_places=2)
     fk_user_employee = ForeignKey('users.UserEmployeeModel', on_delete=CASCADE, verbose_name='Usuario')
 
     class Meta:

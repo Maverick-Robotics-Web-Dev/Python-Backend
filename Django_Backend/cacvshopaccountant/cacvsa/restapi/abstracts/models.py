@@ -48,7 +48,7 @@ class PersonModel(Model):
 class NestedSupplierModel(Model):
 
     document_type: CharField = None
-    document_number: PositiveIntegerField = None
+    document_number: CharField = None
     country: CharField = None
     state_province: CharField = None
     city: CharField = None
@@ -60,7 +60,7 @@ class NestedSupplierModel(Model):
     img: ImageField = None
 
     document_type = CharField('Tipo de Documento', max_length=20)
-    document_number = PositiveIntegerField('Numero')
+    document_number = CharField('Numero', max_length=20)
     country = CharField('Pais', max_length=200)
     state_province = CharField('Provincia o Estado', max_length=200)
     city = CharField('Ciudad', max_length=200)

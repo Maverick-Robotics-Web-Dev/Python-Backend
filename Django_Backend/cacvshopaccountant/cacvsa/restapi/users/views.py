@@ -386,7 +386,7 @@ class UserEmployeeViewSet(MultiSerializerViewSet):
 
         try:
 
-            self.obj = self.model.objects.get(pk=pk, status=True, is_active=True)
+            self.obj = self.model.objects.get(pk=pk, status=True, is_active=True, is_staff=False)
             return self.obj
 
         except self.model.DoesNotExist:
@@ -403,7 +403,7 @@ class UserEmployeeViewSet(MultiSerializerViewSet):
     def get_queryset(self: Self) -> QuerySet:
 
         if self.queryset is None:
-            return self.model.objects.filter(status=True, is_active=True)
+            return self.model.objects.filter(status=True, is_active=True, is_staff=False)
 
         return self.queryset
 
