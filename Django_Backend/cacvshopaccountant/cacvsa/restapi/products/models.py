@@ -93,7 +93,7 @@ class ProductModel(NestedModel):
     fk_user_employee: ForeignKey = None
 
     id = AutoField('ID', primary_key=True)
-    barcode = CharField('Codigo de Barras', max_length=13, default='No posee codigo')
+    barcode = CharField('Codigo de Barras', max_length=200, default='No posee codigo')
     code = CharField('Codigo de Producto', max_length=50)
     name = CharField('Nombre', max_length=100)
     stock = PositiveBigIntegerField('Stock')
