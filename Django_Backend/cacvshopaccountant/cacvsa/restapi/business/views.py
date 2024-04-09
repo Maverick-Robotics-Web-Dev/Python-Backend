@@ -367,6 +367,7 @@ class VoucherTypeViewSet(MultiSerializerViewSet):
 class CreditNoteViewSet(MultiSerializerViewSet):
 
     model: CreditNoteModel = None
+    model_detail: CreditNoteDetailModel = None
     serializers: dict = None
     obj: CreditNoteModel = None
     query_res: QuerySet = None
@@ -376,6 +377,7 @@ class CreditNoteViewSet(MultiSerializerViewSet):
     response: Response = None
 
     model = CreditNoteModel
+    model_detail = CreditNoteDetailModel
     serializers = {
         'default': CreditNoteSerializer,
         'list': CreditNoteRelatedSerializer,
@@ -435,6 +437,36 @@ class CreditNoteViewSet(MultiSerializerViewSet):
 
         return self.response
 
+    # def create(self: Self, request: Request):
+
+    #     request.data["status"] = True
+    #     request.data["create_at"] = datetime.now()
+
+    #     self.serializer = self.get_serializer(data=request.data)
+
+    #     if self.serializer.is_valid():
+
+    #         self.serializer.save()
+
+    #         self.data = {
+    #             'ok': 'OK',
+    #             'msg': 'Creado Exitosamente',
+    #             'data': self.serializer.data
+    #         }
+
+    #         self.response = Response(self.data, HTTP_201_CREATED)
+
+    #         return self.response
+
+    #     self.data = {
+    #         'error': 'ERROR',
+    #         'msg': self.serializer.errors
+    #     }
+
+    #     self.response = Response(self.data, HTTP_400_BAD_REQUEST)
+
+    #     return self.response
+
     def create(self: Self, request: Request):
 
         request.data["status"] = True
@@ -444,12 +476,37 @@ class CreditNoteViewSet(MultiSerializerViewSet):
 
         if self.serializer.is_valid():
 
-            self.serializer.save()
+            cd_nt = self.serializer.validated_data
+            detail = cd_nt.pop('detail')
+            print(f'#####################')
+            print(f'Tipo: {type(detail)}')
+            print(f'Detalle: {detail}')
+            crd_note: CreditNoteModel = self.model(**cd_nt)
+            crd_note.save()
+            print(f'#####################')
+            print(f'Tipo: {type(crd_note)}')
+            print(f'Note: {crd_note.id}')
+
+            # for product in detail:
+            #     item = self.model_detail.objects.create(fk_credit_note=crd_note.id, **product)
+
+            print(f'Tipo: {type(cd_nt)}')
+            print(f'Note: {cd_nt}')
+            print(f'#####################')
+            print(f'Tipo: {type(detail)}')
+            print(f'Detalle: {detail}')
+            print(f'#####################')
+            print(f'Tipo: {type(crd_note)}')
+            print(f'Note: {crd_note.id}')
+            print(f'#####################')
+            # print(f'Serializer: {self.serializer.data}')
+
+            # self.serializer.save()
 
             self.data = {
                 'ok': 'OK',
                 'msg': 'Creado Exitosamente',
-                'data': self.serializer.data
+                # 'data': self.serializer.data
             }
 
             self.response = Response(self.data, HTTP_201_CREATED)

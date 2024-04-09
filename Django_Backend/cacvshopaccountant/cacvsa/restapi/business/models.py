@@ -106,7 +106,7 @@ class CreditNoteDetailModel(NestedModel):
     price: DecimalField = None
 
     id = AutoField('ID', primary_key=True)
-    fk_credit_note = ForeignKey('business.CreditNoteModel', on_delete=CASCADE, verbose_name='Nota de Credito')
+    fk_credit_note = ForeignKey('business.CreditNoteModel', on_delete=CASCADE, verbose_name='Nota de Credito', related_name='note_detail')
     fk_product = ForeignKey('products.ProductModel', on_delete=CASCADE, verbose_name='Producto')
     quantity = DecimalField('Cantidad', max_digits=11, decimal_places=2)
     price = DecimalField('Precio', max_digits=11, decimal_places=2)

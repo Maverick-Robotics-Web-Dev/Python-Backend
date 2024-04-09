@@ -1,4 +1,5 @@
 from rest_framework.serializers import (
+    Serializer,
     ModelSerializer,
     StringRelatedField
 )
@@ -65,34 +66,6 @@ class VoucherTypeRelatedSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class CreditNoteSerializer(ModelSerializer):
-
-    class Meta:
-
-        model: CreditNoteModel = None
-        fields: str | list = None
-
-        model = CreditNoteModel
-        fields = '__all__'
-
-
-class CreditNoteRelatedSerializer(ModelSerializer):
-
-    fk_client: StringRelatedField = None
-    fk_user_employee: StringRelatedField = None
-
-    fk_client = StringRelatedField()
-    fk_user_employee = StringRelatedField()
-
-    class Meta:
-
-        model: CreditNoteModel = None
-        fields: str | list = None
-
-        model = CreditNoteModel
-        fields = '__all__'
-
-
 class CreditNoteDetailSerializer(ModelSerializer):
 
     class Meta:
@@ -118,6 +91,79 @@ class CreditNoteDetailRelatedSerializer(ModelSerializer):
         fields: str | list = None
 
         model = CreditNoteDetailModel
+        fields = '__all__'
+
+
+# class CreditNoteSerializer(ModelSerializer):
+
+#     class Meta:
+
+#         model: CreditNoteModel = None
+#         fields: str | list = None
+
+#         model = CreditNoteModel
+#         fields = '__all__'
+
+
+class CreditNoteSerializer(ModelSerializer):
+
+    detail: Serializer = None
+
+    detail = CreditNoteDetailSerializer(many=True)
+
+    class Meta:
+
+        model: CreditNoteModel = None
+        fields: str | list = None
+
+        model = CreditNoteModel
+        fields = '__all__'
+
+
+class CreditNoteRelatedSerializer(ModelSerializer):
+
+    fk_client: StringRelatedField = None
+    fk_user_employee: StringRelatedField = None
+    detail: Serializer = None
+
+    fk_client = StringRelatedField()
+    fk_user_employee = StringRelatedField()
+    detail = CreditNoteDetailRelatedSerializer(many=True, source='note_detail')
+
+    class Meta:
+
+        model: CreditNoteModel = None
+        fields: str | list = None
+
+        model = CreditNoteModel
+        fields = '__all__'
+
+
+class SaleDetailSerializer(ModelSerializer):
+
+    class Meta:
+
+        model: SaleDetailModel = None
+        fields: str | list = None
+
+        model = SaleDetailModel
+        fields = '__all__'
+
+
+class SaleDetailRelatedSerializer(ModelSerializer):
+
+    fk_sale: StringRelatedField = None
+    fk_product: StringRelatedField = None
+
+    fk_sale = StringRelatedField()
+    fk_product = StringRelatedField()
+
+    class Meta:
+
+        model: SaleDetailModel = None
+        fields: str | list = None
+
+        model = SaleDetailModel
         fields = '__all__'
 
 
@@ -150,32 +196,4 @@ class SaleRelatedSerializer(ModelSerializer):
         fields: str | list = None
 
         model = SaleModel
-        fields = '__all__'
-
-
-class SaleDetailSerializer(ModelSerializer):
-
-    class Meta:
-
-        model: SaleDetailModel = None
-        fields: str | list = None
-
-        model = SaleDetailModel
-        fields = '__all__'
-
-
-class SaleDetailRelatedSerializer(ModelSerializer):
-
-    fk_sale: StringRelatedField = None
-    fk_product: StringRelatedField = None
-
-    fk_sale = StringRelatedField()
-    fk_product = StringRelatedField()
-
-    class Meta:
-
-        model: SaleDetailModel = None
-        fields: str | list = None
-
-        model = SaleDetailModel
         fields = '__all__'

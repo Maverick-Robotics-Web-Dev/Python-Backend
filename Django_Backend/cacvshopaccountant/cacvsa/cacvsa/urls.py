@@ -23,4 +23,5 @@ urlpatterns = [
     path('', include('restapi.docs.urls'), name='docs'),
     path('admin/', admin.site.urls, name='admin'),
     path('api/v1/routes/', include('restapi.routes.urls'), name='routes'),
+    path('__debug__/', include('debug_toolbar.urls'))
 ]

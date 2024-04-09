@@ -70,7 +70,8 @@ THIRD_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework_simplejwt',
     'coreapi',
-    'drf_yasg'
+    'drf_yasg',
+    'debug_toolbar'
 ]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
@@ -83,6 +84,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
 
 ROOT_URLCONF = 'cacvsa.urls'
@@ -190,3 +192,7 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     # 'TOKEN_OBTAIN_SERIALIZER': 'restapi.users.serializers.CustomJwtToken'
 }
+
+INTERNAL_IPS = [
+    "127.0.0.1"
+]
