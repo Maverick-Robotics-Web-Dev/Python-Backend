@@ -122,7 +122,7 @@ class CreditNoteDetailModel(NestedModel):
         verbose_name_plural = 'DETALLE DE NOTAS DE CREDITO'
 
     def __str__(self) -> LiteralString:
-        return self.fk_credit_note
+        return str(self.fk_credit_note)
 
 
 class SaleModel(NestedModel):
