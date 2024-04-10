@@ -487,8 +487,8 @@ class CreditNoteViewSet(MultiSerializerViewSet):
             print(f'Tipo: {type(crd_note)}')
             print(f'Note: {crd_note.id}')
 
-            # for product in detail:
-            #     item = self.model_detail.objects.create(fk_credit_note=crd_note.id, **product)
+            for product in detail:
+                item = self.model_detail.objects.create(fk_credit_note=crd_note, **product)
 
             print(f'Tipo: {type(cd_nt)}')
             print(f'Note: {cd_nt}')

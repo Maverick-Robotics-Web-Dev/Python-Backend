@@ -66,15 +66,28 @@ class VoucherTypeRelatedSerializer(ModelSerializer):
         fields = '__all__'
 
 
+# class CreditNoteDetailSerializer(ModelSerializer):
+
+#     class Meta:
+
+#         model: CreditNoteDetailModel = None
+#         fields: str | list = None
+
+#         model = CreditNoteDetailModel
+#         fields = '__all__'
+
+
 class CreditNoteDetailSerializer(ModelSerializer):
 
     class Meta:
 
         model: CreditNoteDetailModel = None
-        fields: str | list = None
+        # fields: str | list = None
+        exclude: list = None
 
         model = CreditNoteDetailModel
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ['fk_credit_note']
 
 
 class CreditNoteDetailRelatedSerializer(ModelSerializer):
