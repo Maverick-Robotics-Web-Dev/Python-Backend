@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Self
+from typing import Any, Self
 
 from django.db.models.query import QuerySet
 
@@ -765,7 +765,7 @@ class CreditNoteViewSet(MultiSerializerViewSet):
     serializer: Serializer = None
     note: dict = None
     detail: list = None
-    model_note: CreditNoteModel = None
+    model_note: Any | CreditNoteModel = None
     product: dict = None
     note_item: CreditNoteDetailModel = None
     detail_items: list = []
@@ -910,18 +910,23 @@ class CreditNoteViewSet(MultiSerializerViewSet):
         request.data["update_at"] = datetime.now()
         # request.data.pop('detail')
         self.obj = self.get_object(pk)
+        print(f'########## OBJ ##########')
+        print(self.obj.create_at)
+        request.data['create_at'] = self.obj.create_at
         self.serializer = self.get_serializer(self.obj, data=request.data, partial=True)
 
         if self.serializer.is_valid():
 
             self.note = self.serializer.validated_data
             self.detail = self.note.pop('detail')
-            # self.model_note = self.model(**self.note)
-            # self.model_note.save()
-            self.serializer.save()
+            self.model_note = self.model(**self.note)
+            self.model_note.save()
 
             for self.product in self.detail:
-                self.model_detail.objects.create(fk_credit_note=self.obj, **self.product)
+                i = self.model_detail.objects.create(fk_credit_note=self.model_note, **self.product)
+                # i = self.model_detail.objects.filter(fk_credit_note=self.obj.id).delete()
+                print(f'########## I ##########')
+                print(i)
 
             print(f'########## note ##########')
             print(self.note)
