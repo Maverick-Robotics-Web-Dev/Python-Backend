@@ -876,8 +876,7 @@ class CreditNoteViewSet(MultiSerializerViewSet):
 
             self.note = self.serializer.validated_data
             self.detail = self.note.pop('detail')
-            self.model_note = self.model(**self.note)
-            self.model_note.save()
+            self.model_note = self.model.objects.create(**self.note)
 
             for self.product in self.detail:
                 self.model_detail.objects.create(fk_credit_note=self.model_note, **self.product)
