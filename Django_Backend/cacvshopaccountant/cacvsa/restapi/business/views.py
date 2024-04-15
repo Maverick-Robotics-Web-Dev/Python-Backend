@@ -14,6 +14,7 @@ from rest_framework.status import (
     HTTP_204_NO_CONTENT
 )
 
+from restapi.products.models import ProductModel
 from restapi.support.views import MultiSerializerViewSet
 
 from .models import (
@@ -764,7 +765,7 @@ class CreditNoteViewSet(MultiSerializerViewSet):
     query_res: QuerySet = None
     serializer: Serializer = None
     note: dict = None
-    detail: list = None
+    detail: list = []
     model_note: Any | CreditNoteModel = None
     product: dict = None
     note_item: CreditNoteDetailModel = None
@@ -879,10 +880,16 @@ class CreditNoteViewSet(MultiSerializerViewSet):
             self.model_note = self.model.objects.create(**self.note)
 
             for self.product in self.detail:
-                self.model_detail.objects.create(fk_credit_note=self.model_note, **self.product)
-                # self.detail_items.append(self.note_item)
 
-            # self.note['detail'] = self.detail_items
+                product_model: ProductModel = self.product["fk_product"]
+                stock_before = product_model.stock
+                stock_detail = self.product["quantity"]
+                stock_after = int(stock_before)-int(stock_detail)
+                self.product["status"] = True
+                self.product["create_at"] = self.note["create_at"]
+                self.model_detail.objects.create(fk_credit_note=self.model_note, **self.product)
+                ProductModel.objects.filter(id=product_model.id).update(stock=stock_after)
+
             self.obj = self.get_object(self.model_note.id)
             self.serializer_data = CreditNoteRelatedSerializer(self.obj)
 
@@ -919,14 +926,14 @@ class CreditNoteViewSet(MultiSerializerViewSet):
 
             self.note = self.serializer.validated_data
             self.detail = self.note.pop('detail')
-            self.model_note = self.model(**self.note)
-            self.model_note.save()
+            self.model_note = self.obj.objects.filter(id=pk).update(**self.note)
+            # self.model_note.save()
 
             for self.product in self.detail:
-                i = self.model_detail.objects.create(fk_credit_note=self.model_note, **self.product)
+                i = self.model_detail.objects.create(fk_credit_note=self.obj, **self.product)
                 # i = self.model_detail.objects.filter(fk_credit_note=self.obj.id).delete()
                 print(f'########## I ##########')
-                print(i)
+                # print(i)
 
             print(f'########## note ##########')
             print(self.note)
