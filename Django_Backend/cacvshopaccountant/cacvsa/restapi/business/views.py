@@ -7,6 +7,7 @@ from rest_framework.serializers import Serializer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
+from rest_framework.utils import model_meta
 from rest_framework.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
@@ -874,6 +875,15 @@ class CreditNoteViewSet(MultiSerializerViewSet):
         self.serializer = self.get_serializer(data=request.data)
 
         if self.serializer.is_valid():
+
+            many_to_many = {}
+            info = model_meta.get_field_info(self.model)
+            for field_name, relation_info in info.relations.items():
+                many_to_many[field_name] = self.serializer.validated_data
+                # if relation_info.to_many and (field_name in self.serializer.validated_data):
+                #     many_to_many[field_name] = self.serializer.validated_data.pop(field_name)
+            print(f'########## many_to_many ##########')
+            print(many_to_many)
 
             self.note = self.serializer.validated_data
             self.detail = self.note.pop('detail')
