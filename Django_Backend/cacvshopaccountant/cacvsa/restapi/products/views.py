@@ -459,6 +459,8 @@ class ProductViewSet(MultiSerializerViewSet):
         request.data["update_at"] = datetime.now()
 
         self.obj = self.get_object(pk)
+        if request.data['stock']:
+            print(type(request.data['stock']))
         self.serializer = self.get_serializer(self.obj, data=request.data, partial=True)
 
         if self.serializer.is_valid():

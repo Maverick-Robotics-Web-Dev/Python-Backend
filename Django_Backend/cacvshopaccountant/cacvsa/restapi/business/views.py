@@ -788,7 +788,7 @@ class CreditNoteViewSet(MultiSerializerViewSet):
 
         try:
 
-            self.obj = self.model.objects.get(pk=pk, status=True)
+            self.obj = self.model.objects.get(pk=pk)
             return self.obj
 
         except self.model.DoesNotExist:
@@ -966,19 +966,42 @@ class CreditNoteViewSet(MultiSerializerViewSet):
 
     def destroy(self: Self, request: Request, pk: str = None):
 
+        self.obj = self.get_object(pk)
+
+        if self.obj.status == False:
+            self.data = {
+                'error': 'ERROR',
+                'msg': f'Comprobante {self.obj.voucher_number} se encuentra ANULADO'
+            }
+            self.response = Response(self.data, HTTP_400_BAD_REQUEST)
+
+            return self.response
+
         request.data["status"] = False
         request.data["update_at"] = datetime.now()
 
-        self.obj = self.get_object(pk)
         self.serializer = self.get_serializer(self.obj, data=request.data, partial=True)
 
         if self.serializer.is_valid():
 
+            self.detail = self.serializer.validated_data.pop('detail')
+
             self.serializer.save()
+
+            for self.product in self.detail:
+
+                product_model: ProductModel = self.product["fk_product"]
+                stock_before = product_model.stock
+                stock_detail = self.product["quantity"]
+                stock_after = int(stock_before)+int(stock_detail)
+                # self.product["status"] = True
+                # self.product["create_at"] = self.note["create_at"]
+                # self.model_detail.objects.create(fk_credit_note=self.model_note, **self.product)
+                ProductModel.objects.filter(id=product_model.id).update(stock=stock_after)
 
             self.data = {
                 'ok': 'OK',
-                'msg': 'Eliminado Exitosamente',
+                'msg': 'Comprobante Anulado Exitosamente',
             }
 
             self.response = Response(self.data, HTTP_200_OK)
