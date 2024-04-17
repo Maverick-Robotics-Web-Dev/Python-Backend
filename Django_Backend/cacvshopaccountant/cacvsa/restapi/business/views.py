@@ -876,15 +876,6 @@ class CreditNoteViewSet(MultiSerializerViewSet):
 
         if self.serializer.is_valid():
 
-            many_to_many = {}
-            info = model_meta.get_field_info(self.model)
-            for field_name, relation_info in info.relations.items():
-                many_to_many[field_name] = self.serializer.validated_data
-                # if relation_info.to_many and (field_name in self.serializer.validated_data):
-                #     many_to_many[field_name] = self.serializer.validated_data.pop(field_name)
-            print(f'########## many_to_many ##########')
-            print(many_to_many)
-
             self.note = self.serializer.validated_data
             self.detail = self.note.pop('detail')
             self.model_note = self.model.objects.create(**self.note)

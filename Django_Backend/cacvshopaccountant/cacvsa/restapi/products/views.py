@@ -109,7 +109,7 @@ class CategoryViewSet(MultiSerializerViewSet):
 
         if self.serializer.is_valid():
 
-            self.serializer.save()
+            self.serializer.create(self.serializer.validated_data)
 
             self.data = {
                 'ok': 'OK',
