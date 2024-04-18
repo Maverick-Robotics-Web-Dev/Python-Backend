@@ -461,9 +461,8 @@ class ProductViewSet(MultiSerializerViewSet):
         self.obj = self.get_object(pk)
         if request.data['stock']:
             stock_before = request.data['stock']
-            stock = self.obj.stock+stock_before
+            stock = int(self.obj.stock) + int(stock_before)
             request.data['stock'] = stock
-            print(stock)
         self.serializer = self.get_serializer(self.obj, data=request.data, partial=True)
 
         if self.serializer.is_valid():
