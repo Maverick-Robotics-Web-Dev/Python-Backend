@@ -1,3 +1,7 @@
+from typing import Self
+from collections import OrderedDict
+from datetime import datetime
+
 from rest_framework.serializers import (
     ModelSerializer,
     StringRelatedField
@@ -15,10 +19,20 @@ class CategorySerializer(ModelSerializer):
     class Meta:
 
         model: CategoryModel = None
-        fields: str = None
+        # fields: str = None
+        # exclude: list = None
 
         model = CategoryModel
         fields = '__all__'
+        # exclude = ['create_at']
+
+    def create(self: Self, validated_data: OrderedDict):
+        validated_data["status"] = True
+        print(validated_data['create_at'])
+        print(type(validated_data))
+        print(validated_data)
+
+        return self.Meta.model._default_manager.create(**validated_data)
 
 
 class CategoryRelatedSerializer(ModelSerializer):

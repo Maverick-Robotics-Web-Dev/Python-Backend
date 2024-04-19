@@ -104,12 +104,15 @@ class CategoryViewSet(MultiSerializerViewSet):
 
         request.data["status"] = True
         request.data["create_at"] = datetime.now()
+        request.data["create_at"] = '2024-04-19 17: 11: 25.037961'
+        print(request.data["create_at"])
 
         self.serializer = self.get_serializer(data=request.data)
 
         if self.serializer.is_valid():
+            print(self.serializer.validated_data['create_at'])
 
-            self.serializer.create(self.serializer.validated_data)
+            self.serializer.save()
 
             self.data = {
                 'ok': 'OK',
