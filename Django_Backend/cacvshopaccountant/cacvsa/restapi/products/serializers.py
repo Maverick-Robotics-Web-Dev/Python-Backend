@@ -1,6 +1,7 @@
 from typing import Self
 from collections import OrderedDict
 from datetime import datetime
+import pytz
 
 from rest_framework.serializers import (
     ModelSerializer,
@@ -19,7 +20,7 @@ class CategorySerializer(ModelSerializer):
     class Meta:
 
         model: CategoryModel = None
-        # fields: str = None
+        fields: str = None
         # exclude: list = None
 
         model = CategoryModel
@@ -28,7 +29,19 @@ class CategorySerializer(ModelSerializer):
 
     def create(self: Self, validated_data: OrderedDict):
         validated_data["status"] = True
-        print(validated_data['create_at'])
+        srlz = validated_data['create_at']
+
+        dt = datetime.now()
+        dtc = dt.strftime('%Y-%m-%d %H:%M:%S.%f+00:00')
+        dtsp = datetime.strptime(dtc, '%Y-%m-%d %H:%M:%S.%f%z')
+        dtu = pytz.timezone('UTC').localize(dt)
+        madrid = pytz.timezone('Europe/Madrid').localize(dt)
+        validated_data['create_at'] = dtu
+        print(f'########## SERIALIZER ##########')
+        print(f'{srlz.tzinfo}: {srlz}')
+        print(f'########## PYTZ ##########')
+        print(f'{dtu.tzinfo}: {dtu}')
+        print(f'{madrid.tzinfo}: {madrid}')
         print(type(validated_data))
         print(validated_data)
 
