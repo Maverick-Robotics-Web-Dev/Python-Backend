@@ -1,7 +1,9 @@
+import pytz
+
+from decimal import *
 from typing import Self
 from collections import OrderedDict
 from datetime import datetime
-import pytz
 
 from django.db.models import (DecimalField)
 
@@ -33,21 +35,26 @@ class CategorySerializer(ModelSerializer):
         validated_data["status"] = True
         srlz = validated_data['create_at']
 
-        tr: DecimalField = DecimalField(max_digits=11, decimal_places=2)
-        tr2: DecimalField = DecimalField(max_digits=11, decimal_places=2)
-        total: DecimalField = DecimalField(max_digits=11, decimal_places=2)
-        iva: DecimalField = DecimalField(max_digits=11, decimal_places=2)
-        totaliva: DecimalField = DecimalField(max_digits=11, decimal_places=2)
+        tr: Decimal = None
+        tr2: Decimal = None
+        total: Decimal = None
+        iva: Decimal = None
+        totaliva: Decimal = None
 
-        tr = 4.02
-        tr2 = 3.39
+        print(f'########## CONTEXT ##########')
+        print(f'CTX: {getcontext().rounding}')
+        # getcontext().prec = 2
+        ttr = 4.02
+        tr = Decimal(4.016).quantize(Decimal('.01'), rounding=ROUND_HALF_EVEN)
+        tr2 = Decimal(3.39)
         total = tr+tr2
         print(f'########## TERMINOS ##########')
-        print(f'Termino 1: {tr}')
+        print(f'Termino 1: {ttr}')
+        print(f'Termino Decimal 1: {tr}')
         print(f'Termino 2: {tr2}')
         print(f'########## TOTAL ##########')
         print(f'Total: {total}')
-        iva = tr*0.12
+        iva = tr*Decimal(0.12)
         totaliva = tr+iva
         print(f'########## TOTAL IVA ##########')
         print(f'IVA: {iva}')
@@ -57,13 +64,13 @@ class CategorySerializer(ModelSerializer):
         dtc = dt.strftime('%Y-%m-%d %H:%M:%S.%f+00:00')
         dtsp = datetime.strptime(dtc, '%Y-%m-%d %H:%M:%S.%f%z')
         dtu = pytz.timezone('UTC').localize(dt)
-        madrid = pytz.timezone('Europe/Madrid').localize(dt)
+        # madrid = pytz.timezone('Europe/Madrid').localize(dt)
         validated_data['create_at'] = dtu
         print(f'########## SERIALIZER ##########')
         print(f'{srlz.tzinfo}: {srlz}')
         print(f'########## PYTZ ##########')
         print(f'{dtu.tzinfo}: {dtu}')
-        print(f'{madrid.tzinfo}: {madrid}')
+        # print(f'{madrid.tzinfo}: {madrid}')
         print(type(validated_data))
         print(validated_data)
 
