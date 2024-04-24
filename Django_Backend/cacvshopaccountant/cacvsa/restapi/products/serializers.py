@@ -45,7 +45,7 @@ class CategorySerializer(ModelSerializer):
         print(f'CTX: {getcontext().rounding}')
         # getcontext().prec = 2
         ttr = 4.02
-        tr = Decimal(4.016).quantize(Decimal('.01'), rounding=ROUND_HALF_EVEN)
+        tr = Decimal(4.014).quantize(Decimal('.01'), rounding=ROUND_HALF_EVEN)
         tr2 = Decimal(3.39)
         total = tr+tr2
         print(f'########## TERMINOS ##########')
