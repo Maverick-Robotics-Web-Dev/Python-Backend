@@ -1,8 +1,12 @@
 from rest_framework.serializers import (
     Serializer,
     ModelSerializer,
-    StringRelatedField
+    StringRelatedField,
+    PrimaryKeyRelatedField
 )
+
+from restapi.users.models import UserEmployeeModel
+from restapi.users.serializers import UserEmployeeSerializer
 
 from .models import (
     WayToPayModel,
